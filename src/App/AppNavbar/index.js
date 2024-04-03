@@ -1,4 +1,6 @@
-function AppNavBar(){
+import React from "react";
+
+function AppNavBar() {
     return (
         <></>
     )
