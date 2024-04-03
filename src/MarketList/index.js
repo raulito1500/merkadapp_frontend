@@ -26,7 +26,7 @@ function MarketList() {
             }
         };
         fetchData();
-    }, []);
+    }, [id]);
 
     return (
         <>{list ?

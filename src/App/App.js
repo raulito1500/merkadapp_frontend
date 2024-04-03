@@ -3,7 +3,6 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { AppHeader } from './AppHeader';
 import { AppNavBar } from './AppNavbar';
-import { MarketListWidget } from '../MarketListWidget';
 import { MarketList } from '../MarketList';
 import { Overview } from '../Overview';
 import { NotFound } from '../NotFound';
