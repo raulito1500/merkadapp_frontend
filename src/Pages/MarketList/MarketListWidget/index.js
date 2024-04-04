@@ -1,22 +1,41 @@
 import React from "react";
-import { Button, Card, ListGroup, ProgressBar } from "react-bootstrap"
 import { Link } from "react-router-dom";
+import { AppContext } from "../../../App/Context";
+import { Button, Card, ListGroup, ProgressBar } from "react-bootstrap"
 
 function MarketListWidget() {
     const [lists, setLists] = React.useState([]);
+
+    const {
+        setLoading
+    } = React.useContext(AppContext);
+
+
     React.useEffect(() => {
-        fetch('/market-list')
-            .then(response => response.json())
-            .then(data => setLists(data));
-    }, [])
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`/market-list`);
+                if (response.ok) {
+                    const data = await response.json();
+                    data.map((list, index) => list.completedStatus = (list.completedItems / list.totalItems) * 100);
+                    setLists(data);
+                } else {
+                    throw new Error('Error al obtener los datos del servicio');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
     return (
         <Card>
-            <Card.Header>Recent market list</Card.Header>
+            <Card.Header className="d-grid gap-2 d-md-flex justify-content-between">Recent market list
+                <Button variant="outline-primary" size="sm">Add list</Button>
+            </Card.Header>
             <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
-                <Card.Text>
-                    With supporting text below as a natural lead-in to additional content.
-                </Card.Text>
                 <ListGroup
                     variant="flush">
                     {
@@ -26,7 +45,7 @@ function MarketListWidget() {
                                 key={index}
                                 className="d-flex justify-content-between align-items-start">
                                 {list.date}
-                                <ProgressBar className="w-25" now={50} label={"50%"} visuallyHidden />
+                                <ProgressBar className="w-25" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} />
                                 <Link
                                     to={`/market-list/${list.id}`}>
                                     <svg
@@ -47,7 +66,6 @@ function MarketListWidget() {
                             </ListGroup.Item>
                         ))}
                 </ListGroup>
-                <Button variant="primary">Go somewhere</Button>
             </Card.Body>
         </Card>
     )

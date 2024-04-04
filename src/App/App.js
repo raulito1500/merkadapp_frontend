@@ -1,28 +1,31 @@
 import React from 'react';
+import { AppProvider } from './Context';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { AppHeader } from './AppHeader';
 import { AppNavBar } from './AppNavbar';
-import { MarketList } from '../MarketList';
-import { Overview } from '../Overview';
-import { NotFound } from '../NotFound';
-import { BillList } from '../BillList';
+import { Overview } from '../Pages/Overview';
+import { MarketListView } from '../Pages/MarketList/MarketListView';
+import { BillList } from '../Pages/Bill/BillList';
+import { NotFound } from '../Pages/NotFound';
 
 function App() {
   return (
     <>
       <HashRouter>
-        <AppHeader />
-        <AppNavBar />
-        <Container>
-          <Routes>
-            <Route path='/' element={<Overview />} />
-            <Route path='/market-list/:id' element={<MarketList />} />
-            <Route path='/bills' element={<BillList />} />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </Container>
-      </HashRouter>
+        <AppProvider>
+          <AppHeader />
+          <AppNavBar />
+          <Container className='pt-5 mt-5'>
+            <Routes>
+              <Route path='/' element={<Overview />} />
+              <Route path='/market-list/:id' element={<MarketListView />} />
+              <Route path='/bills' element={<BillList />} />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </Container>
+        </AppProvider>
+      </HashRouter >
     </>
   );
 }

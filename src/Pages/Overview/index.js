@@ -1,5 +1,5 @@
 import React from "react";
-import { MarketListWidget } from "../MarketListWidget";
+import { MarketListWidget } from "../MarketList/MarketListWidget";
 import { Col, Row } from "react-bootstrap";
 
 function Overview() {
