@@ -42,7 +42,6 @@
     "nth-check": "2.1.1",
     "postcss": "8.4.38"
   },
-  "proxy": "https://merkadapp-ed7aeb2134b5.herokuapp.com",
   "devDependencies": {
     "sass": "^1.74.1"
   }
