@@ -5,7 +5,8 @@ import { Col, Row } from "react-bootstrap";
 function Overview() {
     return (
         <Row>
-            <Col sm={6}>
+            <Col lg={6}></Col>
+            <Col lg={6}>
                 <MarketListWidget />
             </Col>
         </Row>

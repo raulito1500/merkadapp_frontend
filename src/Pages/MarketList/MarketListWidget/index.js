@@ -1,15 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
-import { Button, Card, ListGroup, ProgressBar } from "react-bootstrap"
+import { Button, Card, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap"
+import { MarketListCreateSuggested } from "../MarketListCreateSuggested";
 
 function MarketListWidget() {
     const [lists, setLists] = React.useState([]);
 
     const {
-        setLoading
+        setLoading,
+        show, 
+        setShow
     } = React.useContext(AppContext);
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -29,11 +34,12 @@ function MarketListWidget() {
             setLoading(false);
         };
         fetchData();
-    }, []);
+    }, [show]);
+    // TODO: Buscar una mejor manera de recargar la el widget al guardar
     return (
         <Card>
             <Card.Header className="d-grid gap-2 d-md-flex justify-content-between">Recent market list
-                <Button variant="outline-primary" size="sm">Add list</Button>
+                <Button variant="outline-primary" size="sm" onClick={handleShow}>Add list</Button>
             </Card.Header>
             <Card.Body>
                 <ListGroup
@@ -67,6 +73,14 @@ function MarketListWidget() {
                         ))}
                 </ListGroup>
             </Card.Body>
+            <Offcanvas show={show} onHide={handleClose} placement="end">
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <MarketListCreateSuggested />
+                </Offcanvas.Body>
+            </Offcanvas>
         </Card>
     )
 }

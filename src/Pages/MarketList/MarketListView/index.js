@@ -87,7 +87,7 @@ function MarketListView() {
                                         $10,000
                                     </small>
                                     <small className="me-3 text-body-secondary">
-                                        <i class="me-1 bi bi-calendar-event"></i>
+                                        <i className="me-1 bi bi-calendar-event"></i>
                                         2024/04/30
                                     </small>
                                 </div>
