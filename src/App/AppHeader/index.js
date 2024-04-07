@@ -2,6 +2,7 @@ import React from "react";
 import { AppContext } from "../Context";
 import { NavLink } from "react-router-dom"
 import { Container, Dropdown, Spinner } from "react-bootstrap"
+import { useAuth } from "../Context/auth";
 
 import "./index.css"
 
@@ -11,6 +12,8 @@ const routes = [
 ];
 
 function AppHeader() {
+    const auth = useAuth();
+
     const classNameForLink = (isActive) => {
         return isActive ? "nav-link px-2 link-secondary" : "nav-link px-2 link-dark";
     }
@@ -50,18 +53,19 @@ function AppHeader() {
                     {loading ? <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner> : "" }
-                    <Dropdown>
+                    {auth.user ? <Dropdown>
                         <Dropdown.Toggle
                             variant="none"
                             className="d-block link-dark text-decoration-none dropdown-toggle"
                             id="dropdownUser1">
-                            <img src="https://avatars.githubusercontent.com/u/817891?v=4" alt="mdo" width="32" height="32" className="rounded-circle" />
+                            <img src={`https://avatars.githubusercontent.com/u/${auth.gitHubID}?v=4`} alt="mdo" width="32" height="32" className="rounded-circle" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item>Profile</Dropdown.Item>
-                            <Dropdown.Item>Logout</Dropdown.Item>
+                            <Dropdown.Item><NavLink to='/logout'>Logout</NavLink></Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>
+                    </Dropdown> : ""
+                    }
                 </div>
             </Container>
         </header >
