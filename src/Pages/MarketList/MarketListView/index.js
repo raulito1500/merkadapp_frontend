@@ -15,7 +15,9 @@ function MarketListView() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/market-list/${id}`);
+                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                // const server = "http://localhost:8080";
+                const response = await fetch(`${server}/market-list/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     data.completedItems = data.items.filter(item => !!item.checked).length;
@@ -46,7 +48,9 @@ function MarketListView() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify()
                 };
-                const response = await fetch(`/market-list/${list.id}/check/${list.items[index].id}`, requestOptions);
+                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                // const server = "http://localhost:8080";
+                const response = await fetch(`${server}/market-list/${list.id}/check/${list.items[index].id}`, requestOptions);
                 if (response.ok) {
                     list.items[index].checked = true;
                     setList(list);
