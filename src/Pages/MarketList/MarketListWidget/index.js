@@ -20,7 +20,9 @@ function MarketListWidget() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`https://merkadapp-ed7aeb2134b5.herokuapp.com/market-list`);
+                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                // const server = "http://localhost:8080";
+                const response = await fetch(`${server}/market-list/`);
                 console.log(response);
                 if (response.ok) {
                     const data = await response.json();
