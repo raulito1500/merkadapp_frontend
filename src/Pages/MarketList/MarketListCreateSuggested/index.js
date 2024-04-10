@@ -19,7 +19,9 @@ function MarketListCreateSuggested() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/market-list/suggested`);
+                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                // const server = "http://localhost:8080";
+                const response = await fetch(`${server}/market-list/suggested`);
                 if (response.ok) {
                     const data = await response.json();
                     setDate(data.date);
@@ -64,7 +66,9 @@ function MarketListCreateSuggested() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataToSend)
                 };
-                const response = await fetch(`/market-list`, requestOptions);
+                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                // const server = "http://localhost:8080";
+                const response = await fetch(`${server}/market-list/`, requestOptions);
                 if (response.ok) {
                 } else {
                     throw new Error('Error al obtener los datos del servicio');
