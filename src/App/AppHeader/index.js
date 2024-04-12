@@ -19,7 +19,7 @@ function AppHeader() {
         <header className="pt-4 pt-sm-1 pb-4 mb-3 bg-primary">
             <Container>
                 <div className="d-flex flex-column align-items-center flex-sm-row justify-content-sm-between" >
-                    <a href="/" className="text-decoration-none text-white main-logo">
+                    <a href="/" className="d-flex align-items-start text-decoration-none text-white main-logo">
                         <img src="logo.svg" className="me-2" alt="Merkadapp logo" />
                         <span className="fs-2">Merkadapp</span>
                     </a>

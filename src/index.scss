@@ -43,7 +43,7 @@ header {
 }
 
 header .main-logo img {
-    width: 25px;
+    width: calc(28px + 0.9vw);
 }
 .bg-white-25 {
     --bs-bg-opacity: 0.25;

@@ -71,7 +71,7 @@ function MarketListView() {
                 <p className="fs-5 col-md-8">
                     <strong>Fecha:</strong> {moment(list.date).format('MMM Do')}
                 </p>
-                <ProgressBar className="w-100 mb-2" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} />
+                <ProgressBar variant="success" className="w-100 mb-2" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} />
                 <ListGroup>
                     {list.items.map((item, index) => (
                         <ListGroup.Item

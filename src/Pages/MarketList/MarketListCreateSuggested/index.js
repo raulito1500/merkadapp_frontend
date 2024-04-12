@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from "../../../App/Context";
 import { Button, ListGroup } from "react-bootstrap";
+import moment from "moment";
 
 function MarketListCreateSuggested() {
     const {
@@ -85,7 +86,7 @@ function MarketListCreateSuggested() {
         <>{date ?
             <>
                 <p>
-                    <strong>Fecha:</strong> {date}
+                    <strong>Fecha:</strong> {moment(date).format('MMM Do')}
                 </p>
                 <h3>Suggested</h3>
                 <ListGroup>
