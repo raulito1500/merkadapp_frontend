@@ -5,7 +5,7 @@ const AuthContext = React.createContext();
 
 function AuthProvider({ children }) {
     const [user, setUser] = React.useState(null);
-    const [gitHubID, setGitHubID] = React.useState("");
+    const [gitHubID, setGitHubID] = React.useState("0");
     const navigate = useNavigate();
 
     const login = ({ username }) => {
@@ -25,8 +25,11 @@ function AuthProvider({ children }) {
         setUser(null);
         navigate('/login')
     }
+    const isAuthenticated = () => {
+        return (user !== null)
+    }
     const auth = {
-        user, login, logout, gitHubID
+        user, login, logout, gitHubID, isAuthenticated
     }
     return (
         <AuthContext.Provider

@@ -1,4 +1,7 @@
 $blue: #e7592e;
+$green: #004921;
+
+// $body-bg: #fefaf7;
 
 $spacer: 0.9rem;
 
@@ -23,5 +26,33 @@ $input-btn-padding-y: 0.4rem;
 $input-btn-padding-x: 0.65rem;
 $input-btn-line-height: 1.15;
 
+body{
+    background-color: #fefaf7 !important;
+}
+header {
+    // background-image: url("../public/wave_2.svg");
+    // background-position: 0% 70%;
+    // background-repeat: no-repeat;
+    // background-size: 100%;
+}
+header {
+    border-radius: 0px 0px 50% 50%;
+}
+.main-logo span {
+    font-family: "Pacifico", cursive;
+}
+
+header .main-logo img {
+    width: 25px;
+}
+.bg-white-25 {
+    --bs-bg-opacity: 0.25;
+    background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.border-left-decorated{
+    border-left: 5px var(--bs-border-style) rgb(var(--bs-primary-rgb)) !important;
+    border-left: 5px var(--bs-border-style) var(--bs-gray-400) !important;
+}
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons";

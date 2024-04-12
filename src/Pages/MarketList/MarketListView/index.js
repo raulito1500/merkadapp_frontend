@@ -2,6 +2,7 @@ import React from "react";
 import { ListGroup, ProgressBar } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
+import moment from "moment";
 
 function MarketListView() {
     const { id } = useParams();
@@ -15,15 +16,14 @@ function MarketListView() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                // const server = "http://localhost:8080";
+                // const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
+                const server = "http://localhost:8080";
                 const response = await fetch(`${server}/market-list/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     data.completedItems = data.items.filter(item => !!item.checked).length;
                     data.totalItems = data.items.length;
                     data.completedStatus = (data.completedItems / data.totalItems) * 100;
-                    data.fechita = new Date(data.date);
                     setList(data);
                 } else {
                     throw new Error('Error al obtener los datos del servicio');
@@ -69,7 +69,7 @@ function MarketListView() {
         <>{list ?
             <><h1>Market List</h1>
                 <p className="fs-5 col-md-8">
-                    <strong>Fecha:</strong> {list.fechita.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    <strong>Fecha:</strong> {moment(list.date).format('MMM Do')}
                 </p>
                 <ProgressBar className="w-100 mb-2" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} />
                 <ListGroup>
