@@ -26,18 +26,32 @@ $input-btn-padding-y: 0.4rem;
 $input-btn-padding-x: 0.65rem;
 $input-btn-line-height: 1.15;
 
-body{
+body {
     background-color: #fefaf7 !important;
 }
+
 header {
     // background-image: url("../public/wave_2.svg");
     // background-position: 0% 70%;
     // background-repeat: no-repeat;
     // background-size: 100%;
 }
+
 header {
     border-radius: 0px 0px 50% 50%;
+
+    background: -webkit-linear-gradient(208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
+.shadowHeader {
+    border-radius: 0% 59% 48% 45%;
+    padding-bottom: 0rem;
+    background-color: rgba(var(--bs-primary-rgb), 0.5)
+}
+
 .main-logo span {
     font-family: "Pacifico", cursive;
 }
@@ -45,14 +59,16 @@ header {
 header .main-logo img {
     width: calc(28px + 0.9vw);
 }
+
 .bg-white-25 {
     --bs-bg-opacity: 0.25;
     background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.border-left-decorated{
+.border-left-decorated {
     border-left: 5px var(--bs-border-style) rgb(var(--bs-primary-rgb)) !important;
     border-left: 5px var(--bs-border-style) var(--bs-gray-400) !important;
 }
+
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons";
