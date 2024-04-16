@@ -67,9 +67,7 @@ function MarketListWidget() {
                 </ListGroup>
             </Card.Body>
             <Offcanvas show={show} onHide={handleClose} placement="end">
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
-                </Offcanvas.Header>
+                
                 <Offcanvas.Body>
                     <MarketListCreateSuggested />
                 </Offcanvas.Body>

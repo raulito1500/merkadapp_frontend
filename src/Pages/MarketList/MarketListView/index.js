@@ -33,7 +33,6 @@ function MarketListView() {
 
     const checkItem = (event, idItem) => {
         const index = list.items.findIndex((item) => item.id === idItem);
-        event.target.disabled = true;
         setLoading(true);
         api
             .put(`/market-list/${list.id}/check/${list.items[index].id}`)
@@ -63,15 +62,17 @@ function MarketListView() {
                             <span className="pt-1 form-checked-content flex-grow-1">
                                 <strong>{item.product_name}</strong>
                                 <div className="d-flex justify-content-start">
-                                    <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-crosshair"></i> Mayorista
-                                    </small>
-                                    <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-cash"></i> $10,000
-                                    </small>
-                                    <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-calendar-event"></i> 2024/04/30
-                                    </small>
+                                    {item.where != "" && item.value != 0 ?
+                                        <><small className="me-3 text-body-secondary">
+                                            <i className="me-1 bi bi-crosshair"></i> {item.where}
+                                        </small>
+                                            <small className="me-3 text-body-secondary">
+                                                <i className="me-1 bi bi-cash"></i> ${item.value}
+                                            </small>
+                                            <small className="me-3 text-body-secondary">
+                                                <i className="me-1 bi bi-calendar-event"></i> {moment(item.date).format("MMM D")}
+                                            </small> </> : ""}
+
                                 </div>
                             </span>
                             <input

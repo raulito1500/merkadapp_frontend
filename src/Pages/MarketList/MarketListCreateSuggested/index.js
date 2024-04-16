@@ -33,11 +33,20 @@ function MarketListCreateSuggested() {
         const index = others.findIndex((item) => item.product_id === product_id);
         if (index >= 0) {
             const element = others[index];
-            if(element.quantity > 0){
+            if (element.quantity > 0) {
                 element.checked = true;
                 setSuggested([...suggested, element]);
                 setOthers([...others.slice(0, index), ...others.slice(index + 1)]);
             }
+        }
+    }
+    const removeItem = (product_id) => {
+        const index = suggested.findIndex((item) => item.product_id === product_id);
+        if (index >= 0) {
+            const element = suggested[index];
+            element.checked = false;
+            setOthers([...others, element]);
+            setSuggested([...suggested.slice(0, index), ...suggested.slice(index + 1)]);
         }
     }
     const saveMarketList = () => {
@@ -49,9 +58,6 @@ function MarketListCreateSuggested() {
         api
             .post(`/market-list`, list)
             .then((response) => {
-                setDate(response.date);
-                setSuggested(response.items.filter((d) => d.checked === true));
-                setOthers(response.items.filter((d) => d.checked === false));
             })
             .catch(error => {
                 console.log("se presentó un error")
@@ -78,11 +84,11 @@ function MarketListCreateSuggested() {
     }
     return (
         <>{date ?
-            <>
+            <div className="d-flex flex-column">
                 <p>
                     <strong>Fecha:</strong> {moment(date).format('MMM Do')}
                 </p>
-                <h3>Suggested</h3>
+                <h5>Suggested</h5>
                 <ListGroup>
                     {suggested.map((item, index) => (
                         <ListGroup.Item
@@ -97,17 +103,17 @@ function MarketListCreateSuggested() {
                                 className="form-check-input flex-shrink-1"
                                 type="checkbox"
                                 defaultChecked={item.checked}
-                                onChange={(event) => addItem(item.product_id)}
+                                onChange={(event) => removeItem(item.product_id)}
                                 style={{ fontSize: "1.375em" }} />
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
                 <Button
+                    className="ms-auto mt-2 mb-4 text-light"
                     onClick={() => saveMarketList()}
-                >
-                    Save
+                > Create list
                 </Button>
-                <h3>Others</h3>
+                <h5>Others</h5>
                 <ListGroup>
                     {others.map((item, index) => (
                         <ListGroup.Item
@@ -144,7 +150,7 @@ function MarketListCreateSuggested() {
                             </Button>
                         </ListGroup.Item>
                     ))}
-                </ListGroup></> : ""}</>
+                </ListGroup></div > : ""}</>
     )
 }
 
