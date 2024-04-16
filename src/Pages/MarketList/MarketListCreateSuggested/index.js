@@ -1,11 +1,11 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom';
 import { AppContext } from "../../../App/Context";
-import { Button, ListGroup } from "react-bootstrap";
+import { Button, Form, InputGroup, ListGroup } from "react-bootstrap";
 import moment from "moment";
 
 function MarketListCreateSuggested() {
     const {
+        api,
         setLoading,
         setShow
     } = React.useContext(AppContext);
@@ -15,72 +15,66 @@ function MarketListCreateSuggested() {
     const [others, setOthers] = React.useState([]);
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                const server = "http://localhost:8080";
-                const response = await fetch(`${server}/market-list/suggested`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setDate(data.date);
-                    setSuggested(data.items.filter((d) => d.checked === true));
-                    setOthers(data.items.filter((d) => d.checked === false));
-                } else {
-                    throw new Error('Error al obtener los datos del servicio');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            setLoading(false);
-        };
-        fetchData();
+        setLoading(true);
+        api
+            .get(`/market-list/suggested`)
+            .then((response) => {
+                setDate(response.data.date);
+                setSuggested(response.data.items.filter((d) => d.checked === true));
+                setOthers(response.data.items.filter((d) => d.checked === false));
+            })
+            .catch(error => {
+                console.log("se presentó un error: " + error);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const addItem = (product_id) => {
         const index = others.findIndex((item) => item.product_id === product_id);
         if (index >= 0) {
-            const newOthers = [...others];
-            
-            const element = newOthers.at(index);
-            element.checked = true;
-            const newSuggested = [...suggested];
-            newSuggested.push(element);
-            setSuggested(newSuggested);
-
-            newOthers.splice(index, 1);
-            setOthers(newOthers);
+            const element = others[index];
+            if(element.quantity > 0){
+                element.checked = true;
+                setSuggested([...suggested, element]);
+                setOthers([...others.slice(0, index), ...others.slice(index + 1)]);
+            }
         }
     }
     const saveMarketList = () => {
-        const dataToSend = {
+        const list = {
             date: date,
-            items: suggested.map(item => ({...item, checked: false}))
+            items: suggested.map(item => ({ ...item, checked: false }))
         };
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dataToSend)
-                };
-                // const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                const server = "http://localhost:8080";
-                const response = await fetch(`${server}/market-list`, requestOptions);
-                if (response.ok) {
-                } else {
-                    throw new Error('Error al obtener los datos del servicio');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            setLoading(false);
-            setShow(false);
+        setLoading(true);
+        api
+            .post(`/market-list`, list)
+            .then((response) => {
+                setDate(response.date);
+                setSuggested(response.items.filter((d) => d.checked === true));
+                setOthers(response.items.filter((d) => d.checked === false));
+            })
+            .catch(error => {
+                console.log("se presentó un error")
+            })
+            .finally(() => {
+                setLoading(false);
+                setShow(false);
+            });
+    }
+    const STEP = 1;
+    const MIN_VALUE = 0;
 
-        };
-
-        fetchData();
+    const stepUp = (productId) => {
+        const newOthers = [...others];
+        const index = newOthers.findIndex((item) => item.product_id === productId);
+        newOthers[index].quantity += STEP;
+        setOthers(newOthers);
+    }
+    const stepDown = (productId) => {
+        const newOthers = [...others];
+        const index = newOthers.findIndex((item) => item.product_id === productId);
+        newOthers[index].quantity = newOthers[index].quantity > MIN_VALUE ? newOthers[index].quantity - STEP : newOthers[index].quantity;
+        setOthers(newOthers);
     }
     return (
         <>{date ?
@@ -93,7 +87,7 @@ function MarketListCreateSuggested() {
                     {suggested.map((item, index) => (
                         <ListGroup.Item
                             as="label"
-                            key={index}
+                            key={item.product_id}
                             className="list-group-item d-flex gap-3">
                             <span className="opacity-50 text-nowrap pt-1 flex-shrink-1">{item.quantity}</span>
                             <span className="pt-1 form-checked-content flex-grow-1">
@@ -103,7 +97,7 @@ function MarketListCreateSuggested() {
                                 className="form-check-input flex-shrink-1"
                                 type="checkbox"
                                 defaultChecked={item.checked}
-                                onChange={(event) => addItem(event, item.product_id)}
+                                onChange={(event) => addItem(item.product_id)}
                                 style={{ fontSize: "1.375em" }} />
                         </ListGroup.Item>
                     ))}
@@ -118,16 +112,36 @@ function MarketListCreateSuggested() {
                     {others.map((item, index) => (
                         <ListGroup.Item
                             as="label"
-                            key={index}
-                            className="list-group-item d-flex gap-3">
-                            <span className="opacity-50 text-nowrap pt-1 flex-shrink-1">{item.quantity}</span>
-                            <span className="pt-1 form-checked-content flex-grow-1">
+                            key={item.product_id}
+                            className="list-group-item d-flex justify-content-between gap-3">
+                            <InputGroup className="border rounded p-1 text-nowrap w-50">
+                                <Button
+                                    variant="link"
+                                    className="p-0 m0"
+                                    onClick={() => stepDown(item.product_id)} >
+                                    <i className="bi bi-dash-circle"></i>
+                                </Button>
+                                <Form.Control
+                                    value={item.quantity}
+                                    disabled="disabled"
+                                    className="p-0 m0 bg-transparent border-0 text-center"
+                                    type="number" />
+                                <Button
+                                    variant="link"
+                                    className="p-0 m0"
+                                    onClick={() => stepUp(item.product_id)} >
+                                    <i className="bi bi-plus-circle"></i>
+                                </Button>
+                            </InputGroup>
+
+                            <span className="pt-1 w-100 bd-highlight form-checked-content">
                                 {item.product_name}
                             </span>
-                            <a
+                            <Button
+                                variant="link"
                                 onClick={() => addItem(item.product_id)}>
-                                <i className="bi bi-plus-circle"></i>
-                            </a>
+                                <i className="bi bi-cart-plus"></i>
+                            </Button>
                         </ListGroup.Item>
                     ))}
                 </ListGroup></> : ""}</>

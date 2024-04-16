@@ -9,6 +9,7 @@ function MarketListWidget() {
     const [lists, setLists] = React.useState([]);
 
     const {
+        api,
         setLoading,
         show,
         setShow
@@ -18,32 +19,25 @@ function MarketListWidget() {
     const handleShow = () => setShow(true);
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                const server = "http://localhost:8080";
-                const response = await fetch(`${server}/market-list`);
-                console.log(response);
-                if (response.ok) {
-                    const data = await response.json();
-                    data.map((list, index) => {
-                        list.completedStatus = (list.completedItems / list.totalItems) * 100;
-                        list.date = new Date(list.date);
-                        return list;
-                    });
-                    setLists(data);
-                } else {
-                    throw new Error('Error al obtener los datos del servicio');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            setLoading(false);
-        };
-        fetchData();
+        setLoading(true);
+        api
+            .get(`/market-list`)
+            .then((response) => {
+                response.data.map((list, index) => {
+                    list.completedStatus = (list.completedItems / list.totalItems) * 100;
+                    list.date = new Date(list.date);
+                    return list;
+                });
+                setLists(response.data);
+
+            })
+            .catch(error => {
+                console.log("se presentó un error")
+            })
+            .finally(() => setLoading(false));
     }, [show]);
     // TODO: Buscar una mejor manera de recargar la el widget al guardar
+
     return (
         <Card>
             <Card.Header className="d-grid gap-2 d-flex justify-content-between">Recent market list
@@ -56,7 +50,7 @@ function MarketListWidget() {
                         lists.map((list, index) => (
                             <ListGroup.Item
                                 as="li"
-                                key={index}
+                                key={list.id}
                                 className="ps-0"
                             >
                                 <Link

@@ -7,63 +7,44 @@ import moment from "moment";
 function MarketListView() {
     const { id } = useParams();
 
-    const [list, setList] = React.useState();
     const {
+        api,
         setLoading
     } = React.useContext(AppContext);
 
+    const [list, setList] = React.useState();
+
     React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                const server = "http://localhost:8080";
-                const response = await fetch(`${server}/market-list/${id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    data.completedItems = data.items.filter(item => !!item.checked).length;
-                    data.totalItems = data.items.length;
-                    data.completedStatus = (data.completedItems / data.totalItems) * 100;
-                    setList(data);
-                } else {
-                    throw new Error('Error al obtener los datos del servicio');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            setLoading(false);
-        };
-        fetchData();
+        setLoading(true);
+        api
+            .get(`/market-list/${id}`)
+            .then((response) => {
+                const data = response.data;
+                data.completedItems = data.items.filter(item => !!item.checked).length;
+                data.totalItems = data.items.length;
+                data.completedStatus = (data.completedItems / data.totalItems) * 100;
+                setList(data);
+            })
+            .catch(error => {
+                console.log("se presentó un error: " + error);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     const checkItem = (event, idItem) => {
         const index = list.items.findIndex((item) => item.id === idItem);
-
-        const fetchData = async () => {
-            setLoading(true);
-            event.target.disabled = true;
-            try {
-                const requestOptions = {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify()
-                };
-                const server = "https://merkadapp-ed7aeb2134b5.herokuapp.com";
-                // const server = "http://localhost:8080";
-                const response = await fetch(`${server}/market-list/${list.id}/check/${list.items[index].id}`, requestOptions);
-                if (response.ok) {
-                    list.items[index].checked = true;
-                    setList(list);
-                } else {
-                    throw new Error('Error al obtener los datos del servicio');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            setLoading(false);
-        };
-
-        fetchData();
+        event.target.disabled = true;
+        setLoading(true);
+        api
+            .put(`/market-list/${list.id}/check/${list.items[index].id}`)
+            .then((response) => {
+                list.items[index].checked = true;
+                setList(list);
+            })
+            .catch(error => {
+                console.log("se presentó un error: " + error);
+            })
+            .finally(() => setLoading(false));
     }
     return (
         <>{list ?
@@ -76,23 +57,20 @@ function MarketListView() {
                     {list.items.map((item, index) => (
                         <ListGroup.Item
                             as="label"
-                            key={index}
+                            key={item.id}
                             className="list-group-item d-flex gap-3">
                             <span className="opacity-50 text-nowrap pt-1 flex-shrink-1">{item.quantity}</span>
                             <span className="pt-1 form-checked-content flex-grow-1">
                                 <strong>{item.product_name}</strong>
                                 <div className="d-flex justify-content-start">
                                     <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-crosshair"></i>
-                                        Mayorista
+                                        <i className="me-1 bi bi-crosshair"></i> Mayorista
                                     </small>
                                     <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-cash"></i>
-                                        $10,000
+                                        <i className="me-1 bi bi-cash"></i> $10,000
                                     </small>
                                     <small className="me-3 text-body-secondary">
-                                        <i className="me-1 bi bi-calendar-event"></i>
-                                        2024/04/30
+                                        <i className="me-1 bi bi-calendar-event"></i> 2024/04/30
                                     </small>
                                 </div>
                             </span>

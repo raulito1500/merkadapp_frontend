@@ -14,8 +14,7 @@ import { Login } from '../Pages/Login';
 
 function App() {
   return (
-    <>
-      <HashRouter>
+    <HashRouter>
         <AuthProvider>
           <AppProvider>
             <AppHeader />
@@ -33,7 +32,6 @@ function App() {
           </AppProvider>
         </AuthProvider>
       </HashRouter>
-    </>
   );
 }
 
