@@ -23,13 +23,13 @@ function MarketListWidget() {
         api
             .get(`/market-list`)
             .then((response) => {
-                response.data.map((list, index) => {
-                    list.completedStatus = (list.completedItems / list.totalItems) * 100;
-                    list.date = new Date(list.date);
-                    return list;
-                });
-                setLists(response.data);
-
+                setLists(
+                    response.data.map((list, index) => {
+                        list.completedStatus = (list.completedItems / list.totalItems) * 100;
+                        list.date = new Date(list.date);
+                        return list;
+                    })
+                );
             })
             .catch(error => {
                 console.log("se presentó un error")
@@ -67,7 +67,7 @@ function MarketListWidget() {
                 </ListGroup>
             </Card.Body>
             <Offcanvas show={show} onHide={handleClose} placement="end">
-                
+
                 <Offcanvas.Body>
                     <MarketListCreateSuggested />
                 </Offcanvas.Body>
