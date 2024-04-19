@@ -19,7 +19,7 @@ function App() {
           <AppProvider>
             <AppHeader />
             <AppNavBar />
-            <Container>
+            <Container className='pb-5'>
               <Routes>
                 <Route path='/' element={<Overview />} />
                 <Route path='/market-list/:id' element={<MarketListView />} />

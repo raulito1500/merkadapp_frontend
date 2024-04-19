@@ -1,11 +1,12 @@
 $blue: #e7592e;
 $green: #004921;
 
+$standard-gradient: 208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%;
 // $body-bg: #fefaf7;
 
 $spacer: 0.9rem;
 
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-sans-serif: "Nunito", sans-serif;
 $font-family-base: $font-family-sans-serif;
 $headings-font-family: inherit;
 
@@ -40,10 +41,8 @@ header {
 header {
     border-radius: 0px 0px 50% 50%;
 
-    background: -webkit-linear-gradient(208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%);
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -webkit-linear-gradient($standard-gradient);
+    background: linear-gradient($standard-gradient);
 }
 
 .shadowHeader {
@@ -68,6 +67,10 @@ header .main-logo img {
 .border-left-decorated {
     border-left: 5px var(--bs-border-style) rgb(var(--bs-primary-rgb)) !important;
     border-left: 5px var(--bs-border-style) var(--bs-gray-400) !important;
+}
+.card-highlight{
+    background: -webkit-linear-gradient($standard-gradient);
+    background: linear-gradient($standard-gradient);
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";
