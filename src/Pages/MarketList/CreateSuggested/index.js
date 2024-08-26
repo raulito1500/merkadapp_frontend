@@ -19,7 +19,7 @@ function MarketListCreateSuggested() {
         api
             .get(`/market-list/suggested`)
             .then((response) => {
-                setDate(response.data.date);
+                setDate(moment(response.data.date).format('YYYY-MM-DD'));
                 setSuggested(response.data.items.filter((d) => d.checked === true));
                 setOthers(response.data.items.filter((d) => d.checked === false));
             })
@@ -51,7 +51,7 @@ function MarketListCreateSuggested() {
     }
     const saveMarketList = () => {
         const list = {
-            date: date,
+            date: new Date(date+"T00:00:00").toISOString(),
             items: suggested.map(item => ({ ...item, checked: false }))
         };
         setLoading(true);
@@ -67,6 +67,7 @@ function MarketListCreateSuggested() {
                 setShow(false);
             });
     }
+    
     const STEP = 1;
     const MIN_VALUE = 0;
 
@@ -86,7 +87,11 @@ function MarketListCreateSuggested() {
         <>{date ?
             <div className="d-flex flex-column">
                 <p>
-                    <strong>Fecha:</strong> {moment(date).format('MMM Do')}
+                    <strong>Fecha:</strong>
+                    <Form.Control
+                        value={date}
+                        onChange={(event) => { setDate(event.target.value) }}
+                        type="date" />
                 </p>
                 <h5>Suggested</h5>
                 <ListGroup>

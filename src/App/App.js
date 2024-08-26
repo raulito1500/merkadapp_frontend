@@ -6,11 +6,13 @@ import { Container } from 'react-bootstrap';
 import { AppHeader } from './AppHeader';
 import { AppNavBar } from './AppNavbar';
 import { Overview } from '../Pages/Overview';
-import { MarketListView } from '../Pages/MarketList/MarketListView';
-import { BillList } from '../Pages/Bill/BillList';
+import { MarketListView } from '../Pages/MarketList/View';
+import { BillList } from '../Pages/Bill/List';
+import { BillCreate } from '../Pages/Bill/Create';
 import { NotFound } from '../Pages/NotFound';
 import { Logout } from '../Pages/Logout';
 import { Login } from '../Pages/Login';
+import { BillEdit } from '../Pages/Bill/Edit';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
                 <Route path='/' element={<Overview />} />
                 <Route path='/market-list/:id' element={<MarketListView />} />
                 <Route path='/bills' element={<BillList />} />
+                <Route path='/bills/create' element={<BillCreate />} />
+                <Route path='/bills/edit/:id' element={<BillEdit />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/logout' element={<Logout />} />
                 <Route path='*' element={<NotFound />} />

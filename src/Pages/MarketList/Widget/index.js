@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
 import { Button, Card, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap"
-import { MarketListCreateSuggested } from "../MarketListCreateSuggested";
+import { MarketListCreateSuggested } from "../CreateSuggested";
 import moment from "moment";
 
 function MarketListWidget() {
@@ -39,7 +39,7 @@ function MarketListWidget() {
     // TODO: Buscar una mejor manera de recargar la el widget al guardar
 
     return (
-        <Card>
+        <Card className="shadow-sm">
             <Card.Header className="d-grid gap-2 d-flex justify-content-between">Recent market list
                 <Button variant="outline-primary" size="sm" onClick={handleShow}>Add list</Button>
             </Card.Header>

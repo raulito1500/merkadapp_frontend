@@ -1,4 +1,4 @@
-$blue: #e7592e;
+$blue: #ff5500;
 $green: #004921;
 
 $standard-gradient: 208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%;
@@ -71,6 +71,16 @@ header .main-logo img {
 .card-highlight{
     background: -webkit-linear-gradient($standard-gradient);
     background: linear-gradient($standard-gradient);
+}
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    color: #fff;
+    border-radius: .75rem;
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";
