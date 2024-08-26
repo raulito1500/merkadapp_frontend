@@ -42,7 +42,8 @@ function AppHeader() {
                         </ul>
                         {loading ? <Spinner
                             animation="border"
-                            role="status">
+                            variant="primary" 
+                            role="status" className="position-fixed bottom-0 end-0 z-3">
                             <span className="visually-hidden">Loading...</span>
                         </Spinner> : ""}
                         {auth.user ? <Dropdown>

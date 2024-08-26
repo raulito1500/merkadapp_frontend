@@ -1,7 +1,8 @@
 import React from "react";
-import { Table } from "react-bootstrap";
+import { Card, Col, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
+import moment from "moment";
 
 function BillList() {
     const {
@@ -28,30 +29,23 @@ function BillList() {
     return (
         <><h1>Bill List</h1>
             <Link to={'create'}>Create</Link>
-            <Table responsive="xs">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Where</th>
-                        <th>Who paid</th>
-                        <th>Total</th>
-                        <th>Items</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {list ? list.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.date}</td>
-                            <td>{item.where}</td>
-                            <td>{item.paid_by}</td>
-                            <td>{item.total}</td>
-                            <td>{item.items.length}</td>
-                            <td><Link to={`edit/${item.id}`}>E</Link></td>
-                        </tr>
-                    )): ""}
-                </tbody>
-            </Table></>
+            <Row>
+                {list ? list.map((item, index) => (
+                    <Col key={index} xs={6} sm={4} md={3} >
+                        <Card className="shadow-sm mb-3">
+                            <Card.Body>
+                                <h6 className="text-primary"><Link to={`edit/${item.id}`}>{item.where}</Link></h6>
+                                <span className="text-nowrap d-block">{moment(item.date).format('MMM Do')}</span>
+                                <span className="text-nowrap d-block">${item.total}</span>
+                                <span className="text-nowrap d-block">{item.paid_by}</span>
+                                <span className="text-muted text-nowrap d-block">({item.items.length}) items</span>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                )) : ""}
+
+            </Row>
+        </>
     )
 }
 
