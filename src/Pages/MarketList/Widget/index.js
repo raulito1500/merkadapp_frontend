@@ -49,23 +49,23 @@ function MarketListWidget() {
                     <Row>
                         {
                             lists.map((list, index) => (
-                                <Col key={list.id} xs={12} className="mb-3 d-flex justify-content-start align-items-center">
-                                    <div className="progress-circle rounded-circle d-flex align-items-center justify-content-center" style={{ "--progress": list.completedStatus }}>
-                                        <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
-                                            <i className="bi bi-basket fs-2"></i>
+                                <Link
+                                    to={`/market-list/${list.id}`}
+                                    className="ps-3 text-decoration-none text-body">
+                                    <Col key={list.id} xs={12} className="mb-3 py-1 d-flex justify-content-start align-items-center">
+                                        <div className="progress-circle rounded-circle d-flex align-items-center justify-content-center" style={{ "--progress": list.completedStatus }}>
+                                            <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
+                                                <i className="bi bi-basket fs-2"></i>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span className="d-flex flex-grow-1 flex-column ms-3">
-                                        <strong>{moment(list.date).format('MMM Do')}</strong>
-                                        <small className="text-body-secondary">{list.totalItems} items</small>
-                                    </span>
-                                    <span className="text-body-secondary">$165.000</span>
-                                    <Link
-                                        to={`/market-list/${list.id}`}
-                                        className="ps-3">
-                                        <i className="bi bi-arrow-right-circle"></i>
-                                    </Link>
-                                </Col>
+                                        <span className="d-flex flex-grow-1 flex-column ms-3">
+                                            <strong>{moment(list.date).format('MMM Do')}</strong>
+                                            <small className="text-body-secondary">{list.totalItems} items</small>
+                                        </span>
+                                        <span className="text-body-secondary">$165.000</span>
+                                        <i className="bi bi-arrow-right-circle text-primary"></i>
+                                    </Col>
+                                </Link>
                             ))}
                     </Row>
                 </Card.Body>
