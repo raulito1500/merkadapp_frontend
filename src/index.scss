@@ -35,15 +35,7 @@ body {
 }
 
 header {
-    // background-image: url("../public/wave_2.svg");
-    // background-position: 0% 70%;
-    // background-repeat: no-repeat;
-    // background-size: 100%;
-}
-
-header {
     border-radius: 0px 0px 50% 50%;
-
     background: -webkit-linear-gradient($standard-gradient);
     background: linear-gradient($standard-gradient);
 }
@@ -62,6 +54,20 @@ header .main-logo img {
     width: calc(28px + 0.9vw);
 }
 
+.navbar-brand span.full {
+    display: none;
+    display: inline;
+}
+
+.navbar-brand span.short {
+    display: inline;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+//  ---
+
 .bg-white-25 {
     --bs-bg-opacity: 0.25;
     background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
@@ -71,10 +77,12 @@ header .main-logo img {
     border-left: 5px var(--bs-border-style) rgb(var(--bs-primary-rgb)) !important;
     border-left: 5px var(--bs-border-style) var(--bs-gray-400) !important;
 }
-.card-highlight{
+
+.card-highlight {
     background: -webkit-linear-gradient($standard-gradient);
     background: linear-gradient($standard-gradient);
 }
+
 .feature-icon {
     display: inline-flex;
     align-items: center;
@@ -86,14 +94,16 @@ header .main-logo img {
     border-radius: .75rem;
 }
 
-.accordion button{
+.accordion button {
     padding: 0.45rem !important;
     background: none
 }
+
 .form-control {
     padding: 0.3rem 0.4rem !important;
     font-size: 1rem;
 }
+
 .form-label {
     margin-bottom: 0.1rem;
 }
