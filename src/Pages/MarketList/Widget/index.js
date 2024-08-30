@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
-import { Button, Card, Col, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap"
+import { Button, Card, Col, Offcanvas, Row } from "react-bootstrap"
 import { MarketListCreateSuggested } from "../CreateSuggested";
 import moment from "moment";
 
@@ -41,44 +41,41 @@ function MarketListWidget() {
     }, []);
 
     return (
-        <>
-            <Col md={6} className="d-grid gap-2 d-flex justify-content-between">
-                <h5 className="text-muted">Recent market list</h5>
-                <Button variant="outline-primary mb-3" size="sm" onClick={handleShow}>Add list</Button>
-            </Col>
+        <Col md={6} className="">
+            <h5 className="">Recent market list</h5>
+            <Button variant="outline-primary mb-3" size="sm" onClick={handleShow}>Add list</Button>
             <Card className="shadow-sm">
                 <Card.Body>
-                    <ListGroup
-                        variant="flush">
+                    <Row>
                         {
                             lists.map((list, index) => (
-                                <ListGroup.Item
-                                    as="li"
-                                    key={list.id}
-                                    className="ps-0"
-                                >
+                                <Col key={list.id} xs={12} className="mb-3 d-flex justify-content-start align-items-center">
+                                    <div className="progress-circle rounded-circle d-flex align-items-center justify-content-center" style={{ "--progress": list.completedStatus }}>
+                                        <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
+                                            <i className="bi bi-basket fs-2"></i>
+                                        </div>
+                                    </div>
+                                    <span className="d-flex flex-grow-1 flex-column ms-3">
+                                        <strong>{moment(list.date).format('MMM Do')}</strong>
+                                        <small className="text-body-secondary">{list.totalItems} items</small>
+                                    </span>
+                                    <span className="text-body-secondary">$165.000</span>
                                     <Link
                                         to={`/market-list/${list.id}`}
-                                        className="ps-3 rounded-3 d-flex justify-content-between align-items-center text-decoration-none text-dark border-left-decorated">
-                                        <span className="d-flex flex-column">
-                                            <strong>{moment(list.date).format('MMM Do')}</strong>
-                                            <small className="text-body-secondary">{list.totalItems} items</small>
-                                        </span>
-                                        <ProgressBar variant="success" className="w-50" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} visuallyHidden />
+                                        className="ps-3">
+                                        <i className="bi bi-arrow-right-circle"></i>
                                     </Link>
-                                </ListGroup.Item>
+                                </Col>
                             ))}
-                    </ListGroup>
+                    </Row>
                 </Card.Body>
-                <Offcanvas show={show} onHide={handleClose} placement="end">
-
-                    <Offcanvas.Body>
-                        <MarketListCreateSuggested loadMarketList={loadMarketList} />
-                    </Offcanvas.Body>
-                </Offcanvas>
             </Card>
-        </>
-
+            <Offcanvas show={show} onHide={handleClose} placement="end">
+                <Offcanvas.Body>
+                    <MarketListCreateSuggested loadMarketList={loadMarketList} />
+                </Offcanvas.Body>
+            </Offcanvas>
+        </Col>
     )
 }
 

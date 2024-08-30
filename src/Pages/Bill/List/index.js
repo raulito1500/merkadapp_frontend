@@ -75,7 +75,7 @@ function BillList() {
                                     checked={item.checked || false}
                                     onChange={(event) => handleCheckMerge(event, index)}
                                     style={{ fontSize: "1.375em" }} />
-                                <Link to={`edit/${item.id}`}><h6 className="text-primary"><i class="bi bi-shop-window"></i> {item.where}</h6></Link>
+                                <Link to={`edit/${item.id}`}><h6 className="text-primary"><i className="bi bi-shop-window"></i> {item.where}</h6></Link>
                                 <span className="text-nowrap d-block">{moment(item.date).format('MMM Do')}</span>
                                 <span className="text-nowrap d-block">${item.total}</span>
                                 <span className="text-nowrap d-block">{item.paid_by}</span>

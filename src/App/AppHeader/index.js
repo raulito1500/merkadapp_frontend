@@ -21,7 +21,7 @@ function AppHeader() {
                 <Navbar expand="md">
                     <Container>
                         <Navbar.Toggle aria-controls="main-nav-bar" className="text-white border-0 order-md-1" >
-                            <i class="bi bi-list"></i>
+                            <i className="bi bi-list"></i>
                         </Navbar.Toggle>
                         <Navbar.Brand href="/" className="text-decoration-none text-white main-logo order-md-2">
                             <img src="logo.svg" className="me-2" alt="Merkadapp logo" />
