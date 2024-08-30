@@ -3,7 +3,7 @@ import { AppContext } from "../../../App/Context";
 import { Button, Form, InputGroup, ListGroup } from "react-bootstrap";
 import moment from "moment";
 
-function MarketListCreateSuggested() {
+function MarketListCreateSuggested({loadMarketList}) {
     const {
         api,
         setLoading,
@@ -63,6 +63,7 @@ function MarketListCreateSuggested() {
                 console.log("se presentó un error")
             })
             .finally(() => {
+                loadMarketList();
                 setLoading(false);
                 setShow(false);
             });
