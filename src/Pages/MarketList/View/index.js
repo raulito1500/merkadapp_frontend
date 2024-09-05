@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Container, ListGroup, ProgressBar, Row } from "react-bootstrap";
+import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
 import moment from "moment";
@@ -48,18 +48,28 @@ function MarketListView() {
     }
     return (
         <>{list ?
-            <Container fluid>
-                <Row>
-                    <Col>
-                        <h1>Market List
-                            <span className="fs-6 text-muted"> ({moment(list.date).format('MMM Do')})</span>
-                        </h1>
-                    </Col>
-                </Row>
+            <Container>
                 <Row>
                     <Col md={3}>
-                        <h3 className="mt-3 mb-0 text-primary mb-2"><span className="fw-normal fs-6 text-muted">Estimated value: </span>${list.estimated}</h3>
-                        <ProgressBar variant="success" className="w-100 mb-3" now={list.completedStatus} label={`${list.completedItems} of ${list.totalItems}`} />
+                        <Card className="mb-3">
+                            <Card.Body>
+                                <Col key={list.id} xs={12} className="mb-0 py-1 d-flex justify-content-start align-items-center">
+                                    <div className="progress-circle rounded-circle d-flex align-items-center justify-content-center" style={{ "--progress": list.completedStatus }}>
+                                        <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
+                                            <i className="bi bi-basket fs-2"></i>
+                                        </div>
+                                    </div>
+                                    <span className="d-flex flex-grow-1 flex-column ms-3">
+                                        <strong>{moment(list.date).format('MMM Do')}</strong>
+                                        <small className="text-body-secondary">{list.totalItems} items</small>
+                                    </span>
+                                    <span className="d-flex flex-grow-1 flex-column ms-3 text-body-secondary text-end">
+                                        <strong className="text-primary">${list.estimated}</strong>
+                                        <small>Estimated value</small>
+                                    </span>
+                                </Col>
+                            </Card.Body>
+                        </Card>
                     </Col>
                     <Col md={9}>
                         <ListGroup>
@@ -67,33 +77,30 @@ function MarketListView() {
                                 <ListGroup.Item
                                     as="label"
                                     key={item.id}
-                                    className="list-group-item d-flex gap-3">
-                                    <span className="opacity-50 text-nowrap pt-1 flex-shrink-1">{item.quantity}</span>
-                                    <span className="pt-1 form-checked-content flex-grow-1">
-                                        <strong>{item.product_name}</strong>
-                                        <div className="d-flex justify-content-between justify-content-sm-start">
-                                            {item.where !== "" && item.value !== 0 ?
-                                                <>
-                                                    <small className="me-2 text-body-secondary">
-                                                        <i className="me-1 bi bi-crosshair"></i> {item.where}
-                                                    </small>
-                                                    <small className="me-2 text-body-secondary">
-                                                        <i className="me-1 bi bi-cash"></i> ${item.value}
-                                                    </small>
-                                                    <small className="me-2 text-body-secondary">
-                                                        <i className="me-1 bi bi-calendar-event"></i> {moment(item.date).format("MMM D")}
-                                                    </small>
-                                                </>
-                                                : ""}
-                                        </div>
-                                    </span>
+                                    className="d-flex gap-3 align-items-center py-3">
+                                    <div className="pt-1 form-checked-content flex-grow-1">
+                                        {item.quantity}<strong className="ms-1">{item.product_name}</strong>
+                                        {item.where !== "" && item.value !== 0 ?
+                                            <span className="d-block pt-1 flex-fill justify-content-start justify-content-sm-start">
+                                                <small className="me-3 text-body-secondary">
+                                                    <i className="text-primary me-0 bi bi-shop-window"></i> {item.where}
+                                                </small>
+                                                <small className="me-3 px-3 border-start border-end text-body-secondary">
+                                                    <i className="text-primary me-0 bi bi-wallet2"></i> ${item.value}
+                                                </small>
+                                                <small className="me-3 text-body-secondary">
+                                                    <i className="text-primary bi bi-calendar-event"></i> {moment(item.date).format("MMM D")}
+                                                </small>
+                                            </span>
+                                            : ""}
+                                    </div>
                                     <input
-                                        className="form-check-input flex-shrink-1"
+                                        className="form-check-input fs-4"
                                         type="checkbox"
                                         disabled={item.checked}
                                         defaultChecked={item.checked}
                                         onChange={(event) => checkItem(event, item.id)}
-                                        style={{ fontSize: "1.375em" }} />
+                                    />
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>

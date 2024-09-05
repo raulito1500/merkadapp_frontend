@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context";
 import moment from "moment";
@@ -23,7 +23,7 @@ function BillList() {
     };
 
     React.useEffect(() => {
-        loadBills(); 
+        loadBills();
     }, []);
 
     const handleCheckMerge = (event, index) => {
@@ -62,24 +62,30 @@ function BillList() {
     return (
         <>
             <h1>Bill List</h1>
-            <Link to={'create'}>Create</Link>
-            <Button variant="outline-primary" size="sm" onClick={handleMerge}>Merge</Button>
+            <Row className="mb-3" >
+                <Col className="d-flex flex-row align-items-center justify-content-between">
+                    <Link to={'create'}>Create</Link>
+                    <Button variant="outline-primary" size="sm" onClick={handleMerge}>Merge</Button>
+                </Col>
+            </Row>
             <Row>
                 {list.length > 0 ? list.map((item, index) => (
                     <Col key={index} xs={6} sm={4} md={3} >
                         <Card className="shadow-sm mb-3">
                             <Card.Body>
                                 <input
-                                    className="form-check-input flex-shrink-1"
+                                    className="form-check-input fs-4"
                                     type="checkbox"
                                     checked={item.checked || false}
-                                    onChange={(event) => handleCheckMerge(event, index)}
-                                    style={{ fontSize: "1.375em" }} />
+                                    onChange={(event) => handleCheckMerge(event, index)} />
                                 <Link to={`edit/${item.id}`}><h6 className="text-primary"><i className="bi bi-shop-window"></i> {item.where}</h6></Link>
                                 <span className="text-nowrap d-block">{moment(item.date).format('MMM Do')}</span>
                                 <span className="text-nowrap d-block">${item.total}</span>
-                                <span className="text-nowrap d-block">{item.paid_by}</span>
                                 <span className="text-muted text-nowrap d-block">({item.items.length}) items</span>
+                                <span className="text-nowrap d-block">{item.paid_by}</span>
+                                <Button>
+                                    Modify
+                                </Button>
                             </Card.Body>
                         </Card>
                     </Col>

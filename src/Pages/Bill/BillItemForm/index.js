@@ -1,16 +1,39 @@
-import React from "react";
-import { Form, Row, Badge, Accordion, Button } from "react-bootstrap";
+import React, { useContext } from "react";
+import AccordionContext from 'react-bootstrap/AccordionContext';
+import { Form, Row, Badge, Accordion, Button, useAccordionButton } from "react-bootstrap";
+
+function CustomToggle({ children, eventKey, callback }) {
+    const { activeEventKey } = useContext(AccordionContext);
+
+    const decoratedOnClick = useAccordionButton(
+        eventKey,
+        () => callback && callback(eventKey),
+    );
+
+    const isCurrentEventKey = activeEventKey === eventKey;
+
+    return (
+        <Button
+            variant="link"
+            onClick={decoratedOnClick}
+            className={isCurrentEventKey ? "open" : "closed"}
+        >
+            {children}
+        </Button>
+
+    );
+}
 
 function BillItemForm({ item, index, products, errors, onInputChange, onBlur, onRemove }) {
     return (
         <Accordion.Item eventKey={index} key={index} className="mb-3 border border-primary-subtle rounded">
-            <Accordion.Header>
+            <Row xs={12} className="d-flex align-items-start">
                 <Form.Group className="col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <Form.Control
                         value={item.quantity}
                         onChange={(event) => onInputChange("items", index, "quantity", event.target.value)}
-                        onBlur={() => onBlur("items", index,  "quantity")}
+                        onBlur={() => onBlur("items", index, "quantity")}
                         isInvalid={!!errors[`items[${index}].quantity`]}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -29,7 +52,7 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                     <Form.Control
                         value={item.unit_value}
                         onChange={(event) => onInputChange("items", index, "unit_value", event.target.value)}
-                        onBlur={() => onBlur("items", index,  "unit_value")}
+                        onBlur={() => onBlur("items", index, "unit_value")}
                     />
                 </Form.Group>
                 <Form.Group className="col-sm-2">
@@ -45,7 +68,12 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                     onClick={() => onRemove(index)}>
                     <i className="bi bi-trash3"></i>
                 </Button>
-            </Accordion.Header>
+                <div className="accordionToggle">
+                    <CustomToggle eventKey={index}>
+                        <i className="bi bi-three-dots-vertical"></i>
+                    </CustomToggle>
+                </div>
+            </Row>
             <Accordion.Body>
                 <Row>
                     <Form.Group className="col-sm-4">
@@ -76,7 +104,7 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                         <Form.Control
                             value={item.content}
                             onChange={(event) => onInputChange("items", index, "content", event.target.value)}
-                            onBlur={() => onBlur("items", index,  "content")}
+                            onBlur={() => onBlur("items", index, "content")}
                         />
                     </Form.Group>
                     <Form.Group className="col-sm-4">
@@ -103,7 +131,7 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                         <Form.Control
                             value={item.discount}
                             onChange={(event) => onInputChange("items", index, "discount", event.target.value)}
-                            onBlur={() => onBlur("items", index,  "discount")}
+                            onBlur={() => onBlur("items", index, "discount")}
                         />
                     </Form.Group>
                 </Row>

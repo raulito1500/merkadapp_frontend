@@ -41,7 +41,7 @@ function MarketListWidget() {
     }, []);
 
     return (
-        <Col md={6} className="">
+        <Col className="">
             <h5 className="">Recent market list</h5>
             <Button variant="outline-primary mb-3" size="sm" onClick={handleShow}>Add list</Button>
             <Card className="shadow-sm">
@@ -62,8 +62,11 @@ function MarketListWidget() {
                                             <strong>{moment(list.date).format('MMM Do')}</strong>
                                             <small className="text-body-secondary">{list.totalItems} items</small>
                                         </span>
-                                        <span className="text-body-secondary">$165.000</span>
-                                        <i className="bi bi-arrow-right-circle text-primary"></i>
+                                        <span className="d-flex flex-grow-1 flex-column ms-3 text-body-secondary text-end">
+                                            <strong className="text-primary">$000</strong>
+                                            <small>Estimated value</small>
+                                        </span>
+                                        <i className="bi bi-arrow-right-circle text-primary ms-3"></i>
                                     </Col>
                                 </Link>
                             ))}
