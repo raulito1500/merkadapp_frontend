@@ -32,7 +32,8 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                     <Form.Label>Quantity</Form.Label>
                     <Form.Control
                         type="number"
-                        inputmode="decimal"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
                         value={item.quantity}
                         onChange={(event) => onInputChange("items", index, "quantity", event.target.value)}
                         onBlur={() => onBlur("items", index, "quantity")}
@@ -53,7 +54,8 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                     <Form.Label>Unit value</Form.Label>
                     <Form.Control
                         type="number"
-                        inputmode="decimal"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
                         value={item.unit_value}
                         onChange={(event) => onInputChange("items", index, "unit_value", event.target.value)}
                         onBlur={() => onBlur("items", index, "unit_value")}
@@ -107,7 +109,8 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                         <Form.Label>Content</Form.Label>
                         <Form.Control
                             type="number"
-                            inputmode="decimal"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
                             value={item.content}
                             onChange={(event) => onInputChange("items", index, "content", event.target.value)}
                             onBlur={() => onBlur("items", index, "content")}
@@ -136,6 +139,8 @@ function BillItemForm({ item, index, products, errors, onInputChange, onBlur, on
                         <Form.Label>Discount (%)</Form.Label>
                         <Form.Control
                             type="number"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
                             value={item.discount}
                             onChange={(event) => onInputChange("items", index, "discount", event.target.value)}
                             onBlur={() => onBlur("items", index, "discount")}
