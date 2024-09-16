@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
-import { AppProvider } from './Context';
+import { AppProvider } from './Context/app';
 import { AuthProvider } from './Context/auth';
 import { Container } from 'react-bootstrap';
 import { AppHeader } from './AppHeader';
@@ -13,14 +13,16 @@ import { NotFound } from '../Pages/NotFound';
 import { Logout } from '../Pages/Logout';
 import { Login } from '../Pages/Login';
 import { BillEdit } from '../Pages/Bill/Edit';
+import { UtilitiesProvider } from './Context/utilities';
 
 function App() {
   return (
     <HashRouter>
-        <AuthProvider>
-          <AppProvider>
-            <AppHeader />
-            <AppNavBar />
+      <AuthProvider>
+        <AppProvider>
+          <AppHeader />
+          <AppNavBar />
+          <UtilitiesProvider>
             <Container className='pb-5'>
               <Routes>
                 <Route path='/' element={<Overview />} />
@@ -33,9 +35,10 @@ function App() {
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </Container>
-          </AppProvider>
-        </AuthProvider>
-      </HashRouter>
+          </UtilitiesProvider>
+        </AppProvider>
+      </AuthProvider>
+    </HashRouter>
   );
 }
 

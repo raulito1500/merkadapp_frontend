@@ -1,16 +1,19 @@
 import React from "react";
-import { AppContext } from "../../../App/Context";
+import { AppContext } from "../../../App/Context/app";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Card, Accordion } from "react-bootstrap";
 import moment from "moment";
 import BillItemForm from "../BillItemForm";
 import { BillBag } from "../BillBag";
 import { BillTax } from "../BillTax";
+import { useUtilities } from "../../../App/Context/utilities";
 
 function BillEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { api, setLoading } = React.useContext(AppContext);
+
+    const utilities = useUtilities();
 
     const [data, setData] = React.useState();
     const [products, setProducts] = React.useState();
@@ -53,6 +56,10 @@ function BillEdit() {
 
     const handleInputChange = (collection, index, field, value) => {
         const updatedItems = [...data[collection]];
+        if (["is_additional"].includes(field)) {
+            console.log(value)
+            value = value === "on";
+        }
         updatedItems[index] = { ...updatedItems[index], [field]: value };
         setData({ ...data, [collection]: updatedItems });
     };
@@ -60,7 +67,6 @@ function BillEdit() {
     const handleBlur = (collection, index, field) => {
         const updatedItems = [...data[collection]];
         let value = updatedItems[index][field];
-
         if (["unit_value", "quantity", "content", "discount", "value", "total"].includes(field)) {
             value = parseFloat(value);
             if (isNaN(value)) value = "";
@@ -87,13 +93,6 @@ function BillEdit() {
         return sum;
     };
 
-    const formatoMoney = (number) => {
-        return new Intl.NumberFormat('es-ES', {
-            style: 'decimal',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        }).format(number);
-    };
 
     const handleFormChange = (field, value) => {
         setData({ ...data, [field]: value });
@@ -213,7 +212,7 @@ function BillEdit() {
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group className="col-sm-3">
-                                        <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>${formatoMoney(data.total)}</h3>
+                                        <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>${utilities.formatMoney(data.total)}</h3>
                                     </Form.Group>
                                 </Row>
                             </Card.Body>

@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../Context";
+import { AppContext } from "../Context/app";
 import { NavLink } from "react-router-dom"
 import { Container, Dropdown, Nav, Navbar, Spinner } from "react-bootstrap"
 import { useAuth } from "../Context/auth";
@@ -51,6 +51,7 @@ function AppHeader() {
                                         else {
                                             return (
                                                 <NavLink
+                                                key={index}
                                                     to={route.to}
                                                     className="nav-link px-2 link-light">
                                                     {route.text}</NavLink>

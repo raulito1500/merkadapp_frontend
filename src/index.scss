@@ -10,6 +10,16 @@ $font-family-sans-serif: "Nunito", sans-serif;
 $font-family-base: $font-family-sans-serif;
 $headings-font-family: inherit;
 
+$font-weight-lighter: lighter !default;
+$font-weight-light: 200 !default;
+$font-weight-normal: 300 !default;
+$font-weight-medium: 400 !default;
+$font-weight-semibold: 500 !default;
+$font-weight-bold: 600 !default;
+$font-weight-bolder: bolder !default;
+
+$font-weight-base: $font-weight-normal !default;
+
 $headings-color: inherit;
 
 $font-size-base: 1rem;
@@ -26,15 +36,23 @@ $border-radius-sm: 0.2rem;
 $input-btn-padding-y: 0.4rem;
 $input-btn-padding-x: 0.65rem;
 $input-btn-line-height: 1.15;
+
 .btn-primary {
     --bs-btn-color: #fff;
 }
+
 @import "../node_modules/bootstrap/scss/bootstrap";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons";
 
 .bg-white-25 {
     --bs-bg-opacity: 0.25;
     background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-accent-15 {
+    --bs-bg-opacity: 0.15;
+    --bs-accent-rgb: 255, 187, 167;
+    background-color: rgba(var(--bs-accent-rgb), var(--bs-bg-opacity)) !important;
 }
 
 body {
@@ -84,23 +102,28 @@ header .main-logo img {
     width: 3.0rem;
     height: 3.0rem;
 }
-.accordionToggle button{
+
+.accordionToggle {
     transition: rotate 0.5s ease;
 }
-.accordionToggle .closed{
+
+.accordionToggle.closed {
     rotate: 360deg;
 }
-.accordionToggle .open{
+
+.accordionToggle.opened{
     rotate: 90deg;
 }
+
+.number-picker {
+    button.btn-link {
+        padding: 0rem 0 !important;
+    }
+}
+
 //  ---
 
 
-
-.border-left-decorated {
-    border-left: 5px var(--bs-border-style) rgb(var(--bs-primary-rgb)) !important;
-    border-left: 5px var(--bs-border-style) var(--bs-gray-400) !important;
-}
 
 .card-highlight {
     background: -webkit-linear-gradient($standard-gradient);
@@ -118,15 +141,7 @@ header .main-logo img {
     border-radius: .75rem;
 }
 
-.accordion button {
-    padding: 0.45rem !important;
-    background: none
-}
 
-.form-control {
-    padding: 0.3rem 0.4rem !important;
-    font-size: 1rem;
-}
 
 .form-label {
     margin-bottom: 0.1rem;

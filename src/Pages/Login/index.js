@@ -20,7 +20,7 @@ function Login() {
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                 />
-                <Button type="submit">Enviar</Button>
+                <Button type="submit">Login</Button>
             </form></>
     )
 }

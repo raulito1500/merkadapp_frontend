@@ -1,9 +1,10 @@
 import React from "react";
-import { AppContext } from "../../../App/Context";
-import { Button, Form, InputGroup, ListGroup } from "react-bootstrap";
+import { AppContext } from "../../../App/Context/app";
+import { Button, Form, ListGroup } from "react-bootstrap";
 import moment from "moment";
+import { NumberPicker } from "../../../Utils/NumberPicker";
 
-function MarketListCreateSuggested({loadMarketList}) {
+function MarketListCreateSuggested({ loadMarketList }) {
     const {
         api,
         setLoading,
@@ -51,7 +52,7 @@ function MarketListCreateSuggested({loadMarketList}) {
     }
     const saveMarketList = () => {
         const list = {
-            date: new Date(date+"T00:00:00").toISOString(),
+            date: new Date(date + "T00:00:00").toISOString(),
             items: suggested.map(item => ({ ...item, checked: false }))
         };
         setLoading(true);
@@ -68,20 +69,11 @@ function MarketListCreateSuggested({loadMarketList}) {
                 setShow(false);
             });
     }
-    
-    const STEP = 1;
-    const MIN_VALUE = 0;
 
-    const stepUp = (productId) => {
+    const onInputChange = (productId, value) => {
         const newOthers = [...others];
         const index = newOthers.findIndex((item) => item.product_id === productId);
-        newOthers[index].quantity += STEP;
-        setOthers(newOthers);
-    }
-    const stepDown = (productId) => {
-        const newOthers = [...others];
-        const index = newOthers.findIndex((item) => item.product_id === productId);
-        newOthers[index].quantity = newOthers[index].quantity > MIN_VALUE ? newOthers[index].quantity - STEP : newOthers[index].quantity;
+        newOthers[index].quantity = value;
         setOthers(newOthers);
     }
     return (
@@ -126,26 +118,10 @@ function MarketListCreateSuggested({loadMarketList}) {
                             as="label"
                             key={item.product_id}
                             className="list-group-item d-flex justify-content-between gap-3">
-                            <InputGroup className="border rounded p-1 text-nowrap w-50">
-                                <Button
-                                    variant="link"
-                                    className="p-0 m0"
-                                    onClick={() => stepDown(item.product_id)} >
-                                    <i className="bi bi-dash-circle"></i>
-                                </Button>
-                                <Form.Control
-                                    value={item.quantity}
-                                    disabled="disabled"
-                                    className="p-0 m0 bg-transparent border-0 text-center"
-                                    type="number" />
-                                <Button
-                                    variant="link"
-                                    className="p-0 m0"
-                                    onClick={() => stepUp(item.product_id)} >
-                                    <i className="bi bi-plus-circle"></i>
-                                </Button>
-                            </InputGroup>
-
+                            <NumberPicker
+                                value={item.quantity}
+                                onChange={(value) => onInputChange(item.product_id, value)}
+                            />
                             <span className="pt-1 w-100 bd-highlight form-checked-content">
                                 {item.product_name}
                             </span>

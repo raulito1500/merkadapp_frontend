@@ -1,11 +1,15 @@
 import React from "react";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { AppContext } from "../../../App/Context";
+import { AppContext } from "../../../App/Context/app";
 import moment from "moment";
+import { useUtilities } from "../../../App/Context/utilities";
+
 
 function MarketListView() {
     const { id } = useParams();
+
+    const utilities = useUtilities();
 
     const {
         api,
@@ -64,7 +68,7 @@ function MarketListView() {
                                         <small className="text-body-secondary">{list.totalItems} items</small>
                                     </span>
                                     <span className="d-flex flex-grow-1 flex-column ms-3 text-body-secondary text-end">
-                                        <strong className="text-primary">${list.estimated}</strong>
+                                        <strong className="text-primary">${ utilities.formatMoney(list.estimated)}</strong>
                                         <small>Estimated value</small>
                                     </span>
                                 </Col>
@@ -86,7 +90,7 @@ function MarketListView() {
                                                     <i className="text-primary me-0 bi bi-shop-window"></i> {item.where}
                                                 </small>
                                                 <small className="me-3 px-3 border-start border-end text-body-secondary">
-                                                    <i className="text-primary me-0 bi bi-wallet2"></i> ${item.value}
+                                                    <i className="text-primary me-0 bi bi-wallet2"></i> ${utilities.formatMoney(item.value)}
                                                 </small>
                                                 <small className="me-3 text-body-secondary">
                                                     <i className="text-primary bi bi-calendar-event"></i> {moment(item.date).format("MMM D")}
