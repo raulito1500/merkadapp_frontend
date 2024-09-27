@@ -45,8 +45,17 @@ function MarketListWidget() {
 
     return (
         <Col>
-            <h5 className="">Recent market list</h5>
-            <Button variant="outline-primary mb-3" size="sm" onClick={handleShow}>Add list</Button>
+            <h2 className="mt-3 d-flex justify-content-between">
+                Recent market list
+                <Button
+                    className="align-self-end"
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={handleShow}
+                >
+                    Add list
+                </Button>
+            </h2>
             <Card className="shadow-sm">
                 <Card.Body>
                     <Row>

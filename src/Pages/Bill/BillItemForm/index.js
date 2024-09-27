@@ -64,7 +64,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                 <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <NumberPicker
-                        value={item.quantity}
+                        initialValue={item.quantity}
                         onChange={(event) => handleChange("quantity", event)}
                         onBlur={() => handleBlur("quantity")}
                         isInvalid={!!errors[`items[${index}].quantity`]}
