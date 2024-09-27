@@ -1,7 +1,7 @@
 import React from "react";
 import { AppContext } from "../../../App/Context/app";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Row, Card, Accordion } from "react-bootstrap";
+import { Button, Form, Row, Card, Accordion, Container } from "react-bootstrap";
 import moment from "moment";
 import BillItemForm from "../BillItemForm";
 import { BillBag } from "../BillBag";
@@ -9,6 +9,29 @@ import { BillTax } from "../BillTax";
 import { useUtilities } from "../../../App/Context/utilities";
 
 function BillEdit() {
+
+    const handleFormChange = (field, value) => {
+        setData({ ...data, [field]: value });
+    };
+
+    const validate = () => {
+        const newErrors = {};
+        if (!data.where) newErrors.where = "Where is required";
+
+        data.items.forEach((item, index) => {
+            if (item.quantity <= 0) newErrors[`items[${index}].quantity`] = "Quantity must be greater than 0";
+        });
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleInputChange = (collection, index, field, value) => {
+        const updatedItems = [...data[collection]];
+        updatedItems[index] = { ...updatedItems[index], [field]: value };
+        setData({ ...data, [collection]: updatedItems });
+    };
+
     const { id } = useParams();
     const navigate = useNavigate();
     const { api, setLoading } = React.useContext(AppContext);
@@ -54,37 +77,6 @@ function BillEdit() {
             .finally(() => setLoading(false));
     }, []);
 
-    const handleInputChange = (collection, index, field, value) => {
-        const updatedItems = [...data[collection]];
-        if (["is_additional"].includes(field)) {
-            console.log(value)
-            value = value === "on";
-        }
-        updatedItems[index] = { ...updatedItems[index], [field]: value };
-        setData({ ...data, [collection]: updatedItems });
-    };
-
-    const handleBlur = (collection, index, field) => {
-        const updatedItems = [...data[collection]];
-        let value = updatedItems[index][field];
-        if (["unit_value", "quantity", "content", "discount", "value", "total"].includes(field)) {
-            value = parseFloat(value);
-            if (isNaN(value)) value = "";
-        }
-
-        updatedItems[index] = { ...updatedItems[index], [field]: value };
-
-        if (collection === "items" && ["quantity", "unit_value", "discount"].includes(field)) {
-            updatedItems[index].total = updatedItems[index].quantity * updatedItems[index].unit_value * (1 - updatedItems[index].discount);
-        } else if (collection === "bags" && ["quantity", "value"].includes(field)) {
-            updatedItems[index].total = updatedItems[index].quantity * updatedItems[index].value;
-        }
-
-        const calcData = { ...data, [collection]: updatedItems };
-        calcData.total = calculateTotalAmount(calcData);
-        setData(calcData);
-    };
-
     const calculateTotalAmount = (calcData) => {
         let sum = 0;
         sum += calcData.items.reduce((acc, item) => acc + item.total, 0);
@@ -93,34 +85,20 @@ function BillEdit() {
         return sum;
     };
 
+    const handleChange = (collection, index, item) => {
+        const updatedItems = [...data[collection]];
+        updatedItems[index] = item;
 
-    const handleFormChange = (field, value) => {
-        setData({ ...data, [field]: value });
-    };
+        const calcData = { ...data, [collection]: updatedItems };
+        calcData.total = calculateTotalAmount(calcData);
 
-    const validate = () => {
-        const newErrors = {};
-        if (!data.where) newErrors.where = "Where is required";
+        setData(calcData);
+    }
 
-        data.items.forEach((item, index) => {
-            if (item.quantity <= 0) newErrors[`items[${index}].quantity`] = "Quantity must be greater than 0";
-        });
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (validate()) {
-            setLoading(true);
-            delete data.id;
-            data.date = new Date(data.date + "T00:00:00").toISOString();
-            api.put(`/bills/${id}`, data)
-                .then(() => navigate("/bills"))
-                .catch(() => console.log("se presentó un error"))
-                .finally(() => setLoading(false));
-        }
+    const handleBlur = (collection, index, item) => {
+        const updatedItems = [...data[collection]];
+        updatedItems[index] = item;
+        setData({ ...data, [collection]: updatedItems });
     };
 
     const handleAddItem = () => {
@@ -141,39 +119,58 @@ function BillEdit() {
         setData({ ...data, items: updatedItems });
     }
 
-    const handleAddTax = () => {
-        const newTax = {
-            concept: "",
-            total: 0
-        };
-
-        const updatedTaxes = [...data.taxes, newTax];
-        setData({ ...data, taxes: updatedTaxes });
-    }
-
     const handleAddBag = () => {
         const newBag = {
             quantity: 0,
             value: 0,
             total: 0
         };
-
         const updatedBags = [...data.bags, newBag];
         setData({ ...data, bags: updatedBags });
     }
 
+    const handleAddTax = () => {
+        const newTax = {
+            concept: "",
+            total: 0
+        };
+        const updatedTaxes = [...data.taxes, newTax];
+        setData({ ...data, taxes: updatedTaxes });
+    }
     const handleRemoveItem = (index) => {
         const updatedItems = [...data.items];
         updatedItems.splice(index, 1);
         setData({ ...data, items: updatedItems });
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (validate()) {
+            setLoading(true);
+            delete data.id;
+            data.date = new Date(data.date + "T00:00:00").toISOString();
+            api.put(`/bills/${id}`, data)
+                .then(() => navigate("/bills"))
+                .catch(() => console.log("se presentó un error"))
+                .finally(() => setLoading(false));
+        }
+    };
+
     return (
         <>
             {data ? (
                 <>
-                    <h1>Edit Bill</h1>
+                    <h1>Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
+                        <Container fluid className="fixed-bottom p-3 bg-white d-flex justify-content-between">
+                            <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>${utilities.formatMoney(data.total)}</h3>
+                            <Button
+                                className="align-self-end text-light"
+                                type="submit"
+                            >
+                                Update bill
+                            </Button>
+                        </Container>
                         <Card>
                             <Card.Body>
                                 <Row>
@@ -211,14 +208,20 @@ function BillEdit() {
                                             {errors.date}
                                         </Form.Control.Feedback>
                                     </Form.Group>
-                                    <Form.Group className="col-sm-3">
-                                        <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>${utilities.formatMoney(data.total)}</h3>
-                                    </Form.Group>
                                 </Row>
                             </Card.Body>
                         </Card>
-
-                        <h2>Items <Button variant="outline-primary" size="sm" onClick={handleAddItem}>Add item</Button></h2>
+                        <h2 className="mt-3 d-flex justify-content-between">
+                            Items
+                            <Button
+                                className="align-self-end"
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={handleAddItem}
+                            >
+                                Add item
+                            </Button>
+                        </h2>
                         <Accordion defaultActiveKey="0">
                             {data.items.map((item, index) => (
                                 <BillItemForm
@@ -227,14 +230,23 @@ function BillEdit() {
                                     index={index}
                                     products={products}
                                     errors={errors}
-                                    onInputChange={handleInputChange}
-                                    onBlur={handleBlur}
                                     onRemove={handleRemoveItem}
+                                    onChange={(item) => handleChange("items", index, item)}
+                                    onBlur={(item) => handleBlur("items", index, item)}
                                 />
                             ))}
                         </Accordion>
-
-                        <h2>Taxes<Button variant="outline-primary" size="sm" onClick={handleAddTax}>Add tax</Button></h2>
+                        <h2 className="mt-3 d-flex justify-content-between">
+                            Taxes
+                            <Button
+                                className="align-self-end"
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={handleAddTax}
+                            >
+                                Add tax
+                            </Button>
+                        </h2>
                         <Accordion defaultActiveKey="0">
                             {data.taxes.map((tax, index) => (
                                 <BillTax
@@ -246,8 +258,17 @@ function BillEdit() {
                                 />
                             ))}
                         </Accordion>
-
-                        <h2>Bags<Button variant="outline-primary" size="sm" onClick={handleAddBag}>Add bag</Button></h2>
+                        <h2 className="mt-3 d-flex justify-content-between">
+                            Bags
+                            <Button
+                                className="align-self-end"
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={handleAddBag}
+                            >
+                                Add bag
+                            </Button>
+                        </h2>
                         <Accordion defaultActiveKey="0">
                             {data.bags.map((bag, index) => (
                                 <BillBag
@@ -259,10 +280,6 @@ function BillEdit() {
                                 />
                             ))}
                         </Accordion>
-
-                        <Button className="ms-auto mt-2 mb-4 text-light" type="submit">
-                            Save
-                        </Button>
                     </Form>
                 </>
             ) : (

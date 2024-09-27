@@ -23,7 +23,7 @@ function App() {
           <AppHeader />
           <AppNavBar />
           <UtilitiesProvider>
-            <Container className='pb-5'>
+            <Container className='pb-5 mb-5'>
               <Routes>
                 <Route path='/' element={<Overview />} />
                 <Route path='/market-list/:id' element={<MarketListView />} />
