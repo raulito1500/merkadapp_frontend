@@ -147,9 +147,12 @@ function BillEdit() {
         event.preventDefault();
         if (validate()) {
             setLoading(true);
-            delete data.id;
-            data.date = new Date(data.date + "T00:00:00").toISOString();
-            api.put(`/bills/${id}`, data)
+            const bill = {
+                ...data,
+                date: new Date(data.date + "T00:00:00").toISOString()
+            }
+            delete bill.id;
+            api.put(`/bills/${id}`, bill)
                 .then(() => navigate("/bills"))
                 .catch(() => console.log("se presentó un error"))
                 .finally(() => setLoading(false));

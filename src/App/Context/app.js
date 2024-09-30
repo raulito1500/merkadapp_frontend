@@ -7,6 +7,7 @@ function AppProvider({ children }) {
 
     const [loading, setLoading] = React.useState(false);
     const [show, setShow] = React.useState(false);
+    const [notifications, setNotifications] = React.useState([]);
 
     const api = axios.create({
         baseURL: process.env.REACT_APP_URL_BASE,
@@ -17,8 +18,10 @@ function AppProvider({ children }) {
         loading,
         setLoading,
         show,
-        setShow
-    }), [api, loading, show]);
+        setShow,
+        notifications,
+        setNotifications
+    }), [api, loading, show, notifications]);
 
     return (
         <AppContext.Provider value={providerValue}>

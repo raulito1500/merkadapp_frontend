@@ -8,21 +8,34 @@ function MarketListCreateSuggested({ loadMarketList }) {
     const {
         api,
         setLoading,
-        setShow
+        setShow,
+        setNotifications
     } = React.useContext(AppContext);
 
-    const [date, setDate] = React.useState();
-    const [suggested, setSuggested] = React.useState([]);
-    const [others, setOthers] = React.useState([]);
+    const [data, setData] = React.useState([]);
+    const [date, setDate] = React.useState("");
+
+    const nextMarketDay = () => {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const daysToSaturday = 6 - dayOfWeek;
+        const nextSaturday = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() + daysToSaturday,
+            0, 0, 0, 0
+        );
+        return moment(nextSaturday).format('YYYY-MM-DD');
+    }
 
     React.useEffect(() => {
         setLoading(true);
         api
             .get(`/market-list/suggested`)
             .then((response) => {
-                setDate(moment(response.data.date).format('YYYY-MM-DD'));
-                setSuggested(response.data.items.filter((d) => d.checked === true));
-                setOthers(response.data.items.filter((d) => d.checked === false));
+                const data = response.data;
+                setDate(nextMarketDay());
+                setData(data);
             })
             .catch(error => {
                 console.log("se presentó un error: " + error);
@@ -30,30 +43,35 @@ function MarketListCreateSuggested({ loadMarketList }) {
             .finally(() => setLoading(false));
     }, []);
 
-    const addItem = (product_id) => {
-        const index = others.findIndex((item) => item.product_id === product_id);
-        if (index >= 0) {
-            const element = others[index];
-            if (element.quantity > 0) {
-                element.checked = true;
-                setSuggested([...suggested, element]);
-                setOthers([...others.slice(0, index), ...others.slice(index + 1)]);
-            }
+    const handleAddItem = () => {
+        const newItem = {
+            product_id: "",
+            product_name: "",
+            quantity: 0,
+            checked: true,
+            category: "UNCATEGORIZED",
         }
+        const updateItems = [newItem, ...data.items];
+        setData({ ...data, items: updateItems });
+        setNotifications([{ content: "Se ha creado un nuevo item" }])
     }
-    const removeItem = (product_id) => {
-        const index = suggested.findIndex((item) => item.product_id === product_id);
-        if (index >= 0) {
-            const element = suggested[index];
-            element.checked = false;
-            setOthers([...others, element]);
-            setSuggested([...suggested.slice(0, index), ...suggested.slice(index + 1)]);
-        }
+
+    const handleItemChange = (productId, field, event) => {
+        const value = event.target.value;
+        const newData = [...data.items];
+        const index = newData.findIndex((item) => item.product_id === productId);
+        if (field !== "checked")
+            newData[index][field] = value;
+        else
+            newData[index][field] = event.target.checked;
+        setData({ ...data, items: newData });
+
     }
+
     const saveMarketList = () => {
         const list = {
             date: new Date(date + "T00:00:00").toISOString(),
-            items: suggested.map(item => ({ ...item, checked: false }))
+            items: data.items.filter((d) => d.checked === true).map(item => ({ ...item, checked: false }))
         };
         setLoading(true);
         api
@@ -69,70 +87,65 @@ function MarketListCreateSuggested({ loadMarketList }) {
                 setShow(false);
             });
     }
-
-    const onInputChange = (productId, value) => {
-        const newOthers = [...others];
-        const index = newOthers.findIndex((item) => item.product_id === productId);
-        newOthers[index].quantity = value;
-        setOthers(newOthers);
-    }
     return (
-        <>{date ?
-            <div className="d-flex flex-column">
-                <p>
-                    <strong>Fecha:</strong>
-                    <Form.Control
-                        value={date}
-                        onChange={(event) => { setDate(event.target.value) }}
-                        type="date" />
-                </p>
-                <h5>Suggested</h5>
-                <ListGroup>
-                    {suggested.map((item, index) => (
-                        <ListGroup.Item
-                            as="label"
-                            key={item.product_id}
-                            className="list-group-item d-flex gap-3">
-                            <span className="opacity-50 text-nowrap pt-1 flex-shrink-1">{item.quantity}</span>
-                            <span className="pt-1 form-checked-content flex-grow-1">
-                                {item.product_name}
-                            </span>
-                            <input
-                                className="form-check-input flex-shrink-1"
-                                type="checkbox"
-                                defaultChecked={item.checked}
-                                onChange={(event) => removeItem(item.product_id)}
-                                style={{ fontSize: "1.375em" }} />
-                        </ListGroup.Item>
-                    ))}
-                </ListGroup>
-                <Button
-                    className="ms-auto mt-2 mb-4 text-light"
-                    onClick={() => saveMarketList()}
-                > Create list
-                </Button>
-                <h5>Others</h5>
-                <ListGroup>
-                    {others.map((item, index) => (
-                        <ListGroup.Item
-                            as="label"
-                            key={item.product_id}
-                            className="list-group-item d-flex justify-content-between gap-3">
-                            <NumberPicker
-                                value={item.quantity}
-                                onChange={(value) => onInputChange(item.product_id, value)}
-                            />
-                            <span className="pt-1 w-100 bd-highlight form-checked-content">
-                                {item.product_name}
-                            </span>
-                            <Button
-                                variant="link"
-                                onClick={() => addItem(item.product_id)}>
-                                <i className="bi bi-cart-plus"></i>
-                            </Button>
-                        </ListGroup.Item>
-                    ))}
-                </ListGroup></div > : ""}</>
+        <>
+            {data.items ?
+                <div className="d-flex flex-column">
+                    <p>
+                        <strong>Fecha:</strong>
+                        <Form.Control
+                            value={date}
+                            onChange={(event) => { setDate(event.target.value) }}
+                            type="date" />
+                    </p>
+                    <h2 className="mt-3 d-flex justify-content-between">
+                        Items
+                        <Button
+                            className="align-self-end"
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={handleAddItem}
+                        >
+                            Add item
+                        </Button>
+                    </h2>
+                    <ListGroup>
+                        {data.items.map((item, index) => (
+                            <ListGroup.Item
+                                as="label"
+                                key={index + item.product_id}
+                                className="list-group-item d-flex align-items-center">
+                                <NumberPicker
+                                    className="w-25 me-2"
+                                    initialValue={item.quantity}
+                                    onChange={(event) => handleItemChange(item.product_id, "quantity", event)}
+                                />
+                                <span className="pt-1 form-checked-content flex-grow-1 pe-2">
+                                    {item.product_id !== "" ?
+                                        item.product_name
+                                        :
+                                        <Form.Control
+                                            className=""
+                                            onChange={(event) => handleItemChange(item.product_id, "product_name", event)}
+                                            value={item.product_name}
+                                        />
+                                    }
+                                </span>
+                                <input
+                                    className="form-check-input fs-4"
+                                    type="checkbox"
+                                    defaultChecked={item.checked}
+                                    onChange={(event) => handleItemChange(item.product_id, "checked", event)}
+                                />
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                    <Button
+                        className="ms-auto mt-2 mb-4 text-light"
+                        onClick={() => saveMarketList()}
+                    > Create list
+                    </Button>
+                </div > : ""}</>
     )
 }
 

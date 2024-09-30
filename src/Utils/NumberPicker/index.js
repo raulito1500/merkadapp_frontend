@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import "./index.scss"
 
-function NumberPicker({ initialValue = 0, onChange, onBlur, isInvalid }) {
+function NumberPicker({ className, initialValue = 0, onChange = () => {}, onBlur = () => {}, isInvalid }) {
     const STEP = 1;
     const MIN_VALUE = 0;
 
@@ -36,7 +36,7 @@ function NumberPicker({ initialValue = 0, onChange, onBlur, isInvalid }) {
         onBlur(numericValue);
     }
     return (
-        <InputGroup className={"number-picker border rounded px-1 py-0 text-nowrap" + (isInvalid ? " border-danger" : "")}>
+        <InputGroup className={className + " number-picker border rounded px-1 py-0 text-nowrap" + (isInvalid ? " border-danger" : "")}>
             <Button
                 variant="link"
                 aria-label="Decrease"

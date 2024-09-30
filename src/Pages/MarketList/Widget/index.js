@@ -63,7 +63,9 @@ function MarketListWidget() {
                             lists.map((list, index) => (
                                 <Link
                                     to={`/market-list/${list.id}`}
-                                    className="ps-3 text-decoration-none text-body">
+                                    key={index}
+                                    className="ps-3 text-decoration-none text-body"
+                                >
                                     <Col key={list.id} xs={12} className="mb-3 py-1 d-flex justify-content-start align-items-center">
                                         <div className="progress-circle rounded-circle d-flex align-items-center justify-content-center" style={{ "--progress": list.completedStatus }}>
                                             <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
