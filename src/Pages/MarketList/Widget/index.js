@@ -45,19 +45,19 @@ function MarketListWidget() {
 
     return (
         <Col>
-            <h2 className="mt-3 d-flex justify-content-between">
-                Recent market list
-                <Button
-                    className="align-self-end"
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={handleShow}
-                >
-                    Add list
-                </Button>
-            </h2>
             <Card className="shadow-sm">
                 <Card.Body>
+                    <h3 className="mb-3 d-flex justify-content-between">
+                        Recent market list
+                        <Button
+                            className="align-self-end"
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={handleShow}
+                        >
+                            Add list
+                        </Button>
+                    </h3>
                     <Row>
                         {
                             lists.map((list, index) => (

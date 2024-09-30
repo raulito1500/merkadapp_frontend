@@ -2,6 +2,7 @@ $blue: #ff5500;
 $green: #004921;
 
 $standard-gradient: 208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%;
+$btn-gradient: 208deg, #e7592e 0%, #eb2f00 3%, #ff5500 70%, #ff5500 90%;
 // $body-bg: #fefaf7;
 
 $spacer: 0.9rem;
@@ -39,6 +40,8 @@ $input-btn-line-height: 1.15;
 
 .btn-primary {
     --bs-btn-color: #fff;
+    background: -webkit-linear-gradient($btn-gradient);
+    background: linear-gradient($btn-gradient);
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";

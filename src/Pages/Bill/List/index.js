@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
 import moment from "moment";
@@ -41,7 +41,7 @@ function BillList() {
     }, []);
 
     const handleCheckMerge = (event, date, index) => {
-        const updatedListGrouped = {...listGrouped};
+        const updatedListGrouped = { ...listGrouped };
         const group = updatedListGrouped[date];
         const updatedItem = { ...group[index] };
 
@@ -83,28 +83,32 @@ function BillList() {
 
     return (
         <>
-            <h1>Bill List</h1>
-            <Row className="mb-3" >
-                <Col className="d-flex flex-row align-items-center justify-content-between">
-                    <Link className="p-2" to={'create'}>Create</Link>
-                    { merge.length > 0 ? <Button variant="outline-primary" size="sm" onClick={handleMerge}>Merge</Button> : <></> }
-                </Col>
-            </Row>
+            <h2>Bill list</h2>
+            <hr />
+            {merge.length > 0 ?
+                <Container fluid className="fixed-bottom p-3 bg-white d-flex justify-content-between z-2" >
+                    <Col className="d-flex flex-row align-items-center justify-content-between">
+                        <Link className="p-2" to={'create'}>Create</Link>
+                        <Button variant="outline-primary" size="sm" onClick={handleMerge}>Merge</Button>
+                    </Col>
+                </Container>
+                : <></>
+            }
             {Object.keys(listGrouped).map((date, index) => (
-                <Row key={index}>
-                    <h2>{date}</h2>
+                <Row key={index} className="px-2">
+                    <h3>{date}</h3>
                     {listGrouped[date].map((item, index) => (
                         <Col key={index} xs={6} sm={4} md={3} >
-                            <Card className={ "shadow-sm mb-3 " + (item.checked ?  "bg-accent-15 border-1 border-primary" : "") }>
+                            <Card className={"shadow-sm mb-3 " + (item.checked ? "bg-accent-15 border-1 border-primary" : "")}>
                                 <Card.Body>
                                     <input
                                         className="form-check-input fs-4 position-absolute top-0 start-100 translate-middle"
                                         type="checkbox"
                                         checked={item.checked || false}
                                         onChange={(event) => handleCheckMerge(event, date, index)} />
-                                        <h3 className="fs-5 mb-2"><i className="bi bi-shop-window text-primary"></i> {item.where}</h3>
+                                    <h3 className="fs-5 mb-2"><i className="bi bi-shop-window text-primary"></i> {item.where}</h3>
                                     <strong className="text-primary text-nowrap d-block">${utilities.formatMoney(item.total)}</strong>
-                                    <span className="text-muted text-wrap d-block">{item.items[0].description}{ item.items.length > 1 ? " and " + (item.items.length - 1) +" more" : ""} </span>
+                                    <span className="text-muted text-wrap d-block">{item.items[0].description}{item.items.length > 1 ? " and " + (item.items.length - 1) + " more" : ""} </span>
                                     <Link to={`edit/${item.id}`}><h6 className="btn btn-primary text-white mt-3"> Modify</h6></Link>
                                 </Card.Body>
                             </Card>
