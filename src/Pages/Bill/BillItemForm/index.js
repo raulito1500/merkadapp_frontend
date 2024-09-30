@@ -17,7 +17,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
 
     const handleChange = (field, event) => {
         const inputValue = event.target.value;
-        if (["quantity", "unit_value", "discount"].includes(field)) {
+        if (["content", "quantity", "unit_value", "discount"].includes(field)) {
             const regex = /^\d*\.?\d*$/;
             if (regex.test(inputValue)) {
                 item[field] = inputValue;
@@ -35,7 +35,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
     }
 
     const handleBlur = (field) => {
-        if (["quantity", "unit_value", "discount"].includes(field)) {
+        if (["content", "quantity", "unit_value", "discount"].includes(field)) {
             let parsedValue = parseFloat(item[field]);
             if (isNaN(parsedValue) || parsedValue < 0)
                 parsedValue = 0;
