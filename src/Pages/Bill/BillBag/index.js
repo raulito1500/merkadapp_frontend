@@ -1,11 +1,13 @@
 import React from "react";
-import { Accordion, Form } from "react-bootstrap";
+import { Accordion, Form, Row } from "react-bootstrap";
+import { useUtilities } from "../../../App/Context/utilities";
 
-function BillBag({bag, index, onInputChange, onBlur}) {
+function BillBag({ bag, index, onInputChange, onBlur }) {
+    const utilities = useUtilities();
     return (
         <Accordion.Item>
-            <Accordion.Header>
-                <Form.Group className="col-sm-2">
+            <Row xs={12} className="p-3">
+                <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <Form.Control
                         value={bag.quantity}
@@ -13,7 +15,7 @@ function BillBag({bag, index, onInputChange, onBlur}) {
                         onBlur={() => onBlur("bags", index, "quantity")}
                     />
                 </Form.Group>
-                <Form.Group className="col-sm-2">
+                <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Unit value</Form.Label>
                     <Form.Control
                         value={bag.value}
@@ -21,15 +23,12 @@ function BillBag({bag, index, onInputChange, onBlur}) {
                         onBlur={() => onBlur("bags", index, "value")}
                     />
                 </Form.Group>
-                <Form.Group className="col-sm-2">
-                    <Form.Label>Total</Form.Label>
-                    <Form.Control
-                        value={bag.total}
-                        disabled
-                        readOnly
-                    />
-                </Form.Group>
-            </Accordion.Header>
+                <div className="col-4 col-sm-3 pt-2 p-sm-0">
+                    <label>Total</label>
+                    <h3 className="mb-0 text-primary position-relative">${utilities.formatMoney(bag.total)}
+                    </h3>
+                </div>
+            </Row>
         </Accordion.Item>)
 }
 export { BillBag }

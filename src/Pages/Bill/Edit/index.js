@@ -9,6 +9,15 @@ import { BillTax } from "../BillTax";
 import { useUtilities } from "../../../App/Context/utilities";
 
 function BillEdit() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { api, setLoading } = React.useContext(AppContext);
+
+    const utilities = useUtilities();
+
+    const [data, setData] = React.useState();
+    const [products, setProducts] = React.useState();
+    const [errors, setErrors] = React.useState({});
 
     const handleFormChange = (field, value) => {
         setData({ ...data, [field]: value });
@@ -32,15 +41,7 @@ function BillEdit() {
         setData({ ...data, [collection]: updatedItems });
     };
 
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { api, setLoading } = React.useContext(AppContext);
 
-    const utilities = useUtilities();
-
-    const [data, setData] = React.useState();
-    const [products, setProducts] = React.useState();
-    const [errors, setErrors] = React.useState({});
 
     React.useEffect(() => {
         setLoading(true);

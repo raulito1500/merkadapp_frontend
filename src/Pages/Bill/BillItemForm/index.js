@@ -52,7 +52,11 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
         item.total = total;
     }
     return (
-        <Accordion.Item eventKey={index} key={index} className={"mb-3 border rounded " + (!!errors[`items[${index}]`] ? "border-primary-subtle" : "border-danger")}>
+        <Accordion.Item
+            eventKey={index}
+            key={index}
+            className={"mb-3 border rounded " + ((!!errors[`items[${index}]`]) ? "border-primary-subtle" : "border-primary-subtle")}
+        >
             <Row xs={12} className="p-3">
                 <Form.Group className="col-5 col-sm-3">
                     <Form.Label>Description</Form.Label>
