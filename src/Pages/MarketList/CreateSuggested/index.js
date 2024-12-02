@@ -56,10 +56,9 @@ function MarketListCreateSuggested({ loadMarketList }) {
         setNotifications([{ content: "Se ha creado un nuevo item" }])
     }
 
-    const handleItemChange = (productId, field, event) => {
+    const handleItemChange = (index, field, event) => {
         const value = event.target.value;
         const newData = [...data.items];
-        const index = newData.findIndex((item) => item.product_id === productId);
         if (field !== "checked")
             newData[index][field] = value;
         else
@@ -118,7 +117,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
                                 <NumberPicker
                                     className="w-25 me-2"
                                     initialValue={item.quantity}
-                                    onChange={(event) => handleItemChange(item.product_id, "quantity", event)}
+                                    onChange={(event) => handleItemChange(index, "quantity", event)}
                                 />
                                 <span className="pt-1 form-checked-content flex-grow-1 pe-2">
                                     {item.product_id !== "" ?
@@ -126,7 +125,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
                                         :
                                         <Form.Control
                                             className=""
-                                            onChange={(event) => handleItemChange(item.product_id, "product_name", event)}
+                                            onChange={(event) => handleItemChange(index, "product_name", event)}
                                             value={item.product_name}
                                         />
                                     }
@@ -135,7 +134,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
                                     className="form-check-input fs-4"
                                     type="checkbox"
                                     defaultChecked={item.checked}
-                                    onChange={(event) => handleItemChange(item.product_id, "checked", event)}
+                                    onChange={(event) => handleItemChange(index, "checked", event)}
                                 />
                             </ListGroup.Item>
                         ))}

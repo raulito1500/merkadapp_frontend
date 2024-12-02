@@ -7,6 +7,7 @@ import { useAuth } from "../Context/auth";
 const routes = [
     { to: "/", text: "Overview", private: false },
     { to: "/bills", text: "Bills", private: false },
+    { to: "/products", text: "Products", private: false },
 ];
 
 function AppHeader() {
