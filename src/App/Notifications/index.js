@@ -1,41 +1,42 @@
 import React, { useState } from "react";
-import { Toast } from "react-bootstrap";
+import { Toast, ToastContainer } from "react-bootstrap";
 import { AppContext } from "../Context/app";
 
 function Notifications() {
-    const [show, setShow] = useState(false);
+    // TODO: Manejar el estado para cada una de las notificaciones
+    const [show, setShow] = useState(true);
+
+    const DELAY = 10000;
 
     const {
         notifications
     } = React.useContext(AppContext);
 
     return (
-        <Toast.Container>
+        <ToastContainer
+            className="pt-5"
+            position="top-end"
+        >
             {notifications ? notifications.map((item, index) => (
                 <Toast
-                    className="d-inline-block m-1"
-                    bg="primary"
-                    onClose={() => { setShow(false) }}
+                    key={index}
+                    bg={item.type}
+                    onClose={() => setShow(false)}
                     show={show}
-                    delay={30000}
                     autohide
+                    animation={true}
+                    delay={DELAY}
                 >
                     <Toast.Header>
-                        <img
-                            src="holder.js/20x20?text=%20"
-                            className="rounded me-2"
-                            alt=""
-                        />
-                        <strong className="me-auto">{item.content}</strong>
-                        <small>11 mins ago</small>
+                        <strong className="me-auto">{item.title}</strong>
                     </Toast.Header>
-                    <Toast.Body className="">
-                        Hello, world! This is a toast message.
+                    <Toast.Body>
+                        {item.content}
                     </Toast.Body>
                 </Toast>
             )) : ""}
 
-        </Toast.Container>
+        </ToastContainer>
     )
 }
 export { Notifications };

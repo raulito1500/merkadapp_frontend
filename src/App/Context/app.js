@@ -13,6 +13,36 @@ function AppProvider({ children }) {
         baseURL: process.env.REACT_APP_URL_BASE,
     });
 
+    const pushNotifications = (title, message, type = "") => {
+        let notificationType;
+        switch (type) {
+            case "":
+                notificationType = "light";
+                break;
+            case "error":
+                notificationType = "danger-subtle";
+                break;
+            case "warning":
+                notificationType = "warning-subtle";
+                break;
+            default:
+                break;
+        }
+
+        const newNotification = {
+            title: title,
+            content: message,
+            type: notificationType,
+            open: true,
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        setNotifications(prevNotifications => [
+            ...prevNotifications,
+            newNotification,
+        ]);
+    }
+
     const providerValue = useMemo(() => ({
         api,
         loading,
@@ -20,7 +50,7 @@ function AppProvider({ children }) {
         show,
         setShow,
         notifications,
-        setNotifications
+        pushNotifications
     }), [api, loading, show, notifications]);
 
     return (

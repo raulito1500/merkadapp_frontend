@@ -9,7 +9,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
         api,
         setLoading,
         setShow,
-        setNotifications
+        pushNotifications
     } = React.useContext(AppContext);
 
     const [data, setData] = React.useState([]);
@@ -38,7 +38,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
                 setData(data);
             })
             .catch(error => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("se presentó un error: " + error, "error");
             })
             .finally(() => setLoading(false));
     }, []);
@@ -53,7 +53,6 @@ function MarketListCreateSuggested({ loadMarketList }) {
         }
         const updateItems = [newItem, ...data.items];
         setData({ ...data, items: updateItems });
-        setNotifications([{ content: "Se ha creado un nuevo item" }])
     }
 
     const handleItemChange = (index, field, event) => {
@@ -76,14 +75,14 @@ function MarketListCreateSuggested({ loadMarketList }) {
         api
             .post(`/market-list`, list)
             .then((response) => {
+                setShow(false);
             })
             .catch(error => {
-                console.log("se presentó un error")
+                pushNotifications("Se presentó un error", error.response.data.error, "error");
             })
             .finally(() => {
                 loadMarketList();
                 setLoading(false);
-                setShow(false);
             });
     }
     return (

@@ -15,6 +15,7 @@ import { Login } from '../Pages/Login';
 import { BillEdit } from '../Pages/Bill/Edit';
 import { UtilitiesProvider } from './Context/utilities';
 import { ProductList } from '../Pages/Product/List';
+import { Notifications } from './Notifications';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <AppProvider>
           <AppHeader />
           <AppNavBar />
+          <Notifications />
           <UtilitiesProvider>
             <Container className='pb-5 mb-5'>
               <Routes>
