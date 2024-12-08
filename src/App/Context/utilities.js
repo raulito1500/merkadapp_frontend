@@ -8,7 +8,7 @@ function UtilitiesProvider({ children }) {
         return new Intl.NumberFormat('es-ES', {
             style: 'decimal',
             minimumFractionDigits: 0,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 0
         }).format(number);
     };
 

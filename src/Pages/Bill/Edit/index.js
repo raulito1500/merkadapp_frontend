@@ -35,14 +35,6 @@ function BillEdit() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleInputChange = (collection, index, field, value) => {
-        const updatedItems = [...data[collection]];
-        updatedItems[index] = { ...updatedItems[index], [field]: value };
-        setData({ ...data, [collection]: updatedItems });
-    };
-
-
-
     React.useEffect(() => {
         setLoading(true);
         api.get(`/bills/${id}`)
@@ -257,8 +249,8 @@ function BillEdit() {
                                     key={index}
                                     tax={tax}
                                     index={index}
-                                    onInputChange={handleInputChange}
-                                    onBlur={handleBlur}
+                                    onChange={(item) => handleChange("taxes", index, item)}
+                                    onBlur={(item) => handleBlur("taxes", index, item)}
                                 />
                             ))}
                         </Accordion>
@@ -279,8 +271,9 @@ function BillEdit() {
                                     key={index}
                                     bag={bag}
                                     index={index}
-                                    onInputChange={handleInputChange}
-                                    onBlur={handleBlur}
+                                    errors={errors}
+                                    onChange={(item) => handleChange("bags", index, item)}
+                                    onBlur={(item) => handleBlur("bags", index, item)}
                                 />
                             ))}
                         </Accordion>
