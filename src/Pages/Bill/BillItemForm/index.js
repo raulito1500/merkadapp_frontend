@@ -88,7 +88,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                 </Form.Group>
                 <div className="col-4 col-sm-3 pt-2 p-sm-0">
                     <label>Total</label>
-                    <h3 className="mb-0 text-primary position-relative">${utilities.formatMoney(item.total)}
+                    <h3 className="mb-0 text-primary position-relative">{utilities.formatMoney(item.total)}
                         {item.discount ? <Badge className="position-absolute top-0 start-100 translate-middle" bg="success">{(item.discount) * 100}%</Badge> : ""}
                     </h3>
                 </div>

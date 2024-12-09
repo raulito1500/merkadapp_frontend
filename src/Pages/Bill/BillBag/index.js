@@ -60,7 +60,7 @@ function BillBag({ bag, index, errors, onChange, onBlur }) {
                 </Form.Group>
                 <div className="col-4 col-sm-3 pt-2 p-sm-0">
                     <label>Total</label>
-                    <h3 className="mb-0 text-primary position-relative">${utilities.formatMoney(bag.total)}
+                    <h3 className="mb-0 text-primary position-relative">{utilities.formatMoney(bag.total)}
                     </h3>
                 </div>
             </Row>

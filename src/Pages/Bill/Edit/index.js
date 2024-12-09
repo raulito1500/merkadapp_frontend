@@ -159,7 +159,7 @@ function BillEdit() {
                     <h1>Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
                         <Container fluid className="fixed-bottom p-3 bg-white d-flex justify-content-between">
-                            <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>${utilities.formatMoney(data.total)}</h3>
+                            <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{utilities.formatMoney(data.total)}</h3>
                             <Button
                                 className="align-self-end text-light"
                                 type="submit"
