@@ -13,7 +13,7 @@ function AppProvider({ children }) {
         baseURL: process.env.REACT_APP_URL_BASE,
     });
 
-    const pushNotifications = (title, message, type = "") => {
+    const pushNotifications = (title, error, type = "") => {
         let notificationType;
         switch (type) {
             case "":
@@ -28,12 +28,17 @@ function AppProvider({ children }) {
             default:
                 break;
         }
+        let errorMessage;
+        if (error)
+            errorMessage = error.response ? error.response.data.message : error.message;
+        else
+            errorMessage = ""
 
         const newNotification = {
+            id: Date.now(),
             title: title,
-            content: message,
+            content: errorMessage,
             type: notificationType,
-            open: true,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -50,6 +55,7 @@ function AppProvider({ children }) {
         show,
         setShow,
         notifications,
+        setNotifications,
         pushNotifications
     }), [api, loading, show, notifications]);
 

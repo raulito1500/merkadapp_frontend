@@ -13,7 +13,8 @@ function MarketListView() {
 
     const {
         api,
-        setLoading
+        setLoading, 
+        pushNotifications
     } = React.useContext(AppContext);
 
     const [list, setList] = React.useState();
@@ -31,7 +32,7 @@ function MarketListView() {
                 setList(data);
             })
             .catch(error => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     }, []);
@@ -46,7 +47,7 @@ function MarketListView() {
                 setList(list);
             })
             .catch(error => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! We have an error", error, "error");
             })
             .finally(() => setLoading(false));
     }
@@ -68,7 +69,7 @@ function MarketListView() {
                                         <small className="text-body-secondary">{list.totalItems} items</small>
                                     </span>
                                     <span className="d-flex flex-grow-1 flex-column ms-3 text-body-secondary text-end">
-                                        <strong className="text-primary">{ utilities.formatMoney(list.estimated)}</strong>
+                                        <strong className="text-primary">{utilities.formatMoney(list.estimated)}</strong>
                                         <small>Estimated value</small>
                                     </span>
                                 </Col>

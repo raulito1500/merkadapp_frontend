@@ -15,7 +15,8 @@ function MarketListWidget() {
         api,
         setLoading,
         show,
-        setShow
+        setShow,
+        pushNotifications
     } = React.useContext(AppContext);
 
     const handleClose = () => setShow(false);
@@ -35,7 +36,7 @@ function MarketListWidget() {
                 );
             })
             .catch(error => {
-                console.log("se presentó un error")
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     }

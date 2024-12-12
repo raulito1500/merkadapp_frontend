@@ -3,7 +3,7 @@ import { AppContext } from "../../../App/Context/app";
 import { ListGroup, Row } from "react-bootstrap";
 
 function ProductList() {
-    const { api, setLoading } = React.useContext(AppContext);
+    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
     const [listGrouped, setListGrouped] = React.useState([]);
 
     const groupProductByCategory = (products) => {
@@ -24,7 +24,7 @@ function ProductList() {
                 setListGrouped(data);
             })
             .catch((error) => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     }, []);

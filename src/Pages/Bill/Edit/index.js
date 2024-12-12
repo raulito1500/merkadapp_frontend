@@ -11,7 +11,7 @@ import { useUtilities } from "../../../App/Context/utilities";
 function BillEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { api, setLoading } = React.useContext(AppContext);
+    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
 
     const utilities = useUtilities();
 
@@ -53,7 +53,7 @@ function BillEdit() {
                 setData(data);
             })
             .catch(error => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     }, [id]);
@@ -65,7 +65,8 @@ function BillEdit() {
                 setProducts(response.data);
             })
             .catch(error => {
-                console.log("se presentó un error")
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
+
             })
             .finally(() => setLoading(false));
     }, []);
@@ -147,7 +148,9 @@ function BillEdit() {
             delete bill.id;
             api.put(`/bills/${id}`, bill)
                 .then(() => navigate("/bills"))
-                .catch(() => console.log("se presentó un error"))
+                .catch((error) => {
+                    pushNotifications("¡Ups! We have an error", error, "error");
+                })
                 .finally(() => setLoading(false));
         }
     };
@@ -158,7 +161,7 @@ function BillEdit() {
                 <>
                     <h1>Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
-                        <Container fluid className="fixed-bottom p-3 bg-white d-flex justify-content-between">
+                        <Container fluid className="fixed-bottom p-3 pb-4 bg-white d-flex justify-content-between">
                             <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{utilities.formatMoney(data.total)}</h3>
                             <Button
                                 className="align-self-end text-light"

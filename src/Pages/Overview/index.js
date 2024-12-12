@@ -11,7 +11,8 @@ function Overview() {
 
     const {
         api,
-        setLoading
+        setLoading, 
+        pushNotifications
     } = React.useContext(AppContext);
 
     const [data, setData] = React.useState();
@@ -28,7 +29,7 @@ function Overview() {
                 setData(newData);
             })
             .catch(error => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     }, []);

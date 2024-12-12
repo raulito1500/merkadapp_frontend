@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
 import { AppContext } from "../Context/app";
 
 function Notifications() {
-    // TODO: Manejar el estado para cada una de las notificaciones
-    const [show, setShow] = useState(true);
+    const DELAY = 5000;
 
-    const DELAY = 10000;
+    const { notifications, setNotifications } = React.useContext(AppContext);
 
-    const {
-        notifications
-    } = React.useContext(AppContext);
+    const handleClose = (id) => {
+        setNotifications((prevNotifications) => {
+            return prevNotifications.filter((item) => item.id !== id);
+        });
+    };
 
     return (
         <ToastContainer
-            className="pt-5"
-            position="top-end"
+            className="pt-2 position-fixed top-0 start-50 translate-middle-x"
         >
-            {notifications ? notifications.map((item, index) => (
+            {notifications && notifications.map((item) => (
                 <Toast
-                    key={index}
+                    key={item.id}
                     bg={item.type}
-                    onClose={() => setShow(false)}
-                    show={show}
+                    onClose={() => handleClose(item.id)}
+                    show={true}
                     autohide
                     animation={true}
                     delay={DELAY}
@@ -30,13 +30,13 @@ function Notifications() {
                     <Toast.Header>
                         <strong className="me-auto">{item.title}</strong>
                     </Toast.Header>
-                    <Toast.Body>
+                    {item.content && <Toast.Body>
                         {item.content}
-                    </Toast.Body>
+                    </Toast.Body>}
                 </Toast>
-            )) : ""}
-
+            ))}
         </ToastContainer>
-    )
+    );
 }
+
 export { Notifications };

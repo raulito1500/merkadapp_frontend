@@ -38,7 +38,8 @@ function MarketListCreateSuggested({ loadMarketList }) {
                 setData(data);
             })
             .catch(error => {
-                pushNotifications("se presentó un error: " + error, "error");
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
+
             })
             .finally(() => setLoading(false));
     }, []);
@@ -78,7 +79,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
                 setShow(false);
             })
             .catch(error => {
-                pushNotifications("Se presentó un error", error.response.data.error, "error");
+                pushNotifications("¡Ups! We have an error", error, "error");
             })
             .finally(() => {
                 loadMarketList();

@@ -6,7 +6,7 @@ import moment from "moment";
 import { useUtilities } from "../../../App/Context/utilities";
 
 function BillList() {
-    const { api, setLoading } = React.useContext(AppContext);
+    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
     const [merge, setMerge] = React.useState([]);
     const [listGrouped, setListGrouped] = React.useState([]);
 
@@ -31,7 +31,7 @@ function BillList() {
                 setListGrouped(data);
             })
             .catch((error) => {
-                console.log("se presentó un error: " + error);
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
             .finally(() => setLoading(false));
     };
@@ -86,7 +86,7 @@ function BillList() {
             <h2>Bill list</h2>
             <hr />
             {merge.length > 0 ?
-                <Container fluid className="fixed-bottom p-3 bg-white d-flex justify-content-between z-2" >
+                <Container fluid className="fixed-bottom p-3 pb-4 bg-white d-flex justify-content-between z-2" >
                     <Col className="d-flex flex-row align-items-center justify-content-between">
                         <Link className="p-2" to={'create'}>Create</Link>
                         <Button variant="outline-primary" size="sm" onClick={handleMerge}>Merge</Button>
