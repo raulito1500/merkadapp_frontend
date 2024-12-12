@@ -108,7 +108,7 @@ function BillList() {
                                         onChange={(event) => handleCheckMerge(event, date, index)} />
                                     <h3 className="fs-5 mb-2"><i className="bi bi-shop-window text-primary"></i> {item.where}</h3>
                                     <strong className="text-primary text-nowrap d-block">{utilities.formatMoney(item.total)}</strong>
-                                    <span className="text-muted text-wrap d-block">{item.items[0].description}{item.items.length > 1 ? " and " + (item.items.length - 1) + " more" : ""} </span>
+                                    <span className="text-muted text-wrap d-block">{item.items[0] && item.items[0].description}{item.items.length > 1 && " and " + (item.items.length - 1) + " more" } </span>
                                     <Link to={`edit/${item.id}`}><h6 className="btn btn-primary text-white mt-3"> Modify</h6></Link>
                                 </Card.Body>
                             </Card>
