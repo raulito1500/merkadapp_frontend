@@ -180,6 +180,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                             type="text"
                             value={item.discount}
                             onChange={(event) => handleChange("discount", event)}
+                            onBlur={() => handleBlur("discount")}
                         />
                     </Form.Group>
                 </Row>
