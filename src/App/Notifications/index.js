@@ -19,6 +19,7 @@ function Notifications() {
         >
             {notifications && notifications.map((item) => (
                 <Toast
+                    className="border-warning border-0 border-bottom border-2"
                     key={item.id}
                     bg={item.type}
                     onClose={() => handleClose(item.id)}
@@ -27,7 +28,8 @@ function Notifications() {
                     animation={true}
                     delay={DELAY}
                 >
-                    <Toast.Header>
+                    <Toast.Header
+                        className="bg-transparent">
                         <strong className="me-auto">{item.title}</strong>
                     </Toast.Header>
                     {item.content && <Toast.Body>

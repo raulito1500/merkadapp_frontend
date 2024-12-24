@@ -161,7 +161,7 @@ function BillEdit() {
                 <>
                     <h1>Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
-                        <Container fluid className="fixed-bottom p-3 pb-4 bg-white d-flex justify-content-between">
+                        <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg">
                             <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{utilities.formatMoney(data.total)}</h3>
                             <Button
                                 className="align-self-end text-light"
@@ -173,8 +173,8 @@ function BillEdit() {
                         <Card>
                             <Card.Body>
                                 <Row>
-                                    <Form.Group className="col-sm-4">
-                                        <Form.Label>Where</Form.Label>
+                                    <Form.Group className="col-12 col-sm-4 mb-2">
+                                        <Form.Label>Purchase at</Form.Label>
                                         <Form.Control
                                             value={data.where}
                                             onChange={(event) => handleFormChange("where", event.target.value)}
@@ -184,7 +184,7 @@ function BillEdit() {
                                             {errors.where}
                                         </Form.Control.Feedback>
                                     </Form.Group>
-                                    <Form.Group className="col-sm-3">
+                                    <Form.Group className="col-6 col-sm-3">
                                         <Form.Label>Paid by</Form.Label>
                                         <Form.Select
                                             value={data.paid_by}
@@ -195,7 +195,7 @@ function BillEdit() {
                                             <option value="MANUEL">Manuel</option>
                                         </Form.Select>
                                     </Form.Group>
-                                    <Form.Group className="col-sm-2">
+                                    <Form.Group className="col-6 col-sm-2">
                                         <Form.Label>Date</Form.Label>
                                         <Form.Control
                                             type="date"
@@ -210,14 +210,15 @@ function BillEdit() {
                                 </Row>
                             </Card.Body>
                         </Card>
-                        <h2 className="mt-3 d-flex justify-content-between">
+                        <h2 className="mt-3 d-flex justify-content-between text-secondary">
                             Items
                             <Button
                                 className="align-self-end"
-                                variant="outline-primary"
+                                variant="outline-secondary"
                                 size="sm"
                                 onClick={handleAddItem}
                             >
+                                <i className="bi bi-plus"></i>
                                 Add item
                             </Button>
                         </h2>
@@ -239,10 +240,11 @@ function BillEdit() {
                             Taxes
                             <Button
                                 className="align-self-end"
-                                variant="outline-primary"
+                                variant="outline-secondary"
                                 size="sm"
                                 onClick={handleAddTax}
                             >
+                                <i className="bi bi-plus"></i>
                                 Add tax
                             </Button>
                         </h2>
@@ -261,10 +263,11 @@ function BillEdit() {
                             Bags
                             <Button
                                 className="align-self-end"
-                                variant="outline-primary"
+                                variant="outline-secondary"
                                 size="sm"
                                 onClick={handleAddBag}
                             >
+                                <i className="bi bi-plus"></i>
                                 Add bag
                             </Button>
                         </h2>

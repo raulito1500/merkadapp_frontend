@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Dropdown, Form, InputGroup, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
 import moment from "moment";
@@ -59,7 +59,7 @@ function BillList() {
 
     const handleMerge = () => {
         if (merge.length < 2) {
-            console.log("Selecciona al menos dos facturas para fusionar.");
+            pushNotifications("Pick at least two bills to merge", null, "warning");
             return;
         }
 
@@ -69,11 +69,11 @@ function BillList() {
         setLoading(true);
         api.put(`/bills/merge/${idDestination}`, idsOrigen)
             .then((response) => {
-                console.log("Facturas fusionadas con éxito", response.data);
+                pushNotifications("¡Great news! Bills have been merged", null, "success");
                 loadBills();
             })
             .catch((error) => {
-                console.log("Error al fusionar las facturas: " + error);
+                pushNotifications("¡Ups! There was an error merging bills", error, "error");
             })
             .finally(() => {
                 setMerge([]);
@@ -84,6 +84,27 @@ function BillList() {
     return (
         <>
             <h2>Bill list</h2>
+            <Card>
+                <Card.Body>
+                    <InputGroup>
+                        <InputGroup.Text className="border-0 bg-transparent"><i className="bi bi-search"></i></InputGroup.Text>
+                        <Form.Control
+                            className="border-0"
+                            placeholder="Market, Apple" />
+                        <Dropdown>
+                            <Dropdown.Toggle
+                                bsPrefix="text-secondary"
+                                variant="link">
+                                <i className="bi bi-collection"></i>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item eventKey="1">By date</Dropdown.Item>
+                                <Dropdown.Item eventKey="2">By purchase location</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </InputGroup>
+                </Card.Body>
+            </Card>
             <hr />
             {merge.length > 0 ?
                 <Container fluid className="fixed-bottom p-3 pb-4 bg-white d-flex justify-content-between z-2" >
@@ -108,7 +129,7 @@ function BillList() {
                                         onChange={(event) => handleCheckMerge(event, date, index)} />
                                     <h3 className="fs-5 mb-2"><i className="bi bi-shop-window text-primary"></i> {item.where}</h3>
                                     <strong className="text-primary text-nowrap d-block">{utilities.formatMoney(item.total)}</strong>
-                                    <span className="text-muted text-wrap d-block">{item.items[0] && item.items[0].description}{item.items.length > 1 && " and " + (item.items.length - 1) + " more" } </span>
+                                    <span className="text-muted text-wrap d-block">{item.items[0] && item.items[0].description}{item.items.length > 1 && " and " + (item.items.length - 1) + " more"} </span>
                                     <Link to={`edit/${item.id}`}><h6 className="btn btn-primary text-white mt-3"> Modify</h6></Link>
                                 </Card.Body>
                             </Card>
