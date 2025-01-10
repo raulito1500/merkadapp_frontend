@@ -52,10 +52,11 @@ function MarketListWidget() {
                         Recent market list
                         <Button
                             className="align-self-end"
-                            variant="outline-primary"
+                            variant="outline-secondary"
                             size="sm"
                             onClick={handleShow}
                         >
+                            <i className="bi bi-plus"></i> 
                             Add list
                         </Button>
                     </h3>

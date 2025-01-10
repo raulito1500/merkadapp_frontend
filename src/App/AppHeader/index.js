@@ -17,8 +17,8 @@ function AppHeader() {
     } = React.useContext(AppContext);
 
     return (
-        <div className="shadowHeader">
-            <header className="pt-4 pt-sm-1 pb-4 mb-3 bg-primary">
+        <><div className="shadowHeader">
+            <header className="py-2 py-sm-1 mb-4 bg-primary">
                 <Navbar expand="md">
                     <Container>
                         <Navbar.Toggle aria-controls="main-nav-bar" className="text-white border-0 order-md-1" >
@@ -46,13 +46,13 @@ function AppHeader() {
                         }
                         <Navbar.Collapse id="main-nav-bar" className="order-md-3">
                             <Nav className="d-flex flex-grow-0 align-items-center">
-                                <div className="d-flex flex-row justify-content-center mt-3 mb-3 p-2 mb-0 bg-white-25 rounded-3">
+                                <div className="d-flex flex-row justify-content-center mt-3 mb-1 p-2 bg-white-25 rounded-3">
                                     {routes.map((route, index) => {
                                         if (route.private && !auth.isAuthenticated()) return null;
                                         else {
                                             return (
                                                 <NavLink
-                                                key={index}
+                                                    key={index}
                                                     to={route.to}
                                                     className="nav-link px-2 link-light">
                                                     {route.text}</NavLink>
@@ -65,14 +65,15 @@ function AppHeader() {
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
-                {loading ? <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status" className="position-fixed bottom-0 end-50 z-3">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner> : ""}
+
             </header >
         </div>
+            {loading ? <Spinner
+                animation="border"
+                variant="primary"
+                role="status" className="position-fixed bottom-0 end-50 z-3">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner> : ""}</>
     )
 }
 

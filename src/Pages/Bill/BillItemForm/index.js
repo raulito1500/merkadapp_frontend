@@ -55,16 +55,21 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
         <Accordion.Item
             eventKey={index}
             key={index}
-            className={"mb-3 border rounded " + ((!!errors[`items[${index}]`]) ? "border-primary-subtle" : "border-primary-subtle")}
+            className={((!!errors[`items[${index}]`]) ? "border-primary-subtle" : "")}
         >
             <Row xs={12} className="p-3">
-                <Form.Group className="col-5 col-sm-3">
+                <Form.Group className="col-10 col-sm-3 mb-2 mb-sm-0">
                     <Form.Label>Description</Form.Label>
                     <Form.Control
                         value={item.description}
                         onChange={(event) => handleChange("description", event)}
                     />
                 </Form.Group>
+                <CustomToggle
+                    className="col-2 order-sm-last accordionToggle border-0 px-4"
+                    eventKey={index}>
+                    <i className="bi bi-three-dots-vertical"></i>
+                </CustomToggle>
                 <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <NumberPicker
@@ -77,7 +82,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                         {errors[`items[${index}].quantity`]}
                     </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="col-3 col-sm-2">
+                <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Unit value</Form.Label>
                     <Form.Control
                         type="text"
@@ -86,42 +91,20 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                         onBlur={() => handleBlur("unit_value")}
                     />
                 </Form.Group>
-                <div className="col-4 col-sm-3 pt-2 p-sm-0">
+                <div className="col-4 col-sm-3">
                     <label>Total</label>
-                    <h3 className="mb-0 text-primary position-relative">{utilities.formatMoney(item.total)}
-                        {item.discount ? <Badge className="position-absolute top-0 start-100 translate-middle" bg="success">{(item.discount) * 100}%</Badge> : ""}
+                    <h3 className="mb-0 text-primary position-relative py-1 py-sm-1 text-end text-sm-start">{utilities.formatMoney(item.total)}
+                        {item.discount ?
+                            <Badge className="position-absolute top-0 start-100 translate-middle" bg="success">
+                                {utilities.formatPercent((item.discount) * 100)}
+                            </Badge> : ""}
                     </h3>
                 </div>
-                <div className="col-8 col-sm-2 d-flex justify-content-end p-sm-0">
-                    {!confirmRemove ?
-                        <Button
-                            variant="link"
-                            onClick={() => { setConfirmRemove(true) }}
-                            className="mx-3 border-0"
-                        >
-                            <i className="bi bi-trash3"></i>
-                        </Button> :
-                        <Button
-                            variant="link"
-                            className="mx-3 border-0"
-                            onClick={() => handleRemove(index)}
-                            onBlur={() => { setConfirmRemove(false) }}
-                        >
-                            <i className="bi bi-trash3"></i> Tap again to confirm
-                        </Button>
-                    }
-                    <CustomToggle
-                        className="accordionToggle border-0 px-4"
-                        eventKey={index}>
-                        <i className="bi bi-three-dots-vertical"></i>
-                    </CustomToggle>
-                </div>
-
             </Row>
-            <Accordion.Body>
+            <Accordion.Body className="p-3">
                 <Row>
-                    <Form.Group className="col-6 col-sm-3">
-                        <Form.Label>Product</Form.Label>
+                    <Form.Group className="col-6 col-sm-3 mb-2">
+                        <Form.Label>Product <small>(Optional)</small></Form.Label>
                         <Form.Select
                             value={item.product_id}
                             onChange={(event) => handleChange("product_id", event)}
@@ -136,14 +119,14 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                             {errors[`items[${index}].product_id`]}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group className="col-6 col-sm-2">
+                    <Form.Group className="col-6 col-sm-2 mb-2">
                         <Form.Label>Brand</Form.Label>
                         <Form.Control
                             value={item.brand}
                             onChange={(event) => handleChange("brand", event)}
                         />
                     </Form.Group>
-                    <Form.Group className="col-6 col-sm-1 pt-2 p-sm-0">
+                    <Form.Group className="col-6 col-sm-1 mb-2">
                         <Form.Label>Content</Form.Label>
                         <Form.Control
                             type="text"
@@ -152,7 +135,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                             onBlur={() => handleBlur("content")}
                         />
                     </Form.Group>
-                    <Form.Group className="col-6 col-sm-2">
+                    <Form.Group className="col-6 col-sm-2 mb-2">
                         <Form.Label>Unit</Form.Label>
                         <Form.Select
                             value={item.unit}
@@ -164,7 +147,16 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                             <option value="UN">Unidad</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="col-6 col-sm-2 pt-2 p-sm-0">
+                    <Form.Group className="col-6 col-sm-2 mb-2">
+                        <Form.Label>Discount (%)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={item.discount}
+                            onChange={(event) => handleChange("discount", event)}
+                            onBlur={() => handleBlur("discount")}
+                        />
+                    </Form.Group>
+                    <Form.Group className="col-6 col-sm-2 mb-2">
                         <Form.Label>Is additional?</Form.Label>
                         <Form.Control
                             type="checkbox"
@@ -174,15 +166,25 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                         >
                         </Form.Control>
                     </Form.Group>
-                    <Form.Group className="col-6 col-sm-2">
-                        <Form.Label>Discount (%)</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={item.discount}
-                            onChange={(event) => handleChange("discount", event)}
-                            onBlur={() => handleBlur("discount")}
-                        />
-                    </Form.Group>
+                    <div className="col-12 col-sm-12 d-flex justify-content-end p-sm-0">
+                        {!confirmRemove ?
+                            <Button
+                                variant="link"
+                                onClick={() => { setConfirmRemove(true) }}
+                                className="mx-3"
+                            >
+                                <i className="bi bi-trash3"></i>
+                            </Button> :
+                            <Button
+                                variant="link"
+                                className="mx-3"
+                                onClick={() => handleRemove(index)}
+                                onBlur={() => { setConfirmRemove(false) }}
+                            >
+                                 Tap again to confirm <i className="bi bi-trash3 ms-3"></i>
+                            </Button>
+                        }
+                    </div>
                 </Row>
             </Accordion.Body>
         </Accordion.Item>

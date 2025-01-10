@@ -1,8 +1,35 @@
-$blue: #ff5500;
+$orange: #ff5500;
 $green: #004921;
+$cyan: #17a2b8;
+$yellow: #ffcc00;
+// $yellow: #ffc107;
+// $red: #dc3545;
+// $red: #ff3d00;
+$red: #eb2f00;
+$gray-100: #f8f9fa;
+$gray-800: #343a40;
+$theme-colors: (
+    primary: $orange,
+    secondary: $green,
+    success: $green,
+    info: $cyan,
+    warning: $yellow,
+    danger: $red,
+    light: $gray-100,
+    dark: $gray-800
+);
 
-$standard-gradient: 208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%;
-$btn-gradient: 208deg, #e7592e 0%, #eb2f00 3%, #ff5500 70%, #ff5500 90%;
+// From adobe
+// $red: #DC1A00
+// blue: #00516D
+// yellow: #FAAB0C
+// 1 verde olive: #3F7C63
+// verde brillante #00512F
+//n azul claro #5B9FB6
+
+// $standard-gradient: 208deg, #e7592e 0%, #eb2f00 30%, #ff5500 70%, #ff5500 90%;
+$standard-gradient: 201deg, #e7592e 0%, #eb2f00 30%, #eb2f00 50%, #ff5500 70%, #ff5500 90%;
+$btn-gradient: 201deg, #e7592e 0%, #eb2f00 3%, #ff5500 70%, #ff5500 90%;
 // $body-bg: #fefaf7;
 
 $spacer: 0.9rem;
@@ -40,10 +67,23 @@ $input-btn-padding-y: 0.4rem;
 $input-btn-padding-x: 0.65rem;
 $input-btn-line-height: 1.15;
 
+$form-check-input-checked-bg-color: $orange;
+$form-check-input-focus-box-shadow: 0 0 0 0.25rem rgba(255, 85, 0, 0.25);
+
+$link-color: $orange;
+
 .btn-primary {
     --bs-btn-color: #fff;
     background: -webkit-linear-gradient($btn-gradient);
     background: linear-gradient($btn-gradient);
+}
+
+.btn.btn-outline-primary {
+    &:hover, &:active, &:focus {
+        color: #fff;
+        background: -webkit-linear-gradient($btn-gradient);
+        background: linear-gradient($btn-gradient);
+    }
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";
@@ -65,7 +105,21 @@ body {
 }
 
 header {
-    border-radius: 0px 0px 50% 50%;
+    /* border-radius: 0px 0px 50% 50%; */
+    background: -webkit-linear-gradient($standard-gradient);
+    background: linear-gradient($standard-gradient);
+
+    /* --mask:
+          radial-gradient(34.24px at 50% calc(100% - 46.5px),#000 99%,#0000 101%) calc(50% - 60px) 0/120px 100%,
+          radial-gradient(34.24px at 50% calc(100% + 16.5px),#0000 99%,#000 101%) 50% calc(100% - 30px)/120px 100% repeat-x; */
+    clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%, 0% 100%, 0% 100%, 50% 100%, 50% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%);
+    /* -webkit-mask: var(--mask);
+                mask: var(--mask); */
+
+}
+
+.form-signin {
+    border-radius: 0px 0px 20% 20%;
     background: -webkit-linear-gradient($standard-gradient);
     background: linear-gradient($standard-gradient);
 }
@@ -80,8 +134,11 @@ header {
     font-family: "Pacifico", cursive;
 }
 
-header .main-logo img {
-    width: calc(28px + 0.9vw);
+header,
+.form-signin {
+    .main-logo img {
+        width: calc(28px + 0.9vw);
+    }
 }
 
 .navbar-brand span.full {
@@ -97,15 +154,22 @@ header .main-logo img {
     box-shadow: none;
 }
 
+.welcome {
+    h1 {
+        font-weight: bold;
+        color: $orange
+    }
+}
+
 .progress-circle {
-    width: 3.4rem;
-    height: 3.4rem;
+    width: 3rem;
+    height: 3rem;
     background: conic-gradient(rgba(var(--bs-primary-rgb), 1) calc(var(--progress)* 1%), var(--bs-secondary-bg) 0);
 }
 
 .progress-content {
-    width: 3.0rem;
-    height: 3.0rem;
+    width: 2.6rem;
+    height: 2.6rem;
 }
 
 .accordionToggle {

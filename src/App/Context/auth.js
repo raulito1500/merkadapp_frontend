@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Login } from "../../Pages/Login";
 
 const AuthContext = React.createContext();
 
@@ -42,7 +43,7 @@ function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={auth}>
-            {children}
+            {true ? children : <Login />}
         </AuthContext.Provider>
     );
 }

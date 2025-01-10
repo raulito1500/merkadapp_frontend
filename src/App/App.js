@@ -11,7 +11,6 @@ import { BillList } from '../Pages/Bill/List';
 import { BillCreate } from '../Pages/Bill/Create';
 import { NotFound } from '../Pages/NotFound';
 import { Logout } from '../Pages/Logout';
-import { Login } from '../Pages/Login';
 import { BillEdit } from '../Pages/Bill/Edit';
 import { UtilitiesProvider } from './Context/utilities';
 import { ProductList } from '../Pages/Product/List';
@@ -34,7 +33,6 @@ function App() {
                 <Route path='/bills/create' element={<BillCreate />} />
                 <Route path='/bills/edit/:id' element={<BillEdit />} />
                 <Route path='/products' element={<ProductList />} />
-                <Route path='/login' element={<Login />} />
                 <Route path='/logout' element={<Logout />} />
                 <Route path='*' element={<NotFound />} />
               </Routes>
