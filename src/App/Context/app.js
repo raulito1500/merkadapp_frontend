@@ -14,20 +14,6 @@ function AppProvider({ children }) {
     });
 
     const pushNotifications = (title, error, type = "") => {
-        let notificationType;
-        switch (type) {
-            case "":
-                notificationType = "light";
-                break;
-            case "error":
-                notificationType = "danger-subtle";
-                break;
-            case "warning":
-                notificationType = "warning-subtle";
-                break;
-            default:
-                break;
-        }
         let errorMessage;
         if (error)
             errorMessage = error.response ? error.response.data.message : error.message;
@@ -38,8 +24,8 @@ function AppProvider({ children }) {
             id: Date.now(),
             title: title,
             content: errorMessage,
-            type: notificationType,
-            timestamp: new Date().toLocaleTimeString()
+            type: type,
+            timestamp: Date.now()
         };
 
         setNotifications(prevNotifications => [

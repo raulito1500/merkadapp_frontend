@@ -1,6 +1,6 @@
 import React from "react";
 import { AppContext } from "../../../App/Context/app";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button, Form, Row, Card, Accordion, Container } from "react-bootstrap";
 import moment from "moment";
 import BillItemForm from "../BillItemForm";
@@ -66,7 +66,6 @@ function BillEdit() {
             })
             .catch(error => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");
-
             })
             .finally(() => setLoading(false));
     }, []);
@@ -159,7 +158,11 @@ function BillEdit() {
         <>
             {data ? (
                 <>
-                    <h1>Edit bill</h1>
+                    <h1>
+                        <Link
+                            to="/bills">
+                            <i className="bi bi-arrow-left fs-5"></i>
+                        </Link> Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
                         <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg">
                             <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{utilities.formatMoney(data.total)}</h3>
@@ -173,7 +176,7 @@ function BillEdit() {
                         <Card>
                             <Card.Body>
                                 <Row>
-                                    <Form.Group className="col-12 col-sm-4 mb-2">
+                                    <Form.Group className="col-12 col-sm-6 mb-2">
                                         <Form.Label>Purchase at</Form.Label>
                                         <Form.Control
                                             value={data.where}
@@ -195,7 +198,7 @@ function BillEdit() {
                                             <option value="MANUEL">Manuel</option>
                                         </Form.Select>
                                     </Form.Group>
-                                    <Form.Group className="col-6 col-sm-2">
+                                    <Form.Group className="col-6 col-sm-3">
                                         <Form.Label>Date</Form.Label>
                                         <Form.Control
                                             type="date"
@@ -210,7 +213,7 @@ function BillEdit() {
                                 </Row>
                             </Card.Body>
                         </Card>
-                        <h2 className="mt-3 d-flex justify-content-between text-secondary">
+                        <h2 className="mt-3 d-flex justify-content-between">
                             Items
                             <Button
                                 className="align-self-end"

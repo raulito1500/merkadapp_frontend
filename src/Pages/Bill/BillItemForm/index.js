@@ -55,7 +55,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
         <Accordion.Item
             eventKey={index}
             key={index}
-            className={"mb-3 border rounded " + ((!!errors[`items[${index}]`]) ? "border-primary-subtle" : "border-primary-subtle")}
+            className={((!!errors[`items[${index}]`]) ? "border-primary-subtle" : "")}
         >
             <Row xs={12} className="p-3">
                 <Form.Group className="col-10 col-sm-3 mb-2 mb-sm-0">
@@ -166,22 +166,22 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                         >
                         </Form.Control>
                     </Form.Group>
-                    <div className="col-8 col-sm-2 d-flex justify-content-end p-sm-0">
+                    <div className="col-12 col-sm-12 d-flex justify-content-end p-sm-0">
                         {!confirmRemove ?
                             <Button
                                 variant="link"
                                 onClick={() => { setConfirmRemove(true) }}
-                                className="mx-3 border-0"
+                                className="mx-3"
                             >
                                 <i className="bi bi-trash3"></i>
                             </Button> :
                             <Button
                                 variant="link"
-                                className="mx-3 border-0"
+                                className="mx-3"
                                 onClick={() => handleRemove(index)}
                                 onBlur={() => { setConfirmRemove(false) }}
                             >
-                                <i className="bi bi-trash3"></i> Tap again to confirm
+                                 Tap again to confirm <i className="bi bi-trash3 ms-3"></i>
                             </Button>
                         }
                     </div>
