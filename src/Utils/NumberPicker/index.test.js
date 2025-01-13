@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { NumberPicker } from ".";
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe("NumberPicker Component", () => {
   test("renders correctly with initial value", () => {

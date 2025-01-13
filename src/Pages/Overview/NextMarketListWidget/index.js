@@ -2,11 +2,12 @@ import React from "react";
 import { Card, Col } from "react-bootstrap";
 import { useUtilities } from "../../../App/Context/utilities";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 function NextMarketListWidget({ nextMarketList }) {
     const { formatMoney } = useUtilities();
 
-    if (!nextMarketList) {
+    if (!nextMarketList || nextMarketList.date < Date.now()) {
         return (
             <Card className="shadow-sm h-100">
                 <Card.Body>
@@ -37,7 +38,10 @@ function NextMarketListWidget({ nextMarketList }) {
                         <strong className="text-primary">{formatMoney(nextMarketList.estimatedValue)}</strong>
                         <small>Estimated value</small>
                     </span>
-                    <i className="bi bi-arrow-right-circle text-primary ms-3 fs-2"></i>
+                    <Link
+                        to={`/market-list/${nextMarketList.id}`}>
+                        <i className="bi bi-arrow-right-circle text-primary ms-3 fs-2"></i>
+                    </Link>
                 </Col>
             </Card.Body>
         </Card>

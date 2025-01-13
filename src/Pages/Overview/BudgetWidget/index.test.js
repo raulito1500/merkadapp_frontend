@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import BudgetWidget from './BudgetWidget';
+import '@testing-library/jest-dom';
+import { BudgetWidget } from '.';
 import { useUtilities } from '../../../App/Context/utilities';
 
 jest.mock('../../../App/Context/utilities'); // Mockear useUtilities
