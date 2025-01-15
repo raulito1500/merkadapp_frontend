@@ -2,19 +2,12 @@ import React, { useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { useUtilities } from "../../../App/Context/utilities";
 import moment from "moment";
-import PropTypes from "prop-types";
 
-const calculateVariation = (current, previous) => {
-    if (current.total === 0 && previous.total === 0) {
-        return 0;
-    }
-    if (previous.total === 0) {
-        return 100;
-    }
-    if (current.total === 0) {
-        return -100;
-    }
-    return ((current.total - previous.total) / previous.total) * 100;
+const calculateVariation = ({ total: currentTotal }, { total: previousTotal = 0 }) => {
+    if (currentTotal === 0 && previousTotal === 0) return 0;
+    if (previousTotal === 0) return 100;
+    if (currentTotal === 0) return -100;
+    return ((currentTotal - previousTotal) / previousTotal) * 100;
 }
 
 function BudgetWidget({ data }) {
@@ -40,8 +33,8 @@ function BudgetWidget({ data }) {
             </Card>
         )
     }
-    const variationClass = currentBudget.variation < 0 ? "text-success" : "text-danger";
-    const variationIcon = currentBudget.variation < 0 ? "bi-arrow-down-right" : "bi-arrow-up-right";
+    const variationClass = currentBudget.variation <= 0 ? "text-success" : "text-danger";
+    const variationIcon = currentBudget.variation <= 0 ? "bi-arrow-down-right" : "bi-arrow-up-right";
     const formattedMonth = moment(currentBudget.date).format('MMMM');
 
     return (
@@ -67,13 +60,5 @@ function BudgetWidget({ data }) {
         </Card>
     )
 }
-
-BudgetWidget.propTypes = {
-    currentBudget: PropTypes.shape({
-        total: PropTypes.number.isRequired,
-        variation: PropTypes.number.isRequired,
-        date: PropTypes.any.isRequired,
-    })
-};
 
 export { BudgetWidget }

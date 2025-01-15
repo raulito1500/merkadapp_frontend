@@ -14,7 +14,7 @@ function BillList() {
 
     const groupBillsByDate = (bills) => {
         return bills.reduce((grouped, bill) => {
-            const date = moment(bill.date).format('MMM Do, YYYY'); // Formatea la fecha
+            const date = moment(bill.date).format('MMM Do, YYYY');
             if (!grouped[date]) {
                 grouped[date] = [];
             }
@@ -87,7 +87,8 @@ function BillList() {
                 <Link
                     to="/">
                     <i className="bi bi-arrow-left fs-5"></i>
-                </Link> Bill list</h1>
+                </Link> Bill list
+            </h1>
             <Card className="my-3">
                 <Card.Body className="py-2">
                     <InputGroup>

@@ -2,42 +2,80 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BudgetWidget } from '.';
-import { useUtilities } from '../../../App/Context/utilities';
 
-jest.mock('../../../App/Context/utilities'); // Mockear useUtilities
+test('renders no data available when data is empty', () => {
+    const { getByText } = render(<BudgetWidget data={[]} />);
+    expect(getByText('No data available')).toBeInTheDocument();
+});
 
-describe('BudgetWidget Component', () => {
-    const mockFormatMoney = jest.fn((value) => `$${value}`);
-    const mockFormatPercent = jest.fn((value) => `${value}%`);
+test('renders budget information when data is provided', () => {
+    const data = [
+        { total: 1000, date: '2023-09-01' },
+        { total: 1500, date: '2023-10-01' }
+    ];
+    const { getByText } = render(<BudgetWidget data={data} />);
 
-    beforeEach(() => {
-        useUtilities.mockReturnValue({
-            formatMoney: mockFormatMoney,
-            formatPercent: mockFormatPercent
-        });
-    });
+    expect(getByText('$1500')).toBeInTheDocument();
+    expect(getByText('50%')).toBeInTheDocument();
+});
 
-    it('renders without crashing', () => {
-        const { getByText } = render(<BudgetWidget currentBudget={null} />);
-        expect(getByText('No data available')).toBeInTheDocument();
-    });
+test('renders budget information with one month provided', () => {
+    const data = [
+        { total: 1500, date: '2023-10-01' }
+    ];
+    const { getByText } = render(<BudgetWidget data={data} />);
 
-    it('displays the budget when provided', () => {
-        const currentBudget = { total: 1000, variation: 5, month: 6 };
-        const { getByText } = render(<BudgetWidget currentBudget={currentBudget} />);
+    expect(getByText('100%')).toBeInTheDocument();
+});
 
-        expect(getByText('Budget')).toBeInTheDocument();
-        expect(mockFormatMoney).toHaveBeenCalledWith(1000);
-        expect(mockFormatPercent).toHaveBeenCalledWith(5);
-        expect(getByText('$1000')).toBeInTheDocument();
-        expect(getByText('5%')).toBeInTheDocument();
-    });
+test('renders budget information with non-current data provided', () => {
+    const data = [
+        { total: 1500, date: '2023-09-01' },
+        { total: 0, date: '2023-10-01' }
+    ];
+    const { getByText } = render(<BudgetWidget data={data} />);
 
-    it('applies the correct class based on variation', () => {
-        const { getByText, rerender } = render(<BudgetWidget currentBudget={{ total: 1000, variation: -10, month: 6 }} />);
-        expect(getByText('-10%').closest('span')).toHaveClass('text-success');
+    expect(getByText('-100%')).toBeInTheDocument();
+});
 
-        rerender(<BudgetWidget currentBudget={{ total: 1000, variation: 10, month: 6 }} />);
-        expect(getByText('10%').closest('span')).toHaveClass('text-danger');
-    });
+test('renders budget information when data is zero', () => {
+    const data = [
+        { total: 0, date: '2023-09-01' },
+        { total: 0, date: '2023-10-01' }
+    ];
+    const { getByText } = render(<BudgetWidget data={data} />);
+
+    expect(getByText('$0')).toBeInTheDocument();
+    expect(getByText('0%')).toBeInTheDocument();
+    expect(getByText('October')).toBeInTheDocument();
+});
+
+test('applies correct CSS class based on positive variation', () => {
+    const data = [
+        { total: 1000, date: '2023-09-01' },
+        { total: 500, date: '2023-10-01' }
+    ];
+    const { container } = render(<BudgetWidget data={data} />);
+    const variationElement = container.querySelector('.text-success');
+    expect(variationElement).toBeInTheDocument();
+});
+
+test('applies correct CSS class based on negative variation', () => {
+    const data = [
+        { total: 500, date: '2023-09-01' },
+        { total: 1500, date: '2023-10-01' }
+    ];
+    const { container } = render(<BudgetWidget data={data} />);
+    const variationElement = container.querySelector('.text-danger');
+    expect(variationElement).toBeInTheDocument();
+});
+
+test('applies correct CSS class based on non-variation', () => {
+    const data = [
+        { total: 0, date: '2023-09-01' },
+        { total: 0, date: '2023-10-01' }
+    ];
+    const { container } = render(<BudgetWidget data={data} />);
+    const variationElement = container.querySelector('.text-success');
+    expect(variationElement).toBeInTheDocument();
 });
