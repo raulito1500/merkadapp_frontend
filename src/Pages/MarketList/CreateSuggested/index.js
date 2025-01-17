@@ -2,15 +2,10 @@ import React from "react";
 import { AppContext } from "../../../App/Context/app";
 import { Button, Form, ListGroup } from "react-bootstrap";
 import moment from "moment";
-import { NumberPicker } from "../../../Utils/NumberPicker";
+import { NumberPicker } from "../../../utils/NumberPicker";
 
 function MarketListCreateSuggested({ loadMarketList }) {
-    const {
-        api,
-        setLoading,
-        setShow,
-        pushNotifications
-    } = React.useContext(AppContext);
+    const { api, setLoading, setShow, pushNotifications } = React.useContext(AppContext);
 
     const [data, setData] = React.useState([]);
     const [date, setDate] = React.useState("");
@@ -23,23 +18,24 @@ function MarketListCreateSuggested({ loadMarketList }) {
             today.getFullYear(),
             today.getMonth(),
             today.getDate() + daysToSaturday,
-            0, 0, 0, 0
+            0,
+            0,
+            0,
+            0
         );
-        return moment(nextSaturday).format('YYYY-MM-DD');
-    }
+        return moment(nextSaturday).format("YYYY-MM-DD");
+    };
 
     React.useEffect(() => {
         setLoading(true);
-        api
-            .get(`/market-list/suggested`)
+        api.get(`/market-list/suggested`)
             .then((response) => {
                 const data = response.data;
                 setDate(nextMarketDay());
                 setData(data);
             })
-            .catch(error => {
+            .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");
-
             })
             .finally(() => setLoading(false));
     }, []);
@@ -51,51 +47,50 @@ function MarketListCreateSuggested({ loadMarketList }) {
             quantity: 0,
             checked: true,
             category: "UNCATEGORIZED",
-        }
+        };
         const updateItems = [newItem, ...data.items];
         setData({ ...data, items: updateItems });
-    }
+    };
 
     const handleItemChange = (index, field, event) => {
         const value = event.target.value;
         const newData = [...data.items];
-        if (field !== "checked")
-            newData[index][field] = value;
-        else
-            newData[index][field] = event.target.checked;
+        if (field !== "checked") newData[index][field] = value;
+        else newData[index][field] = event.target.checked;
         setData({ ...data, items: newData });
-
-    }
+    };
 
     const saveMarketList = () => {
         const list = {
             date: new Date(date + "T00:00:00").toISOString(),
-            items: data.items.filter((d) => d.checked === true).map(item => ({ ...item, checked: false }))
+            items: data.items.filter((d) => d.checked === true).map((item) => ({ ...item, checked: false })),
         };
         setLoading(true);
-        api
-            .post(`/market-list`, list)
+        api.post(`/market-list`, list)
             .then((response) => {
                 setShow(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 pushNotifications("¡Ups! We have an error", error, "error");
             })
             .finally(() => {
                 loadMarketList();
                 setLoading(false);
             });
-    }
+    };
     return (
         <>
-            {data.items ?
+            {data.items ? (
                 <div className="d-flex flex-column">
                     <p>
                         <strong>Fecha:</strong>
                         <Form.Control
                             value={date}
-                            onChange={(event) => { setDate(event.target.value) }}
-                            type="date" />
+                            onChange={(event) => {
+                                setDate(event.target.value);
+                            }}
+                            type="date"
+                        />
                     </p>
                     <h2 className="mt-3 d-flex justify-content-between">
                         Items
@@ -113,22 +108,25 @@ function MarketListCreateSuggested({ loadMarketList }) {
                             <ListGroup.Item
                                 as="label"
                                 key={index + item.product_id}
-                                className="list-group-item d-flex align-items-center">
+                                className="list-group-item d-flex align-items-center"
+                            >
                                 <NumberPicker
                                     className="w-25 me-2"
                                     initialValue={item.quantity}
                                     onChange={(event) => handleItemChange(index, "quantity", event)}
                                 />
                                 <span className="pt-1 form-checked-content flex-grow-1 pe-2">
-                                    {item.product_id !== "" ?
+                                    {item.product_id !== "" ? (
                                         item.product_name
-                                        :
+                                    ) : (
                                         <Form.Control
                                             className=""
-                                            onChange={(event) => handleItemChange(index, "product_name", event)}
+                                            onChange={(event) =>
+                                                handleItemChange(index, "product_name", event)
+                                            }
                                             value={item.product_name}
                                         />
-                                    }
+                                    )}
                                 </span>
                                 <input
                                     className="form-check-input fs-4"
@@ -139,13 +137,16 @@ function MarketListCreateSuggested({ loadMarketList }) {
                             </ListGroup.Item>
                         ))}
                     </ListGroup>
-                    <Button
-                        className="ms-auto mt-2 mb-4 text-light"
-                        onClick={() => saveMarketList()}
-                    > Create list
+                    <Button className="ms-auto mt-2 mb-4 text-light" onClick={() => saveMarketList()}>
+                        {" "}
+                        Create list
                     </Button>
-                </div > : ""}</>
-    )
+                </div>
+            ) : (
+                ""
+            )}
+        </>
+    );
 }
 
-export { MarketListCreateSuggested }
+export { MarketListCreateSuggested };

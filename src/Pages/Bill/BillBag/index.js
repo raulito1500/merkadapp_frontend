@@ -1,11 +1,9 @@
 import React from "react";
 import { Accordion, Form, Row } from "react-bootstrap";
-import { useUtilities } from "../../../App/Context/utilities";
-import { NumberPicker } from "../../../Utils/NumberPicker";
+import { NumberPicker } from "../../../utils/NumberPicker";
+import { formatMoney } from "../../../utils/formatting";
 
 function BillBag({ bag, index, errors, onChange, onBlur }) {
-    const utilities = useUtilities();
-
     const handleChange = (field, event) => {
         const inputValue = event.target.value;
         if (["quantity", "value"].includes(field)) {
@@ -18,25 +16,23 @@ function BillBag({ bag, index, errors, onChange, onBlur }) {
             bag[field] = inputValue;
         }
         onChange(bag);
-    }
+    };
 
     const handleBlur = (field) => {
         if (["quantity", "value"].includes(field)) {
             let parsedValue = parseFloat(bag[field]);
-            if (isNaN(parsedValue) || parsedValue < 0)
-                parsedValue = 0;
+            if (isNaN(parsedValue) || parsedValue < 0) parsedValue = 0;
             bag[field] = parsedValue;
             calculateTotalBag();
         }
-        onBlur(bag)
-    }
+        onBlur(bag);
+    };
 
     const calculateTotalBag = () => {
         let total = 0;
-        if (!(isNaN(bag.quantity) || isNaN(bag.value)))
-            total = bag.quantity * bag.value;
+        if (!(isNaN(bag.quantity) || isNaN(bag.value))) total = bag.quantity * bag.value;
         bag.total = total;
-    }
+    };
 
     return (
         <Accordion.Item>
@@ -60,10 +56,10 @@ function BillBag({ bag, index, errors, onChange, onBlur }) {
                 </Form.Group>
                 <div className="col-4 col-sm-3 pt-2 p-sm-0">
                     <label>Total</label>
-                    <h3 className="mb-0 text-primary position-relative">{utilities.formatMoney(bag.total)}
-                    </h3>
+                    <h3 className="mb-0 text-primary position-relative">{formatMoney(bag.total)}</h3>
                 </div>
             </Row>
-        </Accordion.Item>)
+        </Accordion.Item>
+    );
 }
-export { BillBag }
+export { BillBag };

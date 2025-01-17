@@ -1,24 +1,22 @@
 import React, { useEffect } from "react";
 import { Card } from "react-bootstrap";
-import { useUtilities } from "../../../App/Context/utilities";
 import moment from "moment";
+import { formatMoney, formatPercent } from "../../../utils/formatting";
 
 const calculateVariation = ({ total: currentTotal }, { total: previousTotal = 0 }) => {
     if (currentTotal === 0 && previousTotal === 0) return 0;
     if (previousTotal === 0) return 100;
     if (currentTotal === 0) return -100;
     return ((currentTotal - previousTotal) / previousTotal) * 100;
-}
+};
 
 function BudgetWidget({ data }) {
-
-    const { formatMoney, formatPercent } = useUtilities();
     const [currentBudget, setCurrentBudget] = React.useState();
 
     useEffect(() => {
         let last = data.length - 1;
         if (last >= 0) {
-            data[last].variation = calculateVariation(data[last], (last > 0) ? data[last - 1] : { total: 0 });
+            data[last].variation = calculateVariation(data[last], last > 0 ? data[last - 1] : { total: 0 });
             setCurrentBudget(data[last]);
         }
     }, [data]);
@@ -31,11 +29,11 @@ function BudgetWidget({ data }) {
                     <h6 className="fw-normal text-muted mt-0 mb-3">No data available</h6>
                 </Card.Body>
             </Card>
-        )
+        );
     }
     const variationClass = currentBudget.variation <= 0 ? "text-success" : "text-danger";
     const variationIcon = currentBudget.variation <= 0 ? "bi-arrow-down-right" : "bi-arrow-up-right";
-    const formattedMonth = moment(currentBudget.date).format('MMMM');
+    const formattedMonth = moment(currentBudget.date).format("MMMM");
 
     return (
         <Card className="shadow-sm h-100">
@@ -58,7 +56,7 @@ function BudgetWidget({ data }) {
                 <span className="text-muted text-nowrap">{formattedMonth}</span>
             </Card.Body>
         </Card>
-    )
+    );
 }
 
-export { BudgetWidget }
+export { BudgetWidget };

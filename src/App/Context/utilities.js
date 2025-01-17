@@ -3,38 +3,13 @@ import React, { useMemo } from "react";
 const UtilitiesContext = React.createContext();
 
 function UtilitiesProvider({ children }) {
+    const utilities = useMemo(() => ({}), []);
 
-    const formatMoney = (number) => {
-        return "$" + new Intl.NumberFormat('es-ES', {
-            style: 'decimal',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(number);
-    };
-
-    const formatPercent = (number) => {
-        return new Intl.NumberFormat('es-ES', {
-            style: 'decimal',
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 1
-        }).format(number) + "%";
-    }
-
-    const utilities = useMemo(() => ({
-        formatMoney,
-        formatPercent
-    }), []);
-
-    return (
-        <UtilitiesContext.Provider value={utilities}>
-            {children}
-        </UtilitiesContext.Provider>
-    );
+    return <UtilitiesContext.Provider value={utilities}>{children}</UtilitiesContext.Provider>;
 }
 
 function useUtilities() {
     return React.useContext(UtilitiesContext);
 }
 
-export { UtilitiesProvider, useUtilities }
-
+export { UtilitiesProvider, useUtilities };
