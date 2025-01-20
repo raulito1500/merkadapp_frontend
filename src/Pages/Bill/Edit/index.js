@@ -6,14 +6,12 @@ import moment from "moment";
 import BillItemForm from "../BillItemForm";
 import { BillBag } from "../BillBag";
 import { BillTax } from "../BillTax";
-import { useUtilities } from "../../../App/Context/utilities";
+import { formatMoney } from "../../../utils/formatting";
 
 function BillEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { api, setLoading, pushNotifications } = React.useContext(AppContext);
-
-    const utilities = useUtilities();
 
     const [data, setData] = React.useState();
     const [products, setProducts] = React.useState();
@@ -165,7 +163,7 @@ function BillEdit() {
                         </Link> Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
                         <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg">
-                            <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{utilities.formatMoney(data.total)}</h3>
+                            <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{formatMoney(data.total)}</h3>
                             <Button
                                 className="align-self-end text-light"
                                 type="submit"
