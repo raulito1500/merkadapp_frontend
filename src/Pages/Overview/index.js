@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MarketListWidget } from "../MarketList/Widget";
-import { Card, Col, Row } from "react-bootstrap";
-import { useUtilities } from "../../App/Context/utilities";
+import { Col, Row } from "react-bootstrap";
 import { AppContext } from "../../App/Context/app";
 import { BillChartWidget } from "./BillChartWidget";
 import { BudgetWidget } from "./BudgetWidget";
@@ -9,8 +8,6 @@ import { WelcomeWidget } from "./WelcomeWidget";
 import { NextMarketListWidget } from "./NextMarketListWidget";
 
 function Overview() {
-
-    const utilities = useUtilities();
 
     const {
         api,

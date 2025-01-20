@@ -48,7 +48,7 @@ function Notifications() {
         >
             {notifications && notifications.map((item) => (
                 <Toast
-                    className={"border-0 border-start border-5 bg-white" + " border-" + notificationType(item.type)}
+                    className={`border-0 border-start border-5 bg-white border-${notificationType(item.type)}`}
                     key={item.id}
                     onClose={() => handleClose(item.id)}
                     show={true}
