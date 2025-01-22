@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import { BillHistory } from "../BillHistory";
 import { CATEGORIES } from "../../../Constants/constants";
+import { ProductRecommendations } from "../ProductRecommendations";
 
 function ProductList() {
     const { api, setLoading, pushNotifications, show, setShow } = React.useContext(AppContext);
@@ -49,6 +50,7 @@ function ProductList() {
             })
             .finally(() => setLoading(false));
     }, []);
+
     return (
         <>
             <h1>
@@ -57,69 +59,7 @@ function ProductList() {
                 </Link>{" "}
                 Product list
             </h1>
-            <Card>
-                <Card.Title>
-                    <i className="bi bi-stars"></i> Recommendations
-                </Card.Title>
-                <Card.Body>
-                    <InputGroup>
-                        <InputGroup.Text className="position-relative">
-                            Electrolit
-                            <Badge className="position-absolute top-0 start-0 translate-middle" bg="primary">
-                                4
-                            </Badge>
-                        </InputGroup.Text>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-check-lg"></i>
-                        </Link>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-x-lg"></i>
-                        </Link>
-                    </InputGroup>
-                    <InputGroup>
-                        <InputGroup.Text className="position-relative">
-                            Kiwi
-                            <Badge className="position-absolute top-0 start-0 translate-middle" bg="primary">
-                                4
-                            </Badge>
-                        </InputGroup.Text>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-check-lg"></i>
-                        </Link>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-x-lg"></i>
-                        </Link>
-                    </InputGroup>
-                    <InputGroup>
-                        <InputGroup.Text className="position-relative">
-                            Tocino ahumado
-                            <Badge className="position-absolute top-0 start-0 translate-middle" bg="primary">
-                                3
-                            </Badge>
-                        </InputGroup.Text>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-check-lg"></i>
-                        </Link>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-x-lg"></i>
-                        </Link>
-                    </InputGroup>
-                    <InputGroup>
-                        <InputGroup.Text className="position-relative">
-                            Jugo de naranja
-                            <Badge className="position-absolute top-0 start-0 translate-middle" bg="primary">
-                                3
-                            </Badge>
-                        </InputGroup.Text>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-check-lg"></i>
-                        </Link>
-                        <Link className="btn btn-outline-primary">
-                            <i className="bi bi-x-lg"></i>
-                        </Link>
-                    </InputGroup>
-                </Card.Body>
-            </Card>
+            <ProductRecommendations />
             <Card className="my-3">
                 <Card.Body className="py-2">
                     <InputGroup>
@@ -143,11 +83,11 @@ function ProductList() {
                 </Card.Body>
             </Card>
             {Object.keys(listGrouped).map((category, index) => (
-                <Col key={category} className="px-2 position-relative">
+                <Col key={category} className="position-relative">
                     <Badge className="list-group-title ms-3" bg="secondary">
                         {CATEGORIES[category] ? CATEGORIES[category].label : category}
                     </Badge>
-                    <ListGroup className="px-2">
+                    <ListGroup>
                         {listGrouped[category].map((item, index) => (
                             <ListGroup.Item
                                 as="label"
