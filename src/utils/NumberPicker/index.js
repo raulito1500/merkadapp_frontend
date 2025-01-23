@@ -36,7 +36,7 @@ function NumberPicker({ className, initialValue = 0, onChange = () => {}, onBlur
         onBlur(numericValue);
     }
     return (
-        <InputGroup className={className + " number-picker border rounded px-1 py-0 text-nowrap" + (isInvalid ? " border-danger" : "")}>
+        <InputGroup className={className + " z-1 number-picker border rounded px-1 py-0 text-nowrap" + (isInvalid ? " border-danger" : "")}>
             <Button
                 variant="link"
                 aria-label="Decrease"

@@ -162,7 +162,7 @@ function BillEdit() {
                             <i className="bi bi-arrow-left fs-5"></i>
                         </Link> Edit bill</h1>
                     <Form onSubmit={handleSubmit}>
-                        <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg">
+                        <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg z-2">
                             <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{formatMoney(data.total)}</h3>
                             <Button
                                 className="align-self-end text-light"
