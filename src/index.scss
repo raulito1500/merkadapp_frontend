@@ -241,3 +241,8 @@ header,
     z-index: 10;
     position: relative;
 }
+
+.dropdown-menu {
+    --bs-dropdown-link-active-color: var(--bs-green);
+    --bs-dropdown-link-active-bg: transparent;
+}

@@ -32,7 +32,17 @@ function MarketListView() {
     const [list, setList] = React.useState();
     const [listGrouped, setListGrouped] = React.useState();
 
-    const [screenSettings, setScreenSettings] = React.useState({ sort: "ASC", group: "STATUS" });
+    const DEFAULT_SCREEN_SETTINGS = {
+        search: "",
+        sort: "ASC",
+        group: "STATUS",
+    };
+    const GROUP_OPTIONS = [
+        { key: "STATUS", label: "By status" },
+        { key: "CATEGORY", label: "By category" },
+        { key: "PLACE", label: "By suggested place" },
+    ];
+    const [screenSettings, setScreenSettings] = React.useState(DEFAULT_SCREEN_SETTINGS);
 
     const groupByChecked = (data) => {
         const grouped = {
@@ -85,6 +95,24 @@ function MarketListView() {
         });
     };
 
+    const searchByProductName = (items, search) => {
+        if (search === "") {
+            return items;
+        }
+        search = search
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+        return items.filter((item) =>
+            item.product_name
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .includes(search)
+        );
+    };
+
     React.useEffect(() => {
         setLoading(true);
         api.get(`/market-list/${id}`)
@@ -115,6 +143,7 @@ function MarketListView() {
         }
         for (let index in dataGr) {
             dataGr[index] = sortByProductName(dataGr[index], screenSettings.sort);
+            dataGr[index] = searchByProductName(dataGr[index], screenSettings.search);
         }
         setListGrouped(dataGr);
     }, [list, screenSettings]);
@@ -136,24 +165,10 @@ function MarketListView() {
             .finally(() => setLoading(false));
     };
 
-    const handleGroupChange = (eventKey) => {
-        let groupingParam = "STATUS";
-        switch (eventKey) {
-            case "1":
-                groupingParam = "STATUS";
-                break;
-            case "2":
-                groupingParam = "CATEGORY";
-                break;
-            case "3":
-                groupingParam = "PLACE";
-                break;
-            default:
-                break;
-        }
+    const handleGroupChange = (option) => {
         setScreenSettings((prevSettings) => ({
             ...prevSettings,
-            group: groupingParam,
+            group: option,
         }));
     };
 
@@ -161,6 +176,13 @@ function MarketListView() {
         setScreenSettings((prevSettings) => ({
             ...prevSettings,
             sort: prevSettings.sort === "ASC" ? "DESC" : "ASC",
+        }));
+    };
+
+    const handleSearchChange = (event) => {
+        setScreenSettings((prevSettings) => ({
+            ...prevSettings,
+            search: event.target.value,
         }));
     };
 
@@ -179,7 +201,7 @@ function MarketListView() {
             {list && (
                 <Container>
                     <Row>
-                        <Col md={12}>
+                        <Col md={12} className="px-0 px-md-2">
                             <Card className="my-3">
                                 <Card.Body className="py-2">
                                     <InputGroup>
@@ -189,10 +211,12 @@ function MarketListView() {
                                         <Form.Control
                                             className="border-0"
                                             placeholder="Apple, Lettuce, Rice"
+                                            value={screenSettings.search}
+                                            onChange={handleSearchChange}
                                         />
                                         <Button
                                             className={
-                                                screenSettings.sort === "ASC"
+                                                screenSettings.sort === DEFAULT_SCREEN_SETTINGS.sort
                                                     ? "text-black"
                                                     : "text-secondary"
                                             }
@@ -206,7 +230,7 @@ function MarketListView() {
                                                         : "bi bi-sort-down-alt"
                                                 }
                                             ></i>
-                                            {screenSettings.sort !== "ASC" && (
+                                            {screenSettings.sort !== DEFAULT_SCREEN_SETTINGS.sort && (
                                                 <Badge
                                                     className="position-absolute top-50 translate-middle-x rounded-circle p-1"
                                                     bg="secondary"
@@ -220,21 +244,15 @@ function MarketListView() {
                                         <Dropdown>
                                             <Dropdown.Toggle
                                                 bsPrefix={
-                                                    screenSettings.group === "STATUS"
+                                                    screenSettings.group === DEFAULT_SCREEN_SETTINGS.group
                                                         ? "text-black"
                                                         : "text-secondary"
                                                 }
                                                 variant="link"
                                                 className="position-relative"
                                             >
-                                                <i
-                                                    className={
-                                                        screenSettings.group === "STATUS"
-                                                            ? "bi bi-collection"
-                                                            : "bi bi-collection"
-                                                    }
-                                                ></i>
-                                                {screenSettings.group !== "STATUS" && (
+                                                <i className="bi bi-collection"></i>
+                                                {screenSettings.group !== DEFAULT_SCREEN_SETTINGS.group && (
                                                     <Badge
                                                         className="position-absolute top-50 translate-middle-x rounded-circle p-1"
                                                         bg="secondary"
@@ -246,22 +264,22 @@ function MarketListView() {
                                                 )}
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                <Dropdown.Item onClick={() => handleGroupChange("1")}>
-                                                    By status
-                                                </Dropdown.Item>
-                                                <Dropdown.Item onClick={() => handleGroupChange("2")}>
-                                                    By category
-                                                </Dropdown.Item>
-                                                <Dropdown.Item onClick={() => handleGroupChange("3")}>
-                                                    By suggested place
-                                                </Dropdown.Item>
+                                                {GROUP_OPTIONS.map((option, index) => (
+                                                    <Dropdown.Item
+                                                        key={index}
+                                                        onClick={() => handleGroupChange(option.key)}
+                                                        className={option.key === screenSettings.group ? "active" : ""}
+                                                    >
+                                                        {option.label}
+                                                    </Dropdown.Item>
+                                                ))}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </InputGroup>
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3} className="mb-3">
+                        <Col md={5} lg={4} className="px-0 px-md-2 mb-3">
                             <Card>
                                 <Card.Body>
                                     <Col
@@ -293,14 +311,14 @@ function MarketListView() {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={9} className="position-relative">
+                        <Col md={7} lg={8} className="px-0 px-md-2 position-relative">
                             {listGrouped &&
                                 Object.keys(listGrouped).map((title, index) => (
                                     <>
                                         <Badge className="list-group-title ms-3" bg="secondary">
                                             {CATEGORIES[title] ? CATEGORIES[title].label : title}
                                         </Badge>
-                                        {listGrouped[title].length > 0 && (
+                                        {listGrouped[title] && (
                                             <ListGroup key={index} className="mb-4">
                                                 {listGrouped[title].map((item, index) => (
                                                     <ListGroup.Item
