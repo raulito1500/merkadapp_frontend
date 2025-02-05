@@ -1,23 +1,16 @@
 import React from "react";
-import {
-    Badge,
-    Button,
-    Card,
-    Col,
-    Container,
-    Dropdown,
-    Form,
-    InputGroup,
-    ListGroup,
-    Row,
-} from "react-bootstrap";
+import { Badge, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { AppContext } from "../../../App/Context/app";
 import moment from "moment";
+import { AppContext } from "../../../App/Context/app";
 import { CATEGORIES } from "../../../Constants/constants";
+import DataViewOptions from "../../../components/DataViewOptions";
+import { searchBy } from "../../../utils/searching";
+import { groupBy, groupByChecked, groupBySuggestedPlace } from "../../../utils/grouping";
+import { sortBy } from "../../../utils/sorting";
 import { formatMoney } from "../../../utils/formatting";
 
-const calculateSummaryInfo = (data) => {
+export const calculateSummaryInfo = (data) => {
     data.completedItems = data.items.filter((item) => !!item.checked).length;
     data.totalItems = data.items.length;
     data.completedStatus = (data.completedItems / data.totalItems) * 100;
@@ -42,76 +35,6 @@ function MarketListView() {
         { key: "CATEGORY", label: "By category" },
         { key: "PLACE", label: "By suggested place" },
     ];
-    const [screenSettings, setScreenSettings] = React.useState(DEFAULT_SCREEN_SETTINGS);
-
-    const groupByChecked = (data) => {
-        const grouped = {
-            UNCHECKED: [],
-            CHECKED: [],
-        };
-        data.items.forEach((item) => {
-            const checkedStatus = item.checked ? "CHECKED" : "UNCHECKED";
-            grouped[checkedStatus].push(item);
-        });
-        return grouped;
-    };
-
-    const groupBySuggestedPlace = (data) => {
-        const grouped = {
-            UNSUGGESTED: [],
-        };
-        return data.items.reduce((grouped, item) => {
-            const where = item.where === "" ? "UNSUGGESTED" : item.where;
-            if (!grouped[where]) {
-                grouped[where] = [];
-            }
-            grouped[where].push(item);
-            return grouped;
-        }, {});
-    };
-
-    const groupByCategory = (data) => {
-        return data.items.reduce((grouped, item) => {
-            if (!grouped[item.category]) {
-                grouped[item.category] = [];
-            }
-            grouped[item.category].push(item);
-            return grouped;
-        }, {});
-    };
-
-    const sortByProductName = (items, order = "ASC") => {
-        return [...items].sort((a, b) => {
-            const nameA = a.product_name.toLowerCase();
-            const nameB = b.product_name.toLowerCase();
-
-            if (nameA < nameB) {
-                return order === "ASC" ? -1 : 1;
-            }
-            if (nameA > nameB) {
-                return order === "ASC" ? 1 : -1;
-            }
-            return 0;
-        });
-    };
-
-    const searchByProductName = (items, search) => {
-        if (search === "") {
-            return items;
-        }
-        search = search
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-        return items.filter((item) =>
-            item.product_name
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .includes(search)
-        );
-    };
 
     React.useEffect(() => {
         setLoading(true);
@@ -127,26 +50,30 @@ function MarketListView() {
             .finally(() => setLoading(false));
     }, [id]);
 
-    React.useEffect(() => {
+    const handleDataViewOptionsChange = (screenSettings) => {
         if (!list) {
             return;
         }
         let dataGr = {};
         if (screenSettings.group === "STATUS") {
-            dataGr = groupByChecked(list);
+            dataGr = groupByChecked(list.items);
         } else if (screenSettings.group === "CATEGORY") {
-            dataGr = groupByCategory(list);
+            dataGr = groupBy("category", list.items);
             setListGrouped(dataGr);
         } else if (screenSettings.group === "PLACE") {
-            dataGr = groupBySuggestedPlace(list);
+            dataGr = groupBySuggestedPlace(list.items);
             setListGrouped(dataGr);
         }
         for (let index in dataGr) {
-            dataGr[index] = sortByProductName(dataGr[index], screenSettings.sort);
-            dataGr[index] = searchByProductName(dataGr[index], screenSettings.search);
+            dataGr[index] = sortBy("product_name", dataGr[index], screenSettings.sort);
+            dataGr[index] = searchBy("product_name", dataGr[index], screenSettings.search);
         }
         setListGrouped(dataGr);
-    }, [list, screenSettings]);
+    };
+
+    React.useEffect(() => {
+        handleDataViewOptionsChange(DEFAULT_SCREEN_SETTINGS);
+    }, [list]);
 
     const checkItem = (event, idItem) => {
         const index = list.items.findIndex((item) => item.id === idItem);
@@ -165,27 +92,6 @@ function MarketListView() {
             .finally(() => setLoading(false));
     };
 
-    const handleGroupChange = (option) => {
-        setScreenSettings((prevSettings) => ({
-            ...prevSettings,
-            group: option,
-        }));
-    };
-
-    const handleSortChange = () => {
-        setScreenSettings((prevSettings) => ({
-            ...prevSettings,
-            sort: prevSettings.sort === "ASC" ? "DESC" : "ASC",
-        }));
-    };
-
-    const handleSearchChange = (event) => {
-        setScreenSettings((prevSettings) => ({
-            ...prevSettings,
-            search: event.target.value,
-        }));
-    };
-
     if (!list) {
         return <p>Loading...</p>;
     }
@@ -195,89 +101,18 @@ function MarketListView() {
             <h1>
                 <Link to="/">
                     <i className="bi bi-arrow-left fs-5"></i>
-                </Link>{" "}
+                </Link>
                 Market list
             </h1>
             {list && (
                 <Container>
                     <Row>
                         <Col md={12} className="px-0 px-md-2">
-                            <Card className="my-3">
-                                <Card.Body className="py-2">
-                                    <InputGroup>
-                                        <InputGroup.Text className="border-0 bg-transparent">
-                                            <i className="bi bi-search"></i>
-                                        </InputGroup.Text>
-                                        <Form.Control
-                                            className="border-0"
-                                            placeholder="Apple, Lettuce, Rice"
-                                            value={screenSettings.search}
-                                            onChange={handleSearchChange}
-                                        />
-                                        <Button
-                                            className={
-                                                screenSettings.sort === DEFAULT_SCREEN_SETTINGS.sort
-                                                    ? "text-black"
-                                                    : "text-secondary"
-                                            }
-                                            variant="link"
-                                            onClick={handleSortChange}
-                                        >
-                                            <i
-                                                className={
-                                                    screenSettings.sort === "ASC"
-                                                        ? "bi bi-sort-up"
-                                                        : "bi bi-sort-down-alt"
-                                                }
-                                            ></i>
-                                            {screenSettings.sort !== DEFAULT_SCREEN_SETTINGS.sort && (
-                                                <Badge
-                                                    className="position-absolute top-50 translate-middle-x rounded-circle p-1"
-                                                    bg="secondary"
-                                                >
-                                                    <span className="visually-hidden">
-                                                        sorting settings applied
-                                                    </span>
-                                                </Badge>
-                                            )}
-                                        </Button>
-                                        <Dropdown>
-                                            <Dropdown.Toggle
-                                                bsPrefix={
-                                                    screenSettings.group === DEFAULT_SCREEN_SETTINGS.group
-                                                        ? "text-black"
-                                                        : "text-secondary"
-                                                }
-                                                variant="link"
-                                                className="position-relative"
-                                            >
-                                                <i className="bi bi-collection"></i>
-                                                {screenSettings.group !== DEFAULT_SCREEN_SETTINGS.group && (
-                                                    <Badge
-                                                        className="position-absolute top-50 translate-middle-x rounded-circle p-1"
-                                                        bg="secondary"
-                                                    >
-                                                        <span className="visually-hidden">
-                                                            grouping by settings applied
-                                                        </span>
-                                                    </Badge>
-                                                )}
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                {GROUP_OPTIONS.map((option, index) => (
-                                                    <Dropdown.Item
-                                                        key={index}
-                                                        onClick={() => handleGroupChange(option.key)}
-                                                        className={option.key === screenSettings.group ? "active" : ""}
-                                                    >
-                                                        {option.label}
-                                                    </Dropdown.Item>
-                                                ))}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </InputGroup>
-                                </Card.Body>
-                            </Card>
+                            <DataViewOptions
+                                onDataViewOptionsChange={handleDataViewOptionsChange}
+                                GROUP_OPTIONS={GROUP_OPTIONS}
+                                DEFAULT_SCREEN_SETTINGS={DEFAULT_SCREEN_SETTINGS}
+                            />
                         </Col>
                         <Col md={5} lg={4} className="px-0 px-md-2 mb-3">
                             <Card>
@@ -292,7 +127,7 @@ function MarketListView() {
                                             style={{ "--progress": list.completedStatus }}
                                         >
                                             <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
-                                                <i className="bi bi-basket fs-2"></i>
+                                                <i className="bi bi-basket fs-2 p-0"></i>
                                             </div>
                                         </div>
                                         <span className="d-flex flex-grow-1 flex-column ms-3">
@@ -315,51 +150,57 @@ function MarketListView() {
                             {listGrouped &&
                                 Object.keys(listGrouped).map((title, index) => (
                                     <>
-                                        <Badge className="list-group-title ms-3" bg="secondary">
-                                            {CATEGORIES[title] ? CATEGORIES[title].label : title}
-                                        </Badge>
-                                        {listGrouped[title] && (
-                                            <ListGroup key={index} className="mb-4">
-                                                {listGrouped[title].map((item, index) => (
-                                                    <ListGroup.Item
-                                                        as="span"
-                                                        key={item.id}
-                                                        className="d-flex gap-3 align-items-center py-3"
-                                                    >
-                                                        <div className="pt-1 form-checked-content flex-grow-1">
-                                                            {item.quantity}
-                                                            <strong className="ms-1">
-                                                                {item.product_name}
-                                                            </strong>
-                                                            {item.where !== "" && item.value !== 0 ? (
-                                                                <span className="d-block pt-1 flex-fill justify-content-start justify-content-sm-start">
-                                                                    <small className="me-3 text-body-secondary">
-                                                                        <i className="text-primary me-0 bi bi-shop-window"></i>{" "}
-                                                                        {item.where}
-                                                                    </small>
-                                                                    <small className="me-3 px-3 border-start border-end text-body-secondary">
-                                                                        <i className="text-primary me-0 bi bi-wallet2"></i>{" "}
-                                                                        {formatMoney(item.value)}
-                                                                    </small>
-                                                                    <small className="me-3 text-body-secondary">
-                                                                        <i className="text-primary bi bi-calendar-event"></i>{" "}
-                                                                        {moment(item.date).format("MMM D")}
-                                                                    </small>
-                                                                </span>
-                                                            ) : (
-                                                                ""
-                                                            )}
-                                                        </div>
-                                                        <input
-                                                            className="form-check-input fs-4"
-                                                            type="checkbox"
-                                                            disabled={item.checked}
-                                                            checked={item.checked}
-                                                            onChange={(event) => checkItem(event, item.id)}
-                                                        />
-                                                    </ListGroup.Item>
-                                                ))}
-                                            </ListGroup>
+                                        {listGrouped[title] && listGrouped[title].length > 0 && (
+                                            <>
+                                                <Badge className="list-group-title ms-3" bg="secondary">
+                                                    {CATEGORIES[title] ? CATEGORIES[title].label : title}
+                                                </Badge>
+                                                <ListGroup key={index} className="mb-4">
+                                                    {listGrouped[title].map((item, index) => (
+                                                        <ListGroup.Item
+                                                            as="span"
+                                                            key={item.id}
+                                                            className="d-flex gap-3 align-items-center py-3"
+                                                        >
+                                                            <div className="pt-1 form-checked-content flex-grow-1">
+                                                                {item.quantity}
+                                                                <strong className="ms-1">
+                                                                    {item.product_name}
+                                                                </strong>
+                                                                {item.where !== "" && item.value !== 0 ? (
+                                                                    <span className="d-block pt-1 flex-fill justify-content-start justify-content-sm-start">
+                                                                        <small className="me-3 text-body-secondary">
+                                                                            <i className="text-primary me-0 bi bi-shop-window"></i>
+                                                                            {item.where}
+                                                                        </small>
+                                                                        <small className="me-3 px-3 border-start border-end text-body-secondary">
+                                                                            <i className="text-primary me-0 bi bi-wallet2"></i>
+                                                                            {formatMoney(item.value)}
+                                                                        </small>
+                                                                        <small className="me-3 text-body-secondary">
+                                                                            <i className="text-primary bi bi-calendar-event"></i>
+                                                                            {moment(item.date).format(
+                                                                                "MMM D"
+                                                                            )}
+                                                                        </small>
+                                                                    </span>
+                                                                ) : (
+                                                                    ""
+                                                                )}
+                                                            </div>
+                                                            <input
+                                                                className="form-check-input fs-4"
+                                                                type="checkbox"
+                                                                disabled={item.checked}
+                                                                checked={item.checked}
+                                                                onChange={(event) =>
+                                                                    checkItem(event, item.id)
+                                                                }
+                                                            />
+                                                        </ListGroup.Item>
+                                                    ))}
+                                                </ListGroup>
+                                            </>
                                         )}
                                     </>
                                 ))}
@@ -371,4 +212,4 @@ function MarketListView() {
     );
 }
 
-export { MarketListView };
+export default MarketListView;

@@ -1,26 +1,29 @@
 import React from "react";
 import { AppContext } from "../../../App/Context/app";
-import {
-    Badge,
-    Button,
-    ButtonGroup,
-    Card,
-    Col,
-    Dropdown,
-    Form,
-    InputGroup,
-    ListGroup,
-    Offcanvas,
-} from "react-bootstrap";
+import { Badge, ButtonGroup, Col, ListGroup, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { BillHistory } from "../BillHistory";
 import { CATEGORIES } from "../../../Constants/constants";
 import { ProductRecommendations } from "../ProductRecommendations";
+import DataViewOptions from "../../../components/DataViewOptions";
+import { formatRepeat } from "../../../utils/formatting";
+import { searchBy } from "../../../utils/searching";
+import { sortBy } from "../../../utils/sorting";
+import { groupBy } from "../../../utils/grouping";
 
 function ProductList() {
     const { api, setLoading, pushNotifications, show, setShow } = React.useContext(AppContext);
+
+    const [list, setList] = React.useState();
     const [listGrouped, setListGrouped] = React.useState([]);
+
     const [productId, setProductId] = React.useState();
+
+    const DEFAULT_SCREEN_SETTINGS = {
+        search: "",
+        sort: "ASC",
+        group: "CATEGORY",
+    };
 
     const handleClose = () => setShow(false);
     const handleShow = (id) => {
@@ -28,22 +31,11 @@ function ProductList() {
         setShow(true);
     };
 
-    const groupProductByCategory = (products) => {
-        return products.reduce((grouped, product) => {
-            if (!grouped[product.category]) {
-                grouped[product.category] = [];
-            }
-            grouped[product.category].push(product);
-            return grouped;
-        }, {});
-    };
-
     React.useEffect(() => {
         setLoading(true);
         api.get(`/products/true`)
             .then((response) => {
-                const data = groupProductByCategory(response.data);
-                setListGrouped(data);
+                setList(response.data);
             })
             .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");
@@ -51,75 +43,109 @@ function ProductList() {
             .finally(() => setLoading(false));
     }, []);
 
+    React.useEffect(() => {
+        handleDataViewOptionsChange(DEFAULT_SCREEN_SETTINGS);
+    }, [list]);
+
+    const handleDataViewOptionsChange = (screenSettings) => {
+        if (!list) {
+            return;
+        }
+        let dataGr = {};
+        if (screenSettings.group === "CATEGORY") {
+            dataGr = groupBy("category", list);
+            setListGrouped(dataGr);
+        } else if (screenSettings.group === "FREQUENCY") {
+            dataGr = groupBy("repeat", list);
+            setListGrouped(dataGr);
+        }
+        for (let index in dataGr) {
+            dataGr[index] = sortBy("name", dataGr[index], screenSettings.sort);
+            dataGr[index] = searchBy("name", dataGr[index], screenSettings.search);
+        }
+        setListGrouped(dataGr);
+    };
+
     return (
         <>
             <h1>
                 <Link to="/">
                     <i className="bi bi-arrow-left fs-5"></i>
-                </Link>{" "}
+                </Link>
                 Product list
             </h1>
             <ProductRecommendations />
-            <Card className="my-3">
-                <Card.Body className="py-2">
-                    <InputGroup>
-                        <InputGroup.Text className="border-0 bg-transparent">
-                            <i className="bi bi-search"></i>
-                        </InputGroup.Text>
-                        <Form.Control className="border-0" placeholder="Apple, Oil, Soap" />
-                        <Button className="text-secondary" variant="link">
-                            <i className="bi bi-sort-down"></i>
-                        </Button>
-                        <Dropdown>
-                            <Dropdown.Toggle bsPrefix="text-secondary" variant="link">
-                                <i className="bi bi-collection"></i>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item eventKey="1">By date</Dropdown.Item>
-                                <Dropdown.Item eventKey="2">By purchase location</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </InputGroup>
-                </Card.Body>
-            </Card>
-            {Object.keys(listGrouped).map((category, index) => (
-                <Col key={category} className="position-relative">
-                    <Badge className="list-group-title ms-3" bg="secondary">
-                        {CATEGORIES[category] ? CATEGORIES[category].label : category}
-                    </Badge>
-                    <ListGroup>
-                        {listGrouped[category].map((item, index) => (
-                            <ListGroup.Item
-                                as="label"
-                                key={item.id}
-                                className="d-flex flex-column gap-3 align-items-start"
-                            >
-                                <h5>{item.name}</h5>
-                                <span>Each {item.repeat}</span>
-                                <span>
-                                    Last purchase at <strong>Euro supermercado</strong> for{" "}
-                                    <strong className="text-primary">$41.990</strong>, one month ago{" "}
-                                </span>
-                                <span>
-                                    <i className="bi bi-graph-up-arrow text-primary"></i> Upward trend of{" "}
-                                    <strong className="text-primary">15%</strong>
-                                </span>
-                                <ButtonGroup>
-                                    <Link
-                                        className="btn btn-outline-primary"
-                                        onClick={() => handleShow(item.id)}
-                                    >
-                                        <i className="bi bi-list"></i>
-                                    </Link>
-                                    <Link className="btn btn-outline-primary">
-                                        <i className="bi bi-pencil-square"></i>
-                                    </Link>
-                                </ButtonGroup>
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
-                </Col>
-            ))}
+            <DataViewOptions
+                onDataViewOptionsChange={handleDataViewOptionsChange}
+                GROUP_OPTIONS={[
+                    { key: "FREQUENCY", label: "By frequency" },
+                    { key: "CATEGORY", label: "By category" },
+                ]}
+                DEFAULT_SCREEN_SETTINGS={DEFAULT_SCREEN_SETTINGS}
+            />
+            {listGrouped &&
+                Object.keys(listGrouped).map((category, index) => (
+                    <>
+                        {listGrouped[category] && listGrouped[category].length > 0 && (
+                            <Col key={category} className="position-relative">
+                                <Badge className="list-group-title ms-3" bg="secondary">
+                                    {CATEGORIES[category]
+                                        ? CATEGORIES[category].label
+                                        : formatRepeat(category)}
+                                </Badge>
+                                <ListGroup>
+                                    {listGrouped[category].map((item, index) => (
+                                        <ListGroup.Item
+                                            as="label"
+                                            key={item.id}
+                                            className="d-flex gap-3 align-items-center px-3 py-4"
+                                        >
+                                            <img
+                                                width="50"
+                                                height="50"
+                                                className=""
+                                                alt="orange"
+                                                src="image_fruit.png"
+                                            />
+                                            <div className="d-flex gap-3 justify-content-between w-100">
+                                                <div>
+                                                    <h5>{item.name}</h5>
+                                                    <div>
+                                                        Last purchase at <strong>Euro supermercado</strong>{" "}
+                                                        for
+                                                        <strong className="text-primary"> $41.990</strong>,
+                                                        one month ago
+                                                    </div>
+                                                    <div>
+                                                        <i className="bi bi-graph-up-arrow text-primary"></i>
+                                                        Upward trend of{" "}
+                                                        <strong className="text-primary">15%</strong>
+                                                    </div>
+                                                </div>
+                                                <div className="d-flex flex-column justify-content-between">
+                                                    <small className="text-muted text-end">
+                                                        {formatRepeat(item.repeat)}
+                                                    </small>
+                                                    <ButtonGroup>
+                                                        <Link
+                                                            className="btn btn-outline-primary"
+                                                            onClick={() => handleShow(item.id)}
+                                                        >
+                                                            <i className="bi bi-list pe-0"></i>
+                                                        </Link>
+                                                        <Link className="btn btn-outline-primary">
+                                                            <i className="bi bi-pencil-square pe-0"></i>
+                                                        </Link>
+                                                    </ButtonGroup>
+                                                </div>
+                                            </div>
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
+                            </Col>
+                        )}
+                    </>
+                ))}
             <Offcanvas show={show} onHide={handleClose} placement="bottom">
                 <Offcanvas.Body>
                     <BillHistory productId={productId} />

@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, Col, Container, Dropdown, Form, InputGroup, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../../App/Context/app";
 import moment from "moment";
+import { AppContext } from "../../../App/Context/app";
 import { formatMoney } from "../../../utils/formatting";
 
 function BillList() {
@@ -84,7 +84,7 @@ function BillList() {
             <h1>
                 <Link to="/">
                     <i className="bi bi-arrow-left fs-5"></i>
-                </Link>{" "}
+                </Link>
                 Bill list
             </h1>
             <Card className="my-3">
