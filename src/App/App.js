@@ -14,6 +14,7 @@ import { Logout } from "../Pages/Logout";
 import { BillEdit } from "../Pages/Bill/Edit";
 import { ProductList } from "../Pages/Product/List";
 import { Notifications } from "./Notifications";
+import CreateMarketList from "../features/market-list/create";
 
 function App() {
     return (
@@ -26,12 +27,17 @@ function App() {
                     <Container className="pb-5 mb-5">
                         <Routes>
                             <Route path="/" element={<Overview />} />
-                            <Route path="/market-list/:id" element={<MarketListView />} />
-                            <Route path="/bills" element={<BillList />} />
-                            <Route path="/bills/create" element={<BillCreate />} />
-                            <Route path="/bills/edit/:id" element={<BillEdit />} />
-                            <Route path="/products" element={<ProductList />} />
-                            <Route path="/logout" element={<Logout />} />
+                            <Route path="market-list">
+                                <Route path=":id" element={<MarketListView />} />
+                                <Route path="create" element={<CreateMarketList />} />
+                            </Route>
+                            <Route path="bills">
+                                <Route index element={<BillList />} />
+                                <Route path="create" element={<BillCreate />} />
+                                <Route path="edit/:id" element={<BillEdit />} />
+                            </Route>
+                            <Route path="products" element={<ProductList />} />
+                            <Route path="logout" element={<Logout />} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>
                     </Container>

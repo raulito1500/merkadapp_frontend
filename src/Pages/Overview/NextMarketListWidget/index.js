@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import { formatMoney } from "../../../utils/formatting";
 
 function NextMarketListWidget({ nextMarketList }) {
-    if (!nextMarketList || nextMarketList.date < Date.now()) {
+    if (!nextMarketList || nextMarketList.date < Date.now() + 43200000) {
         return (
             <Card className="shadow-sm h-100">
                 <Card.Body>
-                    <h6 className="fw-normal text-muted mt-0 mb-3">Next market list</h6>
-                    <p className="text-muted">You don't have any market list. ¡Create one!</p>
+                    <h6 className="fw-normal text-muted mt-0 mb-3">Upcoming market list</h6>
+                    <p className="text-muted">You don't have any market list. <Link to={"/market-list/create"}>¡Create one!</Link></p>
                 </Card.Body>
             </Card>
         );
