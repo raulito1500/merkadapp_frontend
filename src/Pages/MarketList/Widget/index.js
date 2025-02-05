@@ -68,7 +68,7 @@ function MarketListWidget() {
                                         style={{ "--progress": list.completedStatus }}
                                     >
                                         <div className="progress-content rounded-circle d-inline-flex align-items-center justify-content-center bg-white">
-                                            <i className="bi bi-basket fs-2"></i>
+                                            <i className="bi bi-basket fs-3 p-0"></i>
                                         </div>
                                     </div>
                                     <span className="d-flex flex-grow-1 flex-column ms-3">

@@ -41,7 +41,7 @@ function BudgetWidget({ data }) {
                 <h6 className="fw-normal text-muted mt-0 mb-3">Budget</h6>
                 <div className="d-flex">
                     <div className="feature-icon card-highlight">
-                        <i className="bi bi-graph-up-arrow"></i>
+                        <i className="bi bi-graph-up-arrow p-0"></i>
                     </div>
                     <div className="ps-2">
                         <h3 className="mt-1 mb-0">{formatMoney(currentBudget.total)}</h3>
