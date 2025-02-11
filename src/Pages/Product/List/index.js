@@ -10,6 +10,7 @@ import { formatRepeat } from "../../../utils/formatting";
 import { searchBy } from "../../../utils/searching";
 import { sortBy } from "../../../utils/sorting";
 import { groupBy } from "../../../utils/grouping";
+import PageTitle from "../../../components/PageTitle";
 
 function ProductList() {
     const { api, setLoading, pushNotifications, show, setShow } = React.useContext(AppContext);
@@ -68,12 +69,7 @@ function ProductList() {
 
     return (
         <>
-            <h1>
-                <Link to="/">
-                    <i className="bi bi-arrow-left fs-5"></i>
-                </Link>
-                Product list
-            </h1>
+            <PageTitle>Products list</PageTitle>
             <ProductRecommendations />
             <DataViewOptions
                 onDataViewOptionsChange={handleDataViewOptionsChange}

@@ -2,9 +2,6 @@ import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { AppProvider } from "./Context/app";
 import { AuthProvider } from "./Context/auth";
-import { Container } from "react-bootstrap";
-import { AppHeader } from "./AppHeader";
-import { AppNavBar } from "./AppNavbar";
 import { Overview } from "../Pages/Overview";
 import MarketListView from "../Pages/MarketList/View";
 import { BillList } from "../Pages/Bill/List";
@@ -15,32 +12,38 @@ import { BillEdit } from "../Pages/Bill/Edit";
 import { ProductList } from "../Pages/Product/List";
 import { Notifications } from "./Notifications";
 import CreateMarketList from "../features/market-list/create";
+import MainLayout from "./layouts/MainLayout";
+import BlankLayout from "./layouts/BlankLayout";
+import Loader from "./Loader";
 
 function App() {
     return (
         <HashRouter>
             <AuthProvider>
                 <AppProvider>
-                    <AppHeader />
-                    <AppNavBar />
+                    {/* <AppHeader />
+                     */}
+                    <Loader />
                     <Notifications />
-                    <Container className="pb-5 mb-5">
-                        <Routes>
-                            <Route path="/" element={<Overview />} />
+                    <Routes>
+                        <Route element={<MainLayout />}>
+                            <Route index element={<Overview />} />
+                            <Route path="products" element={<ProductList />} />
+                            <Route path="bills" element={<BillList />} />
+                        </Route>
+                        <Route element={<BlankLayout />}>
                             <Route path="market-list">
                                 <Route path=":id" element={<MarketListView />} />
                                 <Route path="create" element={<CreateMarketList />} />
                             </Route>
                             <Route path="bills">
-                                <Route index element={<BillList />} />
                                 <Route path="create" element={<BillCreate />} />
                                 <Route path="edit/:id" element={<BillEdit />} />
                             </Route>
-                            <Route path="products" element={<ProductList />} />
-                            <Route path="logout" element={<Logout />} />
-                            <Route path="*" element={<NotFound />} />
-                        </Routes>
-                    </Container>
+                        </Route>
+                        <Route path="logout" element={<Logout />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
                 </AppProvider>
             </AuthProvider>
         </HashRouter>

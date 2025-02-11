@@ -1,18 +1,10 @@
 import React from "react";
-import { AppContext } from "../Context/app";
 import { NavLink } from "react-router-dom";
-import { Container, Dropdown, Nav, Navbar, Spinner } from "react-bootstrap";
+import { Container, Dropdown, Nav, Navbar } from "react-bootstrap";
 import { useAuth } from "../Context/auth";
-
-const routes = [
-    { to: "/", text: "Overview", private: false },
-    { to: "/bills", text: "Bills", private: false },
-    { to: "/products", text: "Products", private: false },
-];
 
 function AppHeader() {
     const auth = useAuth();
-    const { loading } = React.useContext(AppContext);
 
     return (
         <>
@@ -62,40 +54,13 @@ function AppHeader() {
                             )}
                             <Navbar.Collapse id="main-nav-bar" className="order-md-3">
                                 <Nav className="d-flex flex-grow-0 align-items-center">
-                                    <div className="d-flex flex-row justify-content-center mt-3 mb-1 p-2 bg-white-25 rounded-3">
-                                        {routes.map((route, index) => {
-                                            if (route.private && !auth.isAuthenticated()) return null;
-                                            else {
-                                                return (
-                                                    <NavLink
-                                                        key={index}
-                                                        to={route.to}
-                                                        className="nav-link px-2 link-light"
-                                                    >
-                                                        {route.text}
-                                                    </NavLink>
-                                                );
-                                            }
-                                        })}
-                                    </div>
+                                    <div className="d-flex flex-row justify-content-center mt-3 mb-1 p-2 bg-white-25 rounded-3"></div>
                                 </Nav>
                             </Navbar.Collapse>
                         </Container>
                     </Navbar>
                 </header>
             </div>
-            {loading ? (
-                <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    className="position-fixed bottom-0 end-50 z-3 mb-3"
-                >
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            ) : (
-                ""
-            )}
         </>
     );
 }

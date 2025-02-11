@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { AppContext } from "../../../App/Context/app";
 import { formatMoney } from "../../../utils/formatting";
+import PageTitle from "../../../components/PageTitle";
 
 function BillList() {
     const { api, setLoading, pushNotifications } = React.useContext(AppContext);
@@ -81,12 +82,7 @@ function BillList() {
 
     return (
         <>
-            <h1>
-                <Link to="/">
-                    <i className="bi bi-arrow-left fs-5"></i>
-                </Link>
-                Bill list
-            </h1>
+            <PageTitle>Bills list</PageTitle>
             <Card className="my-3">
                 <Card.Body className="py-2">
                     <InputGroup>
@@ -112,7 +108,7 @@ function BillList() {
             {merge.length > 0 ? (
                 <Container
                     fluid
-                    className="fixed-bottom p-3 pb-4 bg-white d-flex justify-content-between z-2"
+                    className="fixed-top p-3 pb-4 bg-white d-flex justify-content-between z-2"
                 >
                     <Col className="d-flex flex-row align-items-center justify-content-between">
                         <Link className="p-2" to={"create"}>

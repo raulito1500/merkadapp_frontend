@@ -2,10 +2,9 @@ import React from "react";
 import { Badge, Card, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import api from "../../../App/Context/api";
 
 function ProductRecommendations() {
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
     const [recommendations, setRecommendations] = React.useState([]);
 
     React.useEffect(() => {
