@@ -38,7 +38,7 @@ function BudgetWidget({ data }) {
     return (
         <Card className="shadow-sm h-100">
             <Card.Body className="d-flex flex-column">
-                <h6 className="fw-normal text-muted mt-0 mb-3">Budget</h6>
+                <h6 className="fw-normal text-muted mt-0 mb-3">{formattedMonth}</h6>
                 <div className="d-flex">
                     <div className="feature-icon card-highlight">
                         <i className="bi bi-graph-up-arrow p-0"></i>
@@ -53,7 +53,7 @@ function BudgetWidget({ data }) {
                         </p>
                     </div>
                 </div>
-                <span className="text-muted text-nowrap">{formattedMonth}</span>
+                <span className="text-muted text-nowrap">Budget</span>
             </Card.Body>
         </Card>
     );

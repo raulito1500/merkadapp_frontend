@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import "./index.scss";
 
 const routes = [
     { to: "/", icon: "bi bi-house", icon_active: "bi bi-house-fill", text: "Overview", private: false },
@@ -11,7 +12,7 @@ const routes = [
 
 function AppNavBar() {
     return (
-        <Navbar>
+        <Navbar className="shadow-lg">
             <Container fluid>
                 <Nav className="d-flex align-items-end justify-content-around w-100">
                     {routes.map((route, index) => {
@@ -22,7 +23,7 @@ function AppNavBar() {
                                     {({ isActive }) => (
                                         <>
                                             <i className={isActive ? route.icon_active : route.icon}></i>
-                                            {route.text}
+                                            <span>{route.text}</span>
                                         </>
                                     )}
                                 </NavLink>

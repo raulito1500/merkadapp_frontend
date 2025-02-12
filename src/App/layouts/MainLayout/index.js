@@ -9,7 +9,7 @@ function MainLayout(){
             <Container className="main-layout flex-grow-1">
                 <Outlet />
             </Container>
-            <div className="fixed-bottom shadow-lg bg-white">
+            <div className="fixed-bottom">
                 <AppNavBar />
             </div>
         </div>

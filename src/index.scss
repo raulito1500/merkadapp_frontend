@@ -261,24 +261,3 @@ small {
     padding-bottom: $end-container-space;
     padding-top: $spacer;
 }
-.navbar {
-    padding-bottom: $end-space;
-    a {
-        color: $gray-800;
-        text-align: center;
-        text-decoration: none;
-        font-size: 0.8rem;
-        i.bi {
-            display: block;
-            font-size: 1.2rem;
-            padding-right: 0;
-        }
-    }
-    a.active {
-        color: $orange;
-        font-size: 1rem;
-        i.bi {
-            font-size: 1.2rem;
-        }
-    }
-}
