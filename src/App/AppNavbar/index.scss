@@ -1,8 +1,7 @@
-@import "/src/index.scss";
-
 .navbar {
     background-color: var(--bs-white);
-    padding-bottom: $end-space !important;
+    padding-top: 1rem !important;
+    padding-bottom: var(--end-space) !important;
     a {
         color: var(--bs-grey-800);
         text-align: center;
@@ -16,6 +15,7 @@
     }
     a.active {
         color: var(--bs-orange);
+        font-weight: bold;
         font-size: 0.8rem;
         i.bi {
             font-size: 1.2rem;
