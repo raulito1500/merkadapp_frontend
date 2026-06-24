@@ -1,3 +1,76 @@
+# Merkadapp
+
+This project was created as an experimental way to solve a daily issue, like go groceries shoping in a shared home, and use it as a learn-making study case.
+
+## Guideline style
+
+### Basic rules
+
+-   Name folders and files in kebab-case. (e.g., components, market-list, list-item.js)
+-   Import Built-in (like 'react') first, then externals and finally internals
+-   Don't use "barrel files"
+
+## Folder structure
+
+-   **features**:
+-   **components**: Contiene los componentes react que pueden ser usados a nivel global
+
+```
+.
+|-- public
+|   |-- 
+|   `-- 
+`-- src
+    |-- components
+    |   `-- data-view-options
+    |       |-- index.js
+    |       `-- index.test.js
+    |-- features
+    |   `-- products
+    |       |-- list/
+    |       |   |-- index.js
+    |       |   `-- index.test.js
+    |       |-- list-group/
+    |       |   `-- 
+    |       `-- list-item/
+    |           `-- 
+    `-- utils
+        |-- format/
+        |   |-- index.js
+        |   `-- index.test.js
+        `-- group/
+            `-- 
+
+-------- Deprecated
+.
+|-- public
+|-- src
+|   |-- App // TODO
+|   |   |--
+|   |   |--
+|   |   `--
+|   |-- components
+|   |   |--
+|   |   |--
+|   |   `--
+|   |-- Constants // TODO
+|   |   |--
+|   |   |--
+|   |   `--
+|   |-- hooks // TODO
+|   |   |--
+|   |-- Pages // TODO
+|   |   |--
+|   |   |--
+|   |   |-- Product
+|   |   |   |--
+|   |   `--
+|   |-- tests // TODO ??
+|   |   |--
+|   |-- utils // TODO recomendación mejor services
+|   |   |--
+```
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -8,7 +81,6 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\

@@ -76,6 +76,10 @@ $link-color: $orange;
 $offcanvas-vertical-height: 50vh;
 
 $end-space: 2.125rem;
+
+:root {
+    --end-space: 2.125rem;
+}
 $end-container-space: 6.95rem;
 
 .btn-primary {
