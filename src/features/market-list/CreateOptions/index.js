@@ -1,7 +1,7 @@
 import React from "react";
 import { AppContext } from "../../../App/Context/app";
 import PageTitle from "../../../components/PageTitle";
-import MarketListSuggested from "../Suggested";
+import MarketListSuggested from "../suggested";
 import { Typeahead } from "react-bootstrap-typeahead";
 import DataViewOptions from "../../../components/DataViewOptions";
 import { ListGroup } from "react-bootstrap";
@@ -57,7 +57,7 @@ function CreateOptionsMarketList(){
                     </div>
                 </Link>
             </ListGroup>
-            {/* <MarketListSuggested suggestedItems={suggestedItems} /> */}
+            { <MarketListSuggested suggestedItems={suggestedItems} /> }
         </div>
     );
 };
