@@ -4,28 +4,32 @@ import { Login } from "../../Pages/Login";
 
 const AuthContext = React.createContext();
 
+const STORAGE_KEY = "merkadapp_username";
+const GITHUB_IDS = { raul: "817891", manuel: "108774676" };
+
 function AuthProvider({ children }) {
 
-    const [user, setUser] = React.useState(null);
-    const [gitHubID, setGitHubID] = React.useState("0");
+    const [user, setUser] = React.useState(() => localStorage.getItem(STORAGE_KEY));
+    const [gitHubID, setGitHubID] = React.useState(() => {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? GITHUB_IDS[stored] ?? "0" : "0";
+    });
 
     const navigate = useNavigate();
 
     const login = ({ username }) => {
-        if (username === "rau") {
+        if (GITHUB_IDS[username]) {
             setUser(username);
-            setGitHubID("817891")
-            navigate('/');
-        }
-        else if (username === "manu") {
-            setUser(username);
-            setGitHubID("108774676")
+            setGitHubID(GITHUB_IDS[username]);
+            localStorage.setItem(STORAGE_KEY, username);
             navigate('/');
         }
     }
 
     const logout = () => {
         setUser(null);
+        setGitHubID("0");
+        localStorage.removeItem(STORAGE_KEY);
         navigate('/login')
     }
 
@@ -43,7 +47,7 @@ function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={auth}>
-            {true ? children : <Login />}
+            {isAuthenticated() ? children : <Login />}
         </AuthContext.Provider>
     );
 }

@@ -16,14 +16,18 @@ import { BillEdit } from "../Pages/Bill/Edit";
 import { ProductList } from "../Pages/Product/List";
 import CreateOptionsMarketList from "../features/market-list/CreateOptions";
 import CreateBlankMarketList from "../features/market-list/CreateBlank";
+import { GroupList } from "../Pages/Group/List";
+import { GroupCreate } from "../Pages/Group/Create";
+import { GroupView } from "../Pages/Group/View";
+import { PersonalView } from "../Pages/Expense/Personal";
+import { ExpenseCreate } from "../Pages/Expense/Create";
+import { Login } from "../Pages/Login";
 
 function App() {
     return (
         <HashRouter>
             <AuthProvider>
                 <AppProvider>
-                    {/* <AppHeader />
-                     */}
                     <Loader />
                     <Notifications />
                     <Routes>
@@ -31,6 +35,7 @@ function App() {
                             <Route index element={<Overview />} />
                             <Route path="products" element={<ProductList />} />
                             <Route path="bills" element={<BillList />} />
+                            <Route path="expenses" element={<GroupList />} />
                         </Route>
                         <Route element={<BlankLayout />}>
                             <Route path="market-list">
@@ -42,7 +47,15 @@ function App() {
                                 <Route path="create" element={<BillCreate />} />
                                 <Route path="edit/:id" element={<BillEdit />} />
                             </Route>
+                            <Route path="expenses">
+                                <Route path="create" element={<GroupCreate />} />
+                                <Route path="personal" element={<PersonalView />} />
+                                <Route path="personal/create" element={<ExpenseCreate />} />
+                                <Route path=":groupId" element={<GroupView />} />
+                                <Route path=":groupId/create" element={<ExpenseCreate />} />
+                            </Route>
                         </Route>
+                        <Route path="login" element={<Login />} />
                         <Route path="logout" element={<Logout />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

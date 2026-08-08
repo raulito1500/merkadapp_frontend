@@ -37,13 +37,10 @@ function Login() {
                             <Form.Control />
                         </Form.Group>
                     </Row>
-
+                    <Row>
+                        <Button type="submit">Sign in</Button>
+                    </Row>
                 </form>
-            </div>
-            <div className="h-50">
-                <Row>
-                    <Button type="submit">Sign in</Button>
-                </Row>
             </div>
         </div >
 
