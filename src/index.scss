@@ -153,6 +153,11 @@ header {
     background: linear-gradient($standard-gradient);
 }
 
+.login-page {
+    background: -webkit-linear-gradient($standard-gradient);
+    background: linear-gradient($standard-gradient);
+}
+
 .shadowHeader {
     border-radius: 0% 59% 48% 45%;
     padding-bottom: 0rem;

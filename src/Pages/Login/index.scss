@@ -1,0 +1,29 @@
+.login-card {
+    box-shadow: 0 -0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .input-group-text {
+        background-color: var(--bs-gray-100);
+        color: var(--bs-gray-800);
+        border-right: 0;
+    }
+
+    .form-control {
+        border-left: 0;
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
+
+    .input-group-text[role="button"] {
+        background-color: var(--bs-white);
+        border-left: 0;
+    }
+}
+.login-page .main-logo span.full {
+    font-size: calc(3.5rem + 0.5vw);
+}
