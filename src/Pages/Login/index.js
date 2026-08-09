@@ -14,11 +14,11 @@ function Login() {
     }
 
     return (
-        <div className="login-page d-flex flex-column justify-content-center min-vh-100">
+        <div className="login-page d-flex flex-column justify-content-center min-vh-100 px-4">
             <div className="text-decoration-none text-white main-logo">
                 <span className="full text-center d-block mb-5">Merkadapp</span>
             </div>
-            <Card className="login-card border-0 rounded-top-5 rounded-bottom-5 m-4">
+            <Card className="login-card border-0 rounded-top-5 rounded-bottom-5 my-4 mx-auto w-100">
                 <Card.Body className="p-4 d-flex flex-column ">
                     <div className="welcome text-center mb-4">
                         <h1 className="display-1 text-primary">Welcome back</h1>
