@@ -17,7 +17,7 @@ function ExpenseCreate() {
     const [amount, setAmount] = React.useState("");
     const [currency, setCurrency] = React.useState("COP");
     const [date, setDate] = React.useState(moment().format("YYYY-MM-DD"));
-    const [paidBy, setPaidBy] = React.useState(auth.user ?? "");
+    const [paidBy, setPaidBy] = React.useState(auth.user.uid);
 
     React.useEffect(() => {
         if (!groupId) return;
@@ -27,7 +27,7 @@ function ExpenseCreate() {
             .then((response) => {
                 setGroup(response.data);
                 setPaidBy(
-                    response.data.members.includes(auth.user) ? auth.user : response.data.members[0]
+                    response.data.members.includes(auth.user.uid) ? auth.user.uid : response.data.members[0]
                 );
             })
             .catch((error) => {
@@ -45,7 +45,6 @@ function ExpenseCreate() {
                 amount: Number(amount),
                 currency,
                 date,
-                owner: auth.user,
                 paidBy,
                 groupId: groupId ?? undefined,
             })

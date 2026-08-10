@@ -1,16 +1,21 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { AuthContext } from "../../App/Context/auth";
 import { Login } from ".";
 
-const renderLogin = (login = jest.fn()) => {
+const renderLogin = (overrides = {}) => {
+    const auth = {
+        loginWithEmailPassword: jest.fn().mockResolvedValue(undefined),
+        loginWithGoogle: jest.fn().mockResolvedValue(undefined),
+        ...overrides,
+    };
     render(
-        <AuthContext.Provider value={{ login }}>
+        <AuthContext.Provider value={auth}>
             <Login />
         </AuthContext.Provider>
     );
-    return login;
+    return auth;
 };
 
 describe("Login component", () => {
@@ -20,21 +25,21 @@ describe("Login component", () => {
         expect(screen.getByText("Sign in to continue to Merkadapp.")).toBeInTheDocument();
     });
 
-    test("renders username and password fields", () => {
+    test("renders email and password fields", () => {
         renderLogin();
-        expect(screen.getByPlaceholderText("Enter your username")).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Enter your email")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Enter your password")).toBeInTheDocument();
     });
 
-    test("updates username and password as the user types", () => {
+    test("updates email and password as the user types", () => {
         renderLogin();
-        const username = screen.getByPlaceholderText("Enter your username");
+        const email = screen.getByPlaceholderText("Enter your email");
         const password = screen.getByPlaceholderText("Enter your password");
 
-        fireEvent.change(username, { target: { value: "raul" } });
+        fireEvent.change(email, { target: { value: "raul@example.com" } });
         fireEvent.change(password, { target: { value: "secret" } });
 
-        expect(username).toHaveValue("raul");
+        expect(email).toHaveValue("raul@example.com");
         expect(password).toHaveValue("secret");
     });
 
@@ -50,25 +55,31 @@ describe("Login component", () => {
         expect(password).toHaveAttribute("type", "password");
     });
 
-    test("calls login with the entered username on submit", () => {
-        const login = renderLogin();
-        const username = screen.getByPlaceholderText("Enter your username");
-        fireEvent.change(username, { target: { value: "raul" } });
+    test("calls loginWithEmailPassword with the entered credentials on submit", async () => {
+        const mocks = renderLogin();
+        fireEvent.change(screen.getByPlaceholderText("Enter your email"), { target: { value: "raul@example.com" } });
+        fireEvent.change(screen.getByPlaceholderText("Enter your password"), { target: { value: "secret" } });
 
         fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-        expect(login).toHaveBeenCalledWith({ username: "raul" });
+        await waitFor(() =>
+            expect(mocks.loginWithEmailPassword).toHaveBeenCalledWith("raul@example.com", "secret")
+        );
     });
 
-    test("renders forgot password and sign up links", () => {
-        renderLogin();
-        expect(screen.getByText("Forgot password?")).toBeInTheDocument();
-        expect(screen.getByText("Sign up")).toBeInTheDocument();
+    test("shows an error message when login fails", async () => {
+        renderLogin({
+            loginWithEmailPassword: jest.fn().mockRejectedValue({ code: "auth/invalid-credential" }),
+        });
+        fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+        expect(await screen.findByText("Incorrect email or password.")).toBeInTheDocument();
     });
 
-    test("renders the remember me checkbox unchecked by default", () => {
-        renderLogin();
-        const checkbox = screen.getByLabelText("Remember me");
-        expect(checkbox).not.toBeChecked();
+    test("calls loginWithGoogle when the Google button is clicked", async () => {
+        const mocks = renderLogin();
+        fireEvent.click(screen.getByRole("button", { name: /continue with google/i }));
+
+        await waitFor(() => expect(mocks.loginWithGoogle).toHaveBeenCalled());
     });
 });

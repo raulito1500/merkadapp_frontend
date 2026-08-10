@@ -2,20 +2,18 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
 import { ExpenseList } from "../ExpenseList";
 
 function PersonalView() {
-    const auth = useAuth();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [expenses, setExpenses] = React.useState([]);
     const [destinations, setDestinations] = React.useState([]);
 
     const loadExpenses = () => {
         return expensesApi
-            .get("/expenses", { params: { owner: auth.user, personal: true } })
+            .get("/expenses", { params: { personal: true } })
             .then((response) => setExpenses(response.data));
     };
 
@@ -24,7 +22,7 @@ function PersonalView() {
         Promise.all([
             loadExpenses(),
             expensesApi
-                .get("/groups", { params: { owner: auth.user } })
+                .get("/groups")
                 .then((response) => setDestinations(response.data)),
         ])
             .catch((error) => {

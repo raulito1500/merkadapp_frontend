@@ -11,7 +11,6 @@ import MarketListView from "../Pages/MarketList/View";
 import { BillList } from "../Pages/Bill/List";
 import { BillCreate } from "../Pages/Bill/Create";
 import { NotFound } from "../Pages/NotFound";
-import { Logout } from "../Pages/Logout";
 import { BillEdit } from "../Pages/Bill/Edit";
 import { ProductList } from "../Pages/Product/List";
 import CreateOptionsMarketList from "../features/market-list/CreateOptions";
@@ -56,7 +55,6 @@ function App() {
                             </Route>
                         </Route>
                         <Route path="login" element={<Login />} />
-                        <Route path="logout" element={<Logout />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </AppProvider>

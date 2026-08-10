@@ -2,19 +2,17 @@ import React from "react";
 import { Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
 
 function GroupList() {
-    const auth = useAuth();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [groups, setGroups] = React.useState([]);
 
     React.useEffect(() => {
         setLoading(true);
         expensesApi
-            .get("/groups", { params: { owner: auth.user } })
+            .get("/groups")
             .then((response) => setGroups(response.data))
             .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");

@@ -3,12 +3,10 @@ import { Button, Card, Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
 
 function GroupCreate() {
-    const auth = useAuth();
     const navigate = useNavigate();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [name, setName] = React.useState("");
@@ -22,7 +20,7 @@ function GroupCreate() {
         event.preventDefault();
         setLoading(true);
         expensesApi
-            .post("/groups", { name, owner: auth.user, members })
+            .post("/groups", { name, members })
             .then((response) => navigate(`/expenses/${response.data._id}`))
             .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");

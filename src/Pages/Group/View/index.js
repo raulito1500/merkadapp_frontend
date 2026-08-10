@@ -2,7 +2,6 @@ import React from "react";
 import { Badge, Card, Table } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
 import { formatMoney } from "../../../utils/formatting";
@@ -10,7 +9,6 @@ import { ExpenseList } from "../../Expense/ExpenseList";
 
 function GroupView() {
     const { groupId } = useParams();
-    const auth = useAuth();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [group, setGroup] = React.useState(null);
     const [expenses, setExpenses] = React.useState([]);
@@ -36,7 +34,7 @@ function GroupView() {
             loadExpenses(),
             loadSummary(),
             expensesApi
-                .get("/groups", { params: { owner: auth.user } })
+                .get("/groups")
                 .then((response) => setDestinations(response.data.filter((g) => g._id !== groupId))),
         ])
             .catch((error) => {

@@ -1,16 +1,47 @@
 import React from "react";
-import { Button, Card, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import { useAuth } from '../../App/Context/auth';
 import "./index.scss";
 
+const ERROR_MESSAGES = {
+    "auth/invalid-credential": "Incorrect email or password.",
+    "auth/invalid-email": "That email doesn't look right.",
+    "auth/too-many-requests": "Too many attempts. Please try again in a few minutes.",
+    "auth/popup-closed-by-user": "The Google sign-in window was closed before finishing.",
+};
+
+function getErrorMessage(error) {
+    return ERROR_MESSAGES[error?.code] ?? "Something went wrong signing in. Please try again.";
+}
+
 function Login() {
     const auth = useAuth();
-    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [showPassword, setShowPassword] = React.useState(false);
-    const login = (event) => {
+    const [error, setError] = React.useState(null);
+    const [submitting, setSubmitting] = React.useState(false);
+
+    const login = async (event) => {
         event.preventDefault();
-        auth.login({ username });
+        setError(null);
+        setSubmitting(true);
+        try {
+            await auth.loginWithEmailPassword(email, password);
+        } catch (err) {
+            setError(getErrorMessage(err));
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    const loginWithGoogle = async () => {
+        setError(null);
+        try {
+            await auth.loginWithGoogle();
+        } catch (err) {
+            setError(getErrorMessage(err));
+        }
     }
 
     return (
@@ -24,21 +55,21 @@ function Login() {
                         <h1 className="display-1 text-primary">Welcome back</h1>
                         <p className="text-muted">Sign in to continue to Merkadapp.</p>
                     </div>
+                    {error && (
+                        <div className="alert alert-danger py-2" role="alert">{error}</div>
+                    )}
                     <Form onSubmit={login}>
-                        <Form.Group className="mb-3" controlId="formBasicUsername">
-                            <Form.Label>Username</Form.Label>
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Label>Email</Form.Label>
                             <InputGroup>
                                 <InputGroup.Text className="bg-white">
                                     <i className="bi bi-person"></i>
                                 </InputGroup.Text>
-                                <Form.Control className="py-3" type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                <Form.Control className="py-3" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             </InputGroup>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <Form.Label>Password</Form.Label>
-                                <a href="/forgot-password" className="small">Forgot password?</a>
-                            </div>
+                            <Form.Label>Password</Form.Label>
                             <InputGroup className="mb-3">
                                 <InputGroup.Text className="bg-white">
                                     <i className="bi bi-lock"></i>
@@ -49,17 +80,14 @@ function Login() {
                                 </InputGroup.Text>
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                            <Form.Check type="checkbox" label="Remember me" />
-                        </Form.Group>
-                        <Button variant="primary" type="submit" className="w-100 text-white fw-bold p-3 my-3 rounded-4">
+                        <Button variant="primary" type="submit" disabled={submitting} className="w-100 text-white fw-bold p-3 my-3 rounded-4">
                             Sign In <i className="bi bi-arrow-right"></i>
                         </Button>
                     </Form>
                     <hr className="my-4" />
-                    <div className="text-center mt-3">
-                        Don't have an account? <a href="/register" className="text-primary fw-bold">Sign up</a>
-                    </div>
+                    <Button variant="outline-secondary" onClick={loginWithGoogle} className="w-100 d-flex align-items-center justify-content-center gap-2 p-3 rounded-4">
+                        <i className="bi bi-google"></i> Continue with Google
+                    </Button>
                 </Card.Body>
             </Card>
         </div>
