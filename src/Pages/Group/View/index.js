@@ -5,6 +5,7 @@ import { AppContext } from "../../../App/Context/app";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
 import { formatMoney } from "../../../utils/formatting";
+import { displayNameOf } from "../../../utils/userDisplay";
 import { ExpenseList } from "../../Expense/ExpenseList";
 
 function GroupView() {
@@ -59,7 +60,7 @@ function GroupView() {
             <PageTitle>{group ? group.name : "Grupo"}</PageTitle>
             <Card className="my-3">
                 <Card.Body className="py-2 d-flex justify-content-between align-items-center">
-                    <span>{group?.members.join(", ")}</span>
+                    <span>{group?.members.map((member) => displayNameOf(member)).join(", ")}</span>
                     <Link to="create" className="btn btn-primary text-white btn-sm">
                         Add expense
                     </Link>
@@ -74,8 +75,8 @@ function GroupView() {
                         <Table size="sm" borderless className="mb-0">
                             <tbody>
                                 {currencySummary.members.map((member) => (
-                                    <tr key={member.name}>
-                                        <td>{member.name}</td>
+                                    <tr key={member.user.uid}>
+                                        <td>{displayNameOf(member.user)}</td>
                                         <td className="text-muted">{formatMoney(member.paid)} paid</td>
                                         <td className="text-end">
                                             <Badge bg={member.balance >= 0 ? "success" : "danger"}>

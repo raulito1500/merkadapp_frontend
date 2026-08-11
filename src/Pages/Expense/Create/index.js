@@ -6,6 +6,7 @@ import { AppContext } from "../../../App/Context/app";
 import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
+import { displayNameOf } from "../../../utils/userDisplay";
 
 function ExpenseCreate() {
     const { groupId } = useParams();
@@ -27,7 +28,9 @@ function ExpenseCreate() {
             .then((response) => {
                 setGroup(response.data);
                 setPaidBy(
-                    response.data.members.includes(auth.user.uid) ? auth.user.uid : response.data.members[0]
+                    response.data.members.some((member) => member.uid === auth.user.uid)
+                        ? auth.user.uid
+                        : response.data.members[0].uid
                 );
             })
             .catch((error) => {
@@ -105,8 +108,8 @@ function ExpenseCreate() {
                                     required
                                 >
                                     {group.members.map((member) => (
-                                        <option key={member} value={member}>
-                                            {member}
+                                        <option key={member.uid} value={member.uid}>
+                                            {displayNameOf(member)}
                                         </option>
                                     ))}
                                 </Form.Select>
