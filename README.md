@@ -99,3 +99,7 @@ REACT_APP_EXPENSES_URL_BASE=http://localhost:3000
 REACT_APP_URL_BASE=https://your-api-url.com
 REACT_APP_EXPENSES_URL_BASE=https://your-expenses-api-url.com
 ```
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE) — free to use, copy, modify and distribute for noncommercial purposes (personal, educational, portfolio). Commercial use requires permission from the author.
