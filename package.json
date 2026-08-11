@@ -51,6 +51,7 @@
     "devDependencies": {
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.1.0",
+        "firebase-tools": "^15.26.0",
         "jest": "^27.5.1",
         "sass": "^1.74.1"
     },
