@@ -3,26 +3,31 @@ import { Button, Card, Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
-import { useAuth } from "../../../App/Context/auth";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import PageTitle from "../../../components/PageTitle";
+import { displayNameOf } from "../../../utils/userDisplay";
 
 function GroupCreate() {
-    const auth = useAuth();
     const navigate = useNavigate();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [name, setName] = React.useState("");
-    const [members, setMembers] = React.useState([]);
+    const [selectedMembers, setSelectedMembers] = React.useState([]);
+    const [options, setOptions] = React.useState([]);
 
-    const handleMembersChange = (selected) => {
-        setMembers(selected.map((option) => (typeof option === "string" ? option : option.label)));
-    };
+    React.useEffect(() => {
+        expensesApi.get("/users").then((response) => {
+            setOptions(response.data.map((user) => ({ label: displayNameOf(user), uid: user.uid })));
+        });
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
+        const members = selectedMembers.map((option) =>
+            typeof option === "string" ? option : option.uid ?? option.label
+        );
         expensesApi
-            .post("/groups", { name, owner: auth.user, members })
+            .post("/groups", { name, members })
             .then((response) => navigate(`/expenses/${response.data._id}`))
             .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");
@@ -50,11 +55,11 @@ function GroupCreate() {
                                 id="group_members"
                                 multiple
                                 allowNew
-                                options={[]}
-                                selected={members}
-                                onChange={handleMembersChange}
+                                options={options}
+                                selected={selectedMembers}
+                                onChange={setSelectedMembers}
                                 newSelectionPrefix="Add member: "
-                                placeholder="Enter a name and press enter"
+                                placeholder="Search a user or type a new member's name"
                             />
                         </Form.Group>
                         <Button type="submit" variant="primary" className="text-white">

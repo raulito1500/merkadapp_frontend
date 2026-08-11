@@ -2,6 +2,7 @@ import React from "react";
 import { Badge, Form, ListGroup } from "react-bootstrap";
 import moment from "moment";
 import { formatMoney } from "../../../utils/formatting";
+import { displayNameOf } from "../../../utils/userDisplay";
 
 const PERSONAL_OPTION = "personal";
 
@@ -26,7 +27,7 @@ function ExpenseList({ expenses, destinations, onMove }) {
                             {moment(expense.date).format("MMM Do, YYYY")}
                         </span>
                         <Badge bg="secondary" className="mt-1">
-                            Pagó {expense.paidBy}
+                            Pagó {displayNameOf(expense.paidBy)}
                         </Badge>
                     </div>
                     <div className="text-end">
