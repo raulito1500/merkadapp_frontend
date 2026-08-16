@@ -1,5 +1,7 @@
 import React from "react";
+import moment from "moment";
 import NumberPicker from "../../../components/NumberPicker";
+import { formatMoney } from "../../../utils/formatting";
 
 const MarketListSuggestedItem = ({ suggestedItem }) => {
     return (
@@ -8,9 +10,11 @@ const MarketListSuggestedItem = ({ suggestedItem }) => {
             <div className="d-flex flex-column flex-grow-1">
                 <span className="flex-grow-1">{suggestedItem.product_name}</span>
                 <small>
-                    5 days ago
+                    {suggestedItem.date ? moment(suggestedItem.date).fromNow() : "No purchase history yet"}
                 </small>
-                <strong className="text-primary mt-2"> $41.990</strong>
+                {suggestedItem.value != null && (
+                    <strong className="text-primary mt-2"> {formatMoney(suggestedItem.value)}</strong>
+                )}
             </div>
             <NumberPicker initialValue={suggestedItem.quantity} />
         </div>

@@ -51,7 +51,7 @@ function CreateOptionsMarketList(){
                     <div>
                         <h5 className="text-primary">Recommended market list</h5>
                         <p>
-                            We have a market list with <strong>63 suggestions</strong> specially made it for
+                            We have a market list with <strong>{suggestedItems?.length ?? 0} suggestions</strong> specially made for
                             you
                         </p>
                     </div>

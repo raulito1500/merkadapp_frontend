@@ -6,7 +6,8 @@ import { BillHistory } from "../BillHistory";
 import { CATEGORIES } from "../../../Constants/constants";
 import { ProductRecommendations } from "../ProductRecommendations";
 import DataViewOptions from "../../../components/DataViewOptions";
-import { formatRepeat } from "../../../utils/formatting";
+import moment from "moment";
+import { formatRepeat, formatMoney, formatPercent } from "../../../utils/formatting";
 import { searchBy } from "../../../utils/searching";
 import { sortBy } from "../../../utils/sorting";
 import { groupBy } from "../../../utils/grouping";
@@ -106,17 +107,23 @@ function ProductList() {
                                             <div className="d-flex gap-3 justify-content-between w-100">
                                                 <div>
                                                     <h5>{item.name}</h5>
-                                                    <div>
-                                                        Last purchase at <strong>Euro supermercado</strong>{" "}
-                                                        for
-                                                        <strong className="text-primary"> $41.990</strong>,
-                                                        one month ago
-                                                    </div>
-                                                    <div>
-                                                        <i className="bi bi-graph-up-arrow text-primary"></i>
-                                                        Upward trend of{" "}
-                                                        <strong className="text-primary">15%</strong>
-                                                    </div>
+                                                    {item.last_date ? (
+                                                        <div>
+                                                            Last purchase at{" "}
+                                                            <strong>{item.last_where}</strong> for
+                                                            <strong className="text-primary"> {formatMoney(item.last_value)}</strong>,{" "}
+                                                            {moment(item.last_date).fromNow()}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-muted">No purchase history yet</div>
+                                                    )}
+                                                    {item.trend_percent != null && (
+                                                        <div>
+                                                            <i className={`bi ${item.trend_percent >= 0 ? "bi-graph-up-arrow" : "bi-graph-down-arrow"} text-primary`}></i>
+                                                            {item.trend_percent >= 0 ? "Upward" : "Downward"} trend of{" "}
+                                                            <strong className="text-primary">{formatPercent(Math.abs(item.trend_percent))}</strong>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="d-flex flex-column justify-content-between">
                                                     <small className="text-muted text-end">
