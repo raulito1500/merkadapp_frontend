@@ -50,8 +50,9 @@ Firebase Auth ──▶ AuthContext ──┐
 - **Market lists** — create manually or auto-generate from product purchase history; check off items live via WebSocket
 - **Recommendations** — surfaces products due for restocking based on their configured repeat interval
 - **Expenses** — personal and group expense tracking against the new expenses API:
+  - Overview screen shows Personal alongside every group as a card (icon, the signed-in user's balance, member avatars), sorted with money owed to you first
   - **Personal** — log personal expenses and move them into a group later
-  - **Groups** — create groups with typeahead member entry, view group expenses, and see a per-member balance summary
+  - **Groups** — create and edit groups (name, category/icon, typeahead member entry), view group expenses, and see a per-member balance summary
   - move any expense between groups (or back to personal) after the fact
 
 ## Screenshots

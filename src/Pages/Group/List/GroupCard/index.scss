@@ -1,0 +1,19 @@
+.group-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.group-card-icon {
+    position: absolute;
+    bottom: -1rem;
+    right: -1.3rem;
+    font-size: 4.5rem;
+    line-height: 1;
+    opacity: 0.5;
+    transform: rotate(15deg);
+    pointer-events: none;
+}
+
+.avatar-stack .avatar + .avatar {
+    margin-left: -10px;
+}
