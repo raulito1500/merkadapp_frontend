@@ -3,6 +3,7 @@ import { Container, Dropdown, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import "./index.scss";
 import { useAuth } from "../Context/auth";
+import Avatar from "../../components/Avatar";
 
 const routes = [
     { to: "/", icon: "bi bi-house", icon_active: "bi bi-house-fill", text: "Overview", private: false },
@@ -11,14 +12,8 @@ const routes = [
     { to: "expenses", icon: "bi bi-cash-coin", icon_active: "bi bi-cash-coin", text: "Expenses", private: false },
 ];
 
-function initials(user) {
-    const source = user.displayName || user.email || "";
-    return source.charAt(0).toUpperCase();
-}
-
 function AppNavBar() {
     const auth = useAuth();
-    const [photoFailed, setPhotoFailed] = React.useState(false);
     return (
         <Navbar className="shadow-lg">
             <Container fluid>
@@ -40,19 +35,7 @@ function AppNavBar() {
                     })}
                     <Dropdown className="nav-avatar w-100 text-center" drop="up">
                         <Dropdown.Toggle variant="none" className="nav-avatar-toggle" id="dropdownUser">
-                            {auth.user.photoURL && !photoFailed ? (
-                                <img
-                                    src={auth.user.photoURL}
-                                    alt={auth.user.displayName ?? auth.user.email}
-                                    width="28"
-                                    height="28"
-                                    className="rounded-circle"
-                                    referrerPolicy="no-referrer"
-                                    onError={() => setPhotoFailed(true)}
-                                />
-                            ) : (
-                                <span className="nav-avatar-fallback rounded-circle border">{initials(auth.user)}</span>
-                            )}
+                            <Avatar user={auth.user} size={28} />
                             <span>Profile</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu align="end">

@@ -38,21 +38,9 @@
             display: none;
         }
 
-        img,
-        .nav-avatar-fallback {
+        .avatar {
             display: block;
             margin: 0 auto 0.2rem;
-        }
-
-        .nav-avatar-fallback {
-            width: 28px;
-            height: 28px;
-            line-height: 28px;
-            border-color: var(--bs-grey-800) !important;
-            color: var(--bs-grey-800);
-            background-color: var(--bs-white);
-            font-size: 0.75rem;
-            font-weight: bold;
         }
     }
 }
