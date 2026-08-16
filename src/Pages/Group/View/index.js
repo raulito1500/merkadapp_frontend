@@ -61,9 +61,14 @@ function GroupView() {
             <Card className="my-3">
                 <Card.Body className="py-2 d-flex justify-content-between align-items-center">
                     <span>{group?.members.map((member) => displayNameOf(member)).join(", ")}</span>
-                    <Link to="create" className="btn btn-primary text-white btn-sm">
-                        Add expense
-                    </Link>
+                    <div className="d-flex gap-2">
+                        <Link to="edit" className="btn btn-outline-primary btn-sm">
+                            <i className="bi bi-pencil"></i> Edit
+                        </Link>
+                        <Link to="create" className="btn btn-primary text-white btn-sm">
+                            Add expense
+                        </Link>
+                    </div>
                 </Card.Body>
             </Card>
             {summary.map((currencySummary) => (

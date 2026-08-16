@@ -19,3 +19,10 @@ export const CATEGORIES = {
     MEAT: { label: "Fresh meat" },
     PERSONAL_CARE: { label: "Personal care" },
 };
+
+export const GROUP_CATEGORIES = {
+    COUPLE: { label: "Couple", icon: "bi-heart" },
+    HOME: { label: "Home", icon: "bi-house" },
+    TRAVEL: { label: "Travel", icon: "bi-airplane" },
+    OTHER: { label: "Other", icon: "bi-people" },
+};

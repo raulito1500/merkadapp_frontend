@@ -18,6 +18,7 @@ import CreateBlankMarketList from "../features/market-list/CreateBlank";
 import { GroupList } from "../Pages/Group/List";
 import { GroupCreate } from "../Pages/Group/Create";
 import { GroupView } from "../Pages/Group/View";
+import { GroupEdit } from "../Pages/Group/Edit";
 import { PersonalView } from "../Pages/Expense/Personal";
 import { ExpenseCreate } from "../Pages/Expense/Create";
 import { Login } from "../Pages/Login";
@@ -52,6 +53,7 @@ function App() {
                                 <Route path="personal/create" element={<ExpenseCreate />} />
                                 <Route path=":groupId" element={<GroupView />} />
                                 <Route path=":groupId/create" element={<ExpenseCreate />} />
+                                <Route path=":groupId/edit" element={<GroupEdit />} />
                             </Route>
                         </Route>
                         <Route path="login" element={<Login />} />

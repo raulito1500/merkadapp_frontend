@@ -1,14 +1,15 @@
 import React from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../../../App/Context/app";
 import { expensesApi } from "../../../App/Context/expensesApi";
 import { GROUP_CATEGORIES } from "../../../Constants/constants";
 import PageTitle from "../../../components/PageTitle";
 import { displayNameOf } from "../../../utils/userDisplay";
 
-function GroupCreate() {
+function GroupEdit() {
+    const { groupId } = useParams();
     const navigate = useNavigate();
     const { setLoading, pushNotifications } = React.useContext(AppContext);
     const [name, setName] = React.useState("");
@@ -17,10 +18,22 @@ function GroupCreate() {
     const [options, setOptions] = React.useState([]);
 
     React.useEffect(() => {
-        expensesApi.get("/users").then((response) => {
-            setOptions(response.data.map((user) => ({ label: displayNameOf(user), uid: user.uid })));
-        });
-    }, []);
+        setLoading(true);
+        Promise.all([expensesApi.get(`/groups/${groupId}`), expensesApi.get("/users")])
+            .then(([groupResponse, usersResponse]) => {
+                const group = groupResponse.data;
+                setName(group.name);
+                setCategory(group.category ?? "OTHER");
+                setSelectedMembers(
+                    group.members.map((member) => ({ label: displayNameOf(member), uid: member.uid }))
+                );
+                setOptions(usersResponse.data.map((user) => ({ label: displayNameOf(user), uid: user.uid })));
+            })
+            .catch((error) => {
+                pushNotifications("¡Ups! Something went wrong", error, "warning");
+            })
+            .finally(() => setLoading(false));
+    }, [groupId]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,8 +42,8 @@ function GroupCreate() {
             typeof option === "string" ? option : option.uid ?? option.label
         );
         expensesApi
-            .post("/groups", { name, category, members })
-            .then((response) => navigate(`/expenses/${response.data._id}`))
+            .patch(`/groups/${groupId}`, { name, category, members })
+            .then(() => navigate(`/expenses/${groupId}`))
             .catch((error) => {
                 pushNotifications("¡Ups! Something went wrong", error, "warning");
             })
@@ -39,7 +52,7 @@ function GroupCreate() {
 
     return (
         <>
-            <PageTitle>Create group</PageTitle>
+            <PageTitle>Edit group</PageTitle>
             <Card>
                 <Card.Body>
                     <Form onSubmit={handleSubmit}>
@@ -75,7 +88,7 @@ function GroupCreate() {
                             />
                         </Form.Group>
                         <Button type="submit" variant="primary" className="text-white">
-                            Create group
+                            Save changes
                         </Button>
                     </Form>
                 </Card.Body>
@@ -84,4 +97,4 @@ function GroupCreate() {
     );
 }
 
-export { GroupCreate };
+export { GroupEdit };
