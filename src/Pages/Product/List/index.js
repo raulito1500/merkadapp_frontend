@@ -19,7 +19,7 @@ function ProductList() {
     const [list, setList] = React.useState();
     const [listGrouped, setListGrouped] = React.useState([]);
 
-    const [productId, setProductId] = React.useState();
+    const [product, setProduct] = React.useState();
 
     const DEFAULT_SCREEN_SETTINGS = {
         search: "",
@@ -28,8 +28,8 @@ function ProductList() {
     };
 
     const handleClose = () => setShow(false);
-    const handleShow = (id) => {
-        setProductId(id);
+    const handleShow = (product) => {
+        setProduct(product);
         setShow(true);
     };
 
@@ -85,7 +85,7 @@ function ProductList() {
                     <>
                         {listGrouped[category] && listGrouped[category].length > 0 && (
                             <Col key={category} className="position-relative">
-                                <Badge className="list-group-title ms-3" bg="secondary">
+                                <Badge className="list-group-title" bg="secondary">
                                     {CATEGORIES[category]
                                         ? CATEGORIES[category].label
                                         : formatRepeat(category)}
@@ -95,44 +95,52 @@ function ProductList() {
                                         <ListGroup.Item
                                             as="label"
                                             key={item.id}
-                                            className="d-flex gap-3 align-items-center px-3 py-4"
+                                            className="d-flex gap-3 align-items-start px-3 py-4 my-2 border border-1 rounded-4 shadow-sm"
                                         >
                                             <img
-                                                width="50"
-                                                height="50"
-                                                className=""
-                                                alt="orange"
-                                                src="image_fruit.png"
+                                                width="80"
+                                                height="80"
+                                                className="border border-0 rounded-4 flex-shrink-0"
+                                                alt={item.name}
+                                                src="image_product_grey.png"
                                             />
-                                            <div className="d-flex gap-3 justify-content-between w-100">
-                                                <div>
+                                            <div className="d-flex flex-column gap-2 flex-grow-1">
+                                                <div className="d-flex justify-content-between align-items-start">
                                                     <h5>{item.name}</h5>
+                                                    <small className="text-muted text-end">
+                                                        {formatRepeat(item.repeat)}
+                                                    </small>
+                                                </div>
+                                                <div>
+
                                                     {item.last_date ? (
-                                                        <div>
-                                                            Last purchase at{" "}
-                                                            <strong>{item.last_where}</strong> for
+                                                        <div className="text-muted">
+                                                            Last purchase at <strong className="text-body">{item.last_where}</strong> for
                                                             <strong className="text-primary"> {formatMoney(item.last_value)}</strong>,{" "}
                                                             {moment(item.last_date).fromNow()}
                                                         </div>
                                                     ) : (
                                                         <div className="text-muted">No purchase history yet</div>
                                                     )}
-                                                    {item.trend_percent != null && (
-                                                        <div>
-                                                            <i className={`bi ${item.trend_percent >= 0 ? "bi-graph-up-arrow" : "bi-graph-down-arrow"} text-primary`}></i>
-                                                            {item.trend_percent >= 0 ? "Upward" : "Downward"} trend of{" "}
-                                                            <strong className="text-primary">{formatPercent(Math.abs(item.trend_percent))}</strong>
-                                                        </div>
-                                                    )}
+
                                                 </div>
-                                                <div className="d-flex flex-column justify-content-between">
-                                                    <small className="text-muted text-end">
-                                                        {formatRepeat(item.repeat)}
-                                                    </small>
-                                                    <ButtonGroup>
+                                                <div className="d-flex justify-content-between align-items-end">
+                                                    {item.trend_percent != null && (
+                                                        item.trend_percent === 0 ? (
+                                                            <div className={`p-2 border-0 rounded-3 small bg-body-secondary text-body-secondary`}>
+                                                                Neutral trend (0,0%)
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`p-2 border-0 rounded-3 small ${item.trend_percent > 0 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"}`}>
+                                                                <i className={`bi ${item.trend_percent > 0 ? "bi-graph-up-arrow" : "bi-graph-down-arrow"}`}></i>
+                                                                {item.trend_percent > 0 ? "Upward" : "Downward"} trend of <strong>{formatPercent(Math.abs(item.trend_percent))}</strong>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    <ButtonGroup className="ms-auto flex-shrink-0">
                                                         <Link
                                                             className="btn btn-outline-primary"
-                                                            onClick={() => handleShow(item.id)}
+                                                            onClick={() => handleShow(item)}
                                                         >
                                                             <i className="bi bi-list pe-0"></i>
                                                         </Link>
@@ -151,7 +159,7 @@ function ProductList() {
                 ))}
             <Offcanvas show={show} onHide={handleClose} placement="bottom">
                 <Offcanvas.Body>
-                    <BillHistory productId={productId} />
+                    <BillHistory product={product} />
                 </Offcanvas.Body>
             </Offcanvas>
         </>

@@ -80,6 +80,7 @@ $end-space: 2.125rem;
 :root {
     --end-space: 2.125rem;
 }
+
 $end-container-space: 6.95rem;
 
 .btn-primary {
@@ -89,6 +90,7 @@ $end-container-space: 6.95rem;
 }
 
 .btn.btn-outline-primary {
+
     &:hover,
     &:active,
     &:focus {
@@ -113,7 +115,7 @@ $end-container-space: 6.95rem;
 }
 
 body {
-    background-color: #fefaf7 !important;
+    background-color: #f8f9fa !important;
 }
 
 header {
@@ -124,25 +126,23 @@ header {
     /* --mask:
           radial-gradient(34.24px at 50% calc(100% - 46.5px),#000 99%,#0000 101%) calc(50% - 60px) 0/120px 100%,
           radial-gradient(34.24px at 50% calc(100% + 16.5px),#0000 99%,#000 101%) 50% calc(100% - 30px)/120px 100% repeat-x; */
-    clip-path: polygon(
-        0 100%,
-        0 0,
-        100% 0,
-        100% 100%,
-        0% 100%,
-        0% 100%,
-        50% 100%,
-        50% 100%,
-        0% 100%,
-        0% 100%,
-        100% 100%,
-        100% 100%,
-        100% 100%,
-        100% 100%,
-        100% 100%,
-        100% 100%,
-        100% 100%
-    );
+    clip-path: polygon(0 100%,
+            0 0,
+            100% 0,
+            100% 100%,
+            0% 100%,
+            0% 100%,
+            50% 100%,
+            50% 100%,
+            0% 100%,
+            0% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%);
     /* -webkit-mask: var(--mask);
                 mask: var(--mask); */
 }
@@ -197,10 +197,8 @@ header,
 .progress-circle {
     width: 3rem;
     height: 3rem;
-    background: conic-gradient(
-        rgba(var(--bs-primary-rgb), 1) calc(var(--progress) * 1%),
-        var(--bs-secondary-bg) 0
-    );
+    background: conic-gradient(rgba(var(--bs-primary-rgb), 1) calc(var(--progress) * 1%),
+            var(--bs-secondary-bg) 0);
 }
 
 .progress-content {
@@ -250,7 +248,7 @@ header,
 
 .list-group-title {
     font-size: 0.8em;
-    transform: translate(0, 50%);
+    // transform: translate(0, -50%);
     z-index: 10;
     position: relative;
 }
@@ -259,12 +257,15 @@ header,
     --bs-dropdown-link-active-color: var(--bs-green);
     --bs-dropdown-link-active-bg: transparent;
 }
+
 i.bi {
     padding-right: 0.45rem;
 }
+
 small {
     font-size: 0.725em;
 }
+
 .main-layout {
     padding-bottom: $end-container-space;
     padding-top: $spacer;
