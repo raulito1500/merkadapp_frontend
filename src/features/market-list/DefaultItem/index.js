@@ -1,5 +1,5 @@
 import React from "react";
-import NumberPicker from "../../../components/NumberPicker";
+import { NumberPicker } from "../../../shared/components/NumberPicker";
 
 function MarketListDefaultItem({ item }) {
     return (

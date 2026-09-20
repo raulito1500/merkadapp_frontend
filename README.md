@@ -33,13 +33,13 @@ Firebase Auth ──▶ AuthContext ──┐
                         Notifications)  ──▶ Router ─┤
                                  │                   └─▶ merkadapp expenses API (expenses, groups)
                                  ▼
-                    MainLayout / BlankLayout ──▶ Pages / features
+                    MainLayout / BlankLayout ──▶ pages / features
 ```
 
 - `AuthContext` owns the Firebase session (email/password + Google sign-in) and gates the router.
-- `AppContext` and a second, separate Axios client each hold the base URL and auth headers for one backend — the merkadapp Go API and the expenses API respectively — so a page only imports the client for the backend it needs.
+- Two separate Axios clients in `src/lib/` each hold the base URL and auth headers for one backend — the merkadapp Go API (exposed to pages through `AppContext`) and the expenses API (imported directly) — so a page only uses the client for the backend it needs.
 - `HashRouter` renders every route inside `MainLayout` (navbar + auth-gated pages) or `BlankLayout` (login, full-screen views).
-- Most domains live as a `Pages/<Domain>` folder (List/Create/Edit views); the market list creation flow is complex enough to live under `features/market-list` instead, grouped by behavior rather than by page.
+- Most domains live as a `pages/<Domain>` folder (List/Create/Edit views); the market list creation flow is complex enough to live under `features/market-list` instead, grouped by behavior rather than by page.
 
 ## Features
 
@@ -69,14 +69,15 @@ Firebase Auth ──▶ AuthContext ──┐
 
 | Looking for... | Go to |
 |---|---|
-| Firebase auth state, API clients (Axios), loading/notifications | `src/App/Context/` |
-| Route shells (navbar vs. full-screen) | `src/App/layouts/` |
-| Navbar, login/logout, user avatar menu | `src/App/AppNavbar/` |
-| A specific domain's pages (List/Create/Edit) | `src/Pages/<Domain>/` — `Bill`, `Expense`, `Group`, `Login`, `MarketList`, `Overview`, `Product` |
+| Firebase auth state, loading/notifications (Context providers) | `src/app/providers/` |
+| Configured Axios clients (both backends) and Firebase setup | `src/lib/` |
+| Route shells (navbar vs. full-screen) | `src/app/layouts/` |
+| Navbar, login/logout, user avatar menu | `src/app/AppNavbar/` |
+| A specific domain's pages (List/Create/Edit) | `src/pages/<Domain>/` — `Bill`, `Expense`, `Group`, `Login`, `MarketList`, `Overview`, `Product` |
 | Market list creation / suggested-list flow | `src/features/market-list/` |
-| Shared UI components | `src/components/` |
-| Category labels and other constants | `src/Constants/` |
-| Formatting, grouping, searching, sorting helpers | `src/utils/` |
+| Shared UI components | `src/shared/components/` |
+| Category labels and other constants | `src/shared/constants/` |
+| Formatting, grouping, searching, sorting helpers | `src/shared/utils/` |
 
 ## Getting Started
 

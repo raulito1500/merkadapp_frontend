@@ -1,9 +1,9 @@
 import React from "react";
-import { AppContext } from "../../../App/Context/app";
-import PageTitle from "../../../components/PageTitle";
+import { AppContext } from "../../../app/providers/app";
+import PageTitle from "../../../shared/components/PageTitle";
 import MarketListSuggested from "../suggested";
 import { Typeahead } from "react-bootstrap-typeahead";
-import DataViewOptions from "../../../components/DataViewOptions";
+import DataViewOptions from "../../../shared/components/DataViewOptions";
 import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 

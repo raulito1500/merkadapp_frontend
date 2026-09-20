@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
-import NumberPicker from "../../../components/NumberPicker";
-import { formatMoney } from "../../../utils/formatting";
+import { NumberPicker } from "../../../shared/components/NumberPicker";
+import { formatMoney } from "../../../shared/utils/formatting";
 
 const MarketListSuggestedItem = ({ suggestedItem }) => {
     return (

@@ -1,8 +1,8 @@
 import React, { useReducer } from "react";
-import PageTitle from "../../../components/PageTitle";
-import DataViewOptions from "../../../components/DataViewOptions";
+import PageTitle from "../../../shared/components/PageTitle";
+import DataViewOptions from "../../../shared/components/DataViewOptions";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { AppContext } from "../../../App/Context/app";
+import { AppContext } from "../../../app/providers/app";
 import { Card, Form, ListGroup, ListGroupItem } from "react-bootstrap";
 import MarketListDefaultItem from "../DefaultItem";
 
