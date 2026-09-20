@@ -16,7 +16,7 @@ const MarketListSuggestedItem = ({ suggestedItem }) => {
                     <strong className="text-primary mt-2"> {formatMoney(suggestedItem.value)}</strong>
                 )}
             </div>
-            <NumberPicker initialValue={suggestedItem.quantity} />
+            <NumberPicker defaultValue={suggestedItem.quantity} />
         </div>
     );
 };

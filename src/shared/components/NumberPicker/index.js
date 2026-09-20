@@ -1,54 +1,87 @@
-import React, { useState, useCallback } from "react";
+import React, { useReducer } from "react";
+import PropTypes from "prop-types";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import "./index.scss"
+import { createState, reducer, toValue } from "./reducer";
+import "./index.scss";
 
-function NumberPicker({ className, initialValue = 0, onChange = () => {}, onBlur = () => {}, isInvalid }) {
-    const STEP = 1;
-    const MIN_VALUE = 0;
+function NumberPicker({
+    value,
+    defaultValue = 0,
+    onChange = () => {},
+    onBlur = () => {},
+    min = 0,
+    max = Infinity,
+    step = 1,
+    isInvalid = false,
+    disabled = false,
+    className = "",
+    id,
+    "aria-label": ariaLabel,
+}) {
+    const isControlled = value !== undefined;
+    const bounds = { min, max };
 
-    const [value, setValue] = useState(initialValue.toString());
+    const [state, dispatch] = useReducer(reducer, undefined, () =>
+        createState(isControlled ? value : defaultValue, bounds)
+    );
 
-    const stepUp = useCallback(() => {
-        let numericValue = parseFloat(value) || 0;
-        numericValue += STEP;
-        setValue(numericValue.toString());
-        let fakeevent = { target: { value: numericValue } };
-        onChange(fakeevent);
-    }, [value, onChange]);
-
-    const stepDown = useCallback(() => {
-        let numericValue = parseFloat(value) || 0;
-        numericValue = numericValue > MIN_VALUE ? numericValue - STEP : 0;
-        setValue(numericValue.toString());
-        let fakeevent = { target: { value: numericValue } };
-        onChange(fakeevent);
-    }, [value, onChange]);
-
-    const handleChange = (event) => {
-        const inputValue = event.target.value;
-        setValue(inputValue);
-        onChange(event);
+    // Dispatching while rendering re-renders immediately, so the text never shows a stale value.
+    if (isControlled) {
+        const sync = { type: "sync", value, ...bounds };
+        if (reducer(state, sync) !== state) dispatch(sync);
     }
+
+    const current = toValue(state.text, bounds);
+
+    const apply = (action) => {
+        const next = reducer(state, action);
+        if (next === state) return;
+        dispatch(action);
+        const nextValue = toValue(next.text, bounds);
+        if (nextValue !== current) onChange(nextValue);
+    };
+
+    const stepBy = (direction) => apply({ type: "step", direction, step, ...bounds });
 
     const handleBlur = () => {
-        let numericValue = parseFloat(value);
-        setValue(numericValue.toString());
-        onBlur(numericValue);
-    }
+        const commit = { type: "commit", ...bounds };
+        const committed = reducer(state, commit);
+        if (committed !== state) dispatch(commit);
+        onBlur(toValue(committed.text, bounds));
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+        event.preventDefault();
+        stepBy(event.key === "ArrowUp" ? 1 : -1);
+    };
+
+    const rootClassName = ["z-1 number-picker text-nowrap", isInvalid && "is-invalid", className]
+        .filter(Boolean)
+        .join(" ");
+    const buttonClassName = `p-0 m-0 border rounded-circle ${isInvalid ? "border-danger text-danger" : ""}`;
+
     return (
-        <InputGroup className={className + " z-1 number-picker border rounded px-1 py-0 text-nowrap" + (isInvalid ? " border-danger" : "")}>
+        <InputGroup className={rootClassName}>
             <Button
                 variant="link"
                 aria-label="Decrease"
-                className="p-0 m-0"
-                onClick={() => stepDown()} >
-                <i className="bi bi-dash-circle"></i>
+                className={`${buttonClassName} me-2`}
+                disabled={disabled || current <= min}
+                onClick={() => stepBy(-1)}
+            >
+                <i className="bi bi-dash-lg p-2"></i>
             </Button>
             <Form.Control
-                value={value}
-                onChange={(event) => handleChange(event)}
+                id={id}
+                aria-label={ariaLabel}
+                aria-invalid={isInvalid || undefined}
+                value={state.text}
+                onChange={(event) => apply({ type: "type", text: event.target.value, ...bounds })}
                 onBlur={handleBlur}
-                className={"bg-transparent border-0 text-center " + (isInvalid ? "text-danger" : "")}
+                onKeyDown={handleKeyDown}
+                disabled={disabled}
+                className={`bg-transparent border-0 px-0 text-center ${isInvalid ? "text-danger" : ""}`}
                 type="text"
                 inputMode="decimal"
                 pattern="[0-9]*[.,]?[0-9]*"
@@ -57,11 +90,29 @@ function NumberPicker({ className, initialValue = 0, onChange = () => {}, onBlur
             <Button
                 variant="link"
                 aria-label="Increase"
-                className="p-0 m-0"
-                onClick={() => stepUp()} >
-                <i className="bi bi-plus-circle"></i>
+                className={`${buttonClassName} ms-2`}
+                disabled={disabled || current >= max}
+                onClick={() => stepBy(1)}
+            >
+                <i className="bi bi-plus-lg p-2"></i>
             </Button>
         </InputGroup>
-    )
+    );
 }
-export { NumberPicker }
+
+NumberPicker.propTypes = {
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    onChange: PropTypes.func,
+    onBlur: PropTypes.func,
+    min: PropTypes.number,
+    max: PropTypes.number,
+    step: PropTypes.number,
+    isInvalid: PropTypes.bool,
+    disabled: PropTypes.bool,
+    className: PropTypes.string,
+    id: PropTypes.string,
+    "aria-label": PropTypes.string,
+};
+
+export { NumberPicker };

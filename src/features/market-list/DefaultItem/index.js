@@ -7,7 +7,7 @@ function MarketListDefaultItem({ item }) {
             <div className="d-flex flex-column flex-grow-1">
                 <span>{item.product_name}</span>
             </div>
-            <NumberPicker initialValue={item.quantity} />
+            <NumberPicker defaultValue={item.quantity} />
         </div>
     );
 }

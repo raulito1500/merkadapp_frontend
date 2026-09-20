@@ -6,7 +6,7 @@ import { formatMoney } from "../../../shared/utils/formatting";
 function BillBag({ bag, index, errors, onChange, onBlur }) {
     const handleChange = (field, event) => {
         const inputValue = event.target.value;
-        if (["quantity", "value"].includes(field)) {
+        if (["value"].includes(field)) {
             const regex = /^\d*\.?\d*$/;
             if (regex.test(inputValue)) {
                 bag[field] = inputValue;
@@ -15,6 +15,12 @@ function BillBag({ bag, index, errors, onChange, onBlur }) {
         } else {
             bag[field] = inputValue;
         }
+        onChange(bag);
+    };
+
+    const handleQuantityChange = (quantity) => {
+        bag.quantity = quantity;
+        calculateTotalBag();
         onChange(bag);
     };
 
@@ -40,8 +46,8 @@ function BillBag({ bag, index, errors, onChange, onBlur }) {
                 <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <NumberPicker
-                        initialValue={bag.quantity}
-                        onChange={(event) => handleChange("quantity", event)}
+                        value={bag.quantity}
+                        onChange={handleQuantityChange}
                         onBlur={() => handleBlur("quantity")}
                         isInvalid={!!errors[`bags[${index}].quantity`]}
                     />

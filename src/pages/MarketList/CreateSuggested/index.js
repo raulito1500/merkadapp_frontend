@@ -52,6 +52,12 @@ function MarketListCreateSuggested({ loadMarketList }) {
         setData({ ...data, items: updateItems });
     };
 
+    const handleQuantityChange = (index, quantity) => {
+        const newItems = [...data.items];
+        newItems[index] = { ...newItems[index], quantity };
+        setData({ ...data, items: newItems });
+    };
+
     const handleItemChange = (index, field, event) => {
         const value = event.target.value;
         const newData = [...data.items];
@@ -111,9 +117,9 @@ function MarketListCreateSuggested({ loadMarketList }) {
                                 className="list-group-item d-flex align-items-center"
                             >
                                 <NumberPicker
-                                    className="w-25 me-2"
-                                    initialValue={item.quantity}
-                                    onChange={(event) => handleItemChange(index, "quantity", event)}
+                                    className="me-2"
+                                    value={item.quantity}
+                                    onChange={(quantity) => handleQuantityChange(index, quantity)}
                                 />
                                 <span className="pt-1 form-checked-content flex-grow-1 pe-2">
                                     {item.product_id !== "" ? (

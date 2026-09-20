@@ -14,7 +14,7 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
 
     const handleChange = (field, event) => {
         const inputValue = event.target.value;
-        if (["content", "quantity", "unit_value", "discount"].includes(field)) {
+        if (["content", "unit_value", "discount"].includes(field)) {
             const regex = /^\d*\.?\d*$/;
             if (regex.test(inputValue)) {
                 item[field] = inputValue;
@@ -26,6 +26,12 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
         } else {
             item[field] = inputValue;
         }
+        onChange(item);
+    };
+
+    const handleQuantityChange = (quantity) => {
+        item.quantity = quantity;
+        calculateTotalItem();
         onChange(item);
     };
 
@@ -65,8 +71,8 @@ function BillItemForm({ item, index, products, errors, onRemove, onChange, onBlu
                 <Form.Group className="col-4 col-sm-2">
                     <Form.Label>Quantity</Form.Label>
                     <NumberPicker
-                        initialValue={item.quantity}
-                        onChange={(event) => handleChange("quantity", event)}
+                        value={item.quantity}
+                        onChange={handleQuantityChange}
                         onBlur={() => handleBlur("quantity")}
                         isInvalid={!!errors[`items[${index}].quantity`]}
                     />
