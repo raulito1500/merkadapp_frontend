@@ -2,15 +2,15 @@ import React from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../../app/providers/app";
 import { expensesApi } from "../../../lib/expensesApiClient";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { GROUP_CATEGORIES } from "../../../shared/constants/constants";
 import PageTitle from "../../../shared/components/PageTitle";
 import { displayNameOf } from "../../../shared/utils/userDisplay";
 
 function GroupCreate() {
     const navigate = useNavigate();
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(expensesApi);
     const [name, setName] = React.useState("");
     const [category, setCategory] = React.useState("OTHER");
     const [selectedMembers, setSelectedMembers] = React.useState([]);
@@ -24,17 +24,12 @@ function GroupCreate() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setLoading(true);
         const members = selectedMembers.map((option) =>
             typeof option === "string" ? option : option.uid ?? option.label
         );
-        expensesApi
-            .post("/groups", { name, category, members })
+        request((client) => client.post("/groups", { name, category, members }))
             .then((response) => navigate(`/expenses/${response.data._id}`))
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     };
 
     return (

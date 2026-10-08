@@ -3,6 +3,7 @@ import { Badge, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import moment from "moment";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { CATEGORIES } from "../../../shared/constants/constants";
 import DataViewOptions from "../../../shared/components/DataViewOptions";
 import { searchBy } from "../../../shared/utils/searching";
@@ -20,7 +21,8 @@ export const calculateSummaryInfo = (data) => {
 function MarketListView() {
     const { id } = useParams();
 
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [list, setList] = React.useState();
     const [listGrouped, setListGrouped] = React.useState();
@@ -37,17 +39,13 @@ function MarketListView() {
     ];
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/market-list/${id}`)
+        request((client) => client.get(`/market-list/${id}`))
             .then((response) => {
                 const data = response.data;
                 calculateSummaryInfo(data);
                 setList(data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, [id]);
 
     const handleDataViewOptionsChange = (screenSettings) => {
@@ -77,19 +75,18 @@ function MarketListView() {
 
     const checkItem = (event, idItem) => {
         const index = list.items.findIndex((item) => item.id === idItem);
-        setLoading(true);
-        api.put(`/market-list/${list.id}/check/${list.items[index].id}`)
-            .then((response) => {
+        request((client) => client.put(`/market-list/${list.id}/check/${list.items[index].id}`), {
+            errorTitle: "¡Ups! We have an error",
+            errorType: "error",
+        })
+            .then(() => {
                 const updatedList = {
                     ...list,
                     items: list.items.map((item, idx) => (idx === index ? { ...item, checked: true } : item)),
                 };
                 setList(updatedList);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! We have an error", error, "error");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     };
 
     if (!list) {

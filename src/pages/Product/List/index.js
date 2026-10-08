@@ -1,5 +1,6 @@
 import React from "react";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Badge, ButtonGroup, Col, ListGroup, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { BillHistory } from "../BillHistory";
@@ -14,7 +15,8 @@ import { groupBy } from "../../../shared/utils/grouping";
 import PageTitle from "../../../shared/components/PageTitle";
 
 function ProductList() {
-    const { api, setLoading, pushNotifications, show, setShow } = React.useContext(AppContext);
+    const { api, show, setShow } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [list, setList] = React.useState();
     const [listGrouped, setListGrouped] = React.useState([]);
@@ -34,15 +36,11 @@ function ProductList() {
     };
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/products/true`)
+        request((client) => client.get(`/products/true`))
             .then((response) => {
                 setList(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     React.useEffect(() => {

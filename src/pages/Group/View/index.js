@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { AppContext } from "../../../app/providers/app";
 import { useAuth } from "../../../app/providers/auth";
 import { expensesApi } from "../../../lib/expensesApiClient";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import Avatar from "../../../shared/components/Avatar";
 import PageTitle from "../../../shared/components/PageTitle";
 import { formatMoney } from "../../../shared/utils/formatting";
@@ -15,7 +15,7 @@ const BALANCE_EPSILON = 0.01;
 
 function GroupView() {
     const { groupId } = useParams();
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(expensesApi);
     const { user } = useAuth();
     const [group, setGroup] = React.useState(null);
     const [expenses, setExpenses] = React.useState([]);
@@ -35,30 +35,24 @@ function GroupView() {
     };
 
     React.useEffect(() => {
-        setLoading(true);
-        Promise.all([
-            expensesApi.get(`/groups/${groupId}`).then((response) => setGroup(response.data)),
-            loadExpenses(),
-            loadSummary(),
-            expensesApi
-                .get("/groups")
-                .then((response) => setDestinations(response.data.filter((g) => g._id !== groupId))),
-        ])
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+        request(() =>
+            Promise.all([
+                expensesApi.get(`/groups/${groupId}`).then((response) => setGroup(response.data)),
+                loadExpenses(),
+                loadSummary(),
+                expensesApi
+                    .get("/groups")
+                    .then((response) => setDestinations(response.data.filter((g) => g._id !== groupId))),
+            ])
+        ).catch(() => {});
     }, [groupId]);
 
     const handleMove = (expense, newGroupId) => {
-        setLoading(true);
-        expensesApi
-            .patch(`/expenses/${expense._id}/group`, { groupId: newGroupId })
-            .then(() => Promise.all([loadExpenses(), loadSummary()]))
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+        request((client) =>
+            client
+                .patch(`/expenses/${expense._id}/group`, { groupId: newGroupId })
+                .then(() => Promise.all([loadExpenses(), loadSummary()]))
+        ).catch(() => {});
     };
 
     return (

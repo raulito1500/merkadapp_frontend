@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Button, Card, Col, Offcanvas, Row } from "react-bootstrap";
 import { MarketListCreateSuggested } from "../CreateSuggested";
 import moment from "moment";
@@ -9,14 +10,14 @@ import { formatMoney } from "../../../shared/utils/formatting";
 function MarketListWidget() {
     const [lists, setLists] = React.useState([]);
 
-    const { api, setLoading, show, setShow, pushNotifications } = React.useContext(AppContext);
+    const { api, show, setShow } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const loadMarketList = () => {
-        setLoading(true);
-        api.get(`/market-list`)
+        request((client) => client.get(`/market-list`))
             .then((response) => {
                 setLists(
                     response.data.map((list, index) => {
@@ -26,10 +27,7 @@ function MarketListWidget() {
                     })
                 );
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     };
     React.useEffect(() => {
         loadMarketList();

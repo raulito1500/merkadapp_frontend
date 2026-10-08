@@ -1,11 +1,13 @@
 import React from "react";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Button, Form, ListGroup } from "react-bootstrap";
 import moment from "moment";
 import { NumberPicker } from "../../../shared/components/NumberPicker";
 
 function MarketListCreateSuggested({ loadMarketList }) {
-    const { api, setLoading, setShow, pushNotifications } = React.useContext(AppContext);
+    const { api, setShow } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [data, setData] = React.useState([]);
     const [date, setDate] = React.useState("");
@@ -27,17 +29,13 @@ function MarketListCreateSuggested({ loadMarketList }) {
     };
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/market-list/suggested`)
+        request((client) => client.get(`/market-list/suggested`))
             .then((response) => {
                 const data = response.data;
                 setDate(nextMarketDay());
                 setData(data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     const handleAddItem = () => {
@@ -71,17 +69,16 @@ function MarketListCreateSuggested({ loadMarketList }) {
             date: new Date(date + "T00:00:00").toISOString(),
             items: data.items.filter((d) => d.checked === true).map((item) => ({ ...item, checked: false })),
         };
-        setLoading(true);
-        api.post(`/market-list`, list)
-            .then((response) => {
+        request((client) => client.post(`/market-list`, list), {
+            errorTitle: "¡Ups! We have an error",
+            errorType: "error",
+        })
+            .then(() => {
                 setShow(false);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! We have an error", error, "error");
-            })
+            .catch(() => {})
             .finally(() => {
                 loadMarketList();
-                setLoading(false);
             });
     };
     return (

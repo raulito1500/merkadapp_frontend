@@ -3,11 +3,13 @@ import PageTitle from "../../../shared/components/PageTitle";
 import DataViewOptions from "../../../shared/components/DataViewOptions";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Card, Form, ListGroup, ListGroupItem } from "react-bootstrap";
 import MarketListDefaultItem from "../DefaultItem";
 
 function CreateBlankMarketList() {
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
     const [products, setProducts] = React.useState();
 
     const ref = React.createRef();
@@ -54,15 +56,11 @@ function CreateBlankMarketList() {
     const [marketList, setMarketList] = useReducer(reducer, blankMarketList);
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/products/true`)
+        request((client) => client.get(`/products/true`))
             .then((response) => {
                 setProducts(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     const handleAddItem = (selected) => {

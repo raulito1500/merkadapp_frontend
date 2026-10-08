@@ -1,5 +1,6 @@
 import React from "react";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import PageTitle from "../../../shared/components/PageTitle";
 import MarketListSuggested from "../suggested";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -8,19 +9,16 @@ import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function CreateOptionsMarketList(){
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
     const [data, setData] = React.useState([]);
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/market-list/suggested`)
+        request((client) => client.get(`/market-list/suggested`))
             .then((response) => {
                 setData(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     let suggestedItems = data.items?.reduce((acc, item) => {

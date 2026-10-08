@@ -1,13 +1,13 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../../app/providers/app";
 import { expensesApi } from "../../../lib/expensesApiClient";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import PageTitle from "../../../shared/components/PageTitle";
 import { ExpenseList } from "../ExpenseList";
 
 function PersonalView() {
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(expensesApi);
     const [expenses, setExpenses] = React.useState([]);
     const [destinations, setDestinations] = React.useState([]);
 
@@ -18,28 +18,18 @@ function PersonalView() {
     };
 
     React.useEffect(() => {
-        setLoading(true);
-        Promise.all([
-            loadExpenses(),
-            expensesApi
-                .get("/groups")
-                .then((response) => setDestinations(response.data)),
-        ])
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+        request(() =>
+            Promise.all([
+                loadExpenses(),
+                expensesApi.get("/groups").then((response) => setDestinations(response.data)),
+            ])
+        ).catch(() => {});
     }, []);
 
     const handleMove = (expense, newGroupId) => {
-        setLoading(true);
-        expensesApi
-            .patch(`/expenses/${expense._id}/group`, { groupId: newGroupId })
-            .then(() => loadExpenses())
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+        request((client) =>
+            client.patch(`/expenses/${expense._id}/group`, { groupId: newGroupId }).then(() => loadExpenses())
+        ).catch(() => {});
     };
 
     return (

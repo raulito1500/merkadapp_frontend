@@ -2,32 +2,29 @@ import React, { useEffect, useState } from "react";
 import { MarketListWidget } from "../MarketList/Widget";
 import { Col, Row } from "react-bootstrap";
 import { AppContext } from "../../app/providers/app";
+import { useApiRequest } from "../../shared/hooks/useApiRequest";
 import { BillChartWidget } from "./BillChartWidget";
 import { BudgetWidget } from "./BudgetWidget";
 import { WelcomeWidget } from "./WelcomeWidget";
 import { NextMarketListWidget } from "./NextMarketListWidget";
 
 function Overview() {
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [dataBillsByMonth, setDataBillsByMonth] = useState([]);
     const [lists, setLists] = useState();
 
     useEffect(() => {
-        setLoading(true);
-        api.get(`/bills/byMonth`)
+        request((client) => client.get(`/bills/byMonth`))
             .then((response) => {
                 setDataBillsByMonth(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     useEffect(() => {
-        setLoading(true);
-        api.get(`/market-list`)
+        request((client) => client.get(`/market-list`))
             .then((response) => {
                 setLists(
                     response.data.map((list, index) => {
@@ -37,10 +34,7 @@ function Overview() {
                     })
                 );
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     return (

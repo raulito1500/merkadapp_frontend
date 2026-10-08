@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../../app/providers/app";
 import { useAuth } from "../../../app/providers/auth";
 import { expensesApi } from "../../../lib/expensesApiClient";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { GROUP_CATEGORIES } from "../../../shared/constants/constants";
 import PageTitle from "../../../shared/components/PageTitle";
 import GroupCard from "./GroupCard";
@@ -18,15 +18,13 @@ function balancesForUser(summary, uid) {
 }
 
 function GroupList() {
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(expensesApi);
     const { user } = useAuth();
     const [groups, setGroups] = React.useState([]);
 
     React.useEffect(() => {
-        setLoading(true);
-        expensesApi
-            .get("/groups")
-            .then(async (response) => {
+        request((client) =>
+            client.get("/groups").then(async (response) => {
                 const rawGroups = response.data;
                 const summaries = await Promise.all(
                     rawGroups.map((group) => expensesApi.get(`/groups/${group._id}/summary`))
@@ -37,12 +35,11 @@ function GroupList() {
                     return { ...group, balances, sortKey };
                 });
                 withBalances.sort((a, b) => b.sortKey - a.sortKey);
-                setGroups(withBalances);
+                return withBalances;
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+        )
+            .then((withBalances) => setGroups(withBalances))
+            .catch(() => {});
     }, []);
 
     return (

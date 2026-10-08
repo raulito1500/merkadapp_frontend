@@ -3,24 +3,22 @@ import { Link } from "react-router-dom";
 import { Badge, Table } from "react-bootstrap";
 import moment from "moment";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { formatMoney, formatRepeat, formatUnits } from "../../../shared/utils/formatting.js";
 import { CATEGORIES } from "../../../shared/constants/constants.js";
 
 function BillHistory({ product }) {
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [data, setData] = React.useState([]);
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/products/${product.id}/bill-items`)
+        request((client) => client.get(`/products/${product.id}/bill-items`))
             .then((response) => {
                 setData(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, [product]);
 
     return (

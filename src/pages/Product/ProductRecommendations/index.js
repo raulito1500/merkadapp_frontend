@@ -2,23 +2,19 @@ import React from "react";
 import { Badge, Card, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 
 function ProductRecommendations() {
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
     const [recommendations, setRecommendations] = React.useState([]);
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/products/recommendations`)
+        request((client) => client.get(`/products/recommendations`))
             .then((response) => {
                 setRecommendations(response.data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            .catch(() => {});
     }, []);
 
     if (recommendations.length === 0) {

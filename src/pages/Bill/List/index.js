@@ -3,11 +3,13 @@ import { Button, Card, Col, Container, Dropdown, Form, InputGroup, Row } from "r
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { formatMoney } from "../../../shared/utils/formatting";
 import PageTitle from "../../../shared/components/PageTitle";
 
 function BillList() {
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
     const [merge, setMerge] = React.useState([]);
     const [listGrouped, setListGrouped] = React.useState([]);
 
@@ -23,16 +25,12 @@ function BillList() {
     };
 
     const loadBills = () => {
-        setLoading(true);
-        api.get(`/bills`)
+        request((client) => client.get(`/bills`))
             .then((response) => {
                 const data = groupBillsByDate(response.data);
                 setListGrouped(data);
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     };
 
     React.useEffect(() => {
@@ -65,18 +63,17 @@ function BillList() {
         const idDestination = merge[0];
         const idsOrigen = merge.slice(1);
 
-        setLoading(true);
-        api.put(`/bills/merge/${idDestination}`, idsOrigen)
-            .then((response) => {
+        request((client) => client.put(`/bills/merge/${idDestination}`, idsOrigen), {
+            errorTitle: "¡Ups! There was an error merging bills",
+            errorType: "error",
+        })
+            .then(() => {
                 pushNotifications("¡Great news! Bills have been merged", null, "success");
                 loadBills();
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! There was an error merging bills", error, "error");
-            })
+            .catch(() => {})
             .finally(() => {
                 setMerge([]);
-                setLoading(false);
             });
     };
 

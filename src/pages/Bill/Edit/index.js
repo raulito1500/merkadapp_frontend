@@ -1,5 +1,6 @@
 import React from "react";
 import { AppContext } from "../../../app/providers/app";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button, Form, Row, Card, Accordion, Container } from "react-bootstrap";
 import moment from "moment";
@@ -11,7 +12,8 @@ import { formatMoney } from "../../../shared/utils/formatting";
 function BillEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { api, setLoading, pushNotifications } = React.useContext(AppContext);
+    const { api } = React.useContext(AppContext);
+    const { request } = useApiRequest(api);
 
     const [data, setData] = React.useState();
     const [products, setProducts] = React.useState();
@@ -34,8 +36,7 @@ function BillEdit() {
     };
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/bills/${id}`)
+        request((client) => client.get(`/bills/${id}`))
             .then((response) => {
                 const data = response.data;
                 data.date = moment(response.data.date).format('YYYY-MM-DD');
@@ -50,22 +51,15 @@ function BillEdit() {
                 }
                 setData(data);
             })
-            .catch(error => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, [id]);
 
     React.useEffect(() => {
-        setLoading(true);
-        api.get(`/products/true`)
+        request((client) => client.get(`/products/true`))
             .then((response) => {
                 setProducts(response.data);
             })
-            .catch(error => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, []);
 
     const calculateTotalAmount = (calcData) => {
@@ -137,18 +131,17 @@ function BillEdit() {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (validate()) {
-            setLoading(true);
             const bill = {
                 ...data,
                 date: new Date(data.date + "T00:00:00").toISOString()
             }
             delete bill.id;
-            api.put(`/bills/${id}`, bill)
+            request((client) => client.put(`/bills/${id}`, bill), {
+                errorTitle: "¡Ups! We have an error",
+                errorType: "error",
+            })
                 .then(() => navigate("/bills"))
-                .catch((error) => {
-                    pushNotifications("¡Ups! We have an error", error, "error");
-                })
-                .finally(() => setLoading(false));
+                .catch(() => {});
         }
     };
 

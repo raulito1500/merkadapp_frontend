@@ -2,9 +2,9 @@ import React from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
-import { AppContext } from "../../../app/providers/app";
 import { useAuth } from "../../../app/providers/auth";
 import { expensesApi } from "../../../lib/expensesApiClient";
+import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import PageTitle from "../../../shared/components/PageTitle";
 import { displayNameOf } from "../../../shared/utils/userDisplay";
 
@@ -12,7 +12,7 @@ function ExpenseCreate() {
     const { groupId } = useParams();
     const auth = useAuth();
     const navigate = useNavigate();
-    const { setLoading, pushNotifications } = React.useContext(AppContext);
+    const { request } = useApiRequest(expensesApi);
     const [group, setGroup] = React.useState(null);
     const [description, setDescription] = React.useState("");
     const [amount, setAmount] = React.useState("");
@@ -22,9 +22,7 @@ function ExpenseCreate() {
 
     React.useEffect(() => {
         if (!groupId) return;
-        setLoading(true);
-        expensesApi
-            .get(`/groups/${groupId}`)
+        request((client) => client.get(`/groups/${groupId}`))
             .then((response) => {
                 setGroup(response.data);
                 setPaidBy(
@@ -33,17 +31,13 @@ function ExpenseCreate() {
                         : response.data.members[0].uid
                 );
             })
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     }, [groupId]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setLoading(true);
-        expensesApi
-            .post("/expenses", {
+        request((client) =>
+            client.post("/expenses", {
                 description,
                 amount: Number(amount),
                 currency,
@@ -51,11 +45,9 @@ function ExpenseCreate() {
                 paidBy,
                 groupId: groupId ?? undefined,
             })
+        )
             .then(() => navigate(groupId ? `/expenses/${groupId}` : "/expenses/personal"))
-            .catch((error) => {
-                pushNotifications("¡Ups! Something went wrong", error, "warning");
-            })
-            .finally(() => setLoading(false));
+            .catch(() => {});
     };
 
     return (
