@@ -2,92 +2,21 @@ import React from "react";
 import { Badge, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import moment from "moment";
-import { AppContext } from "../../../app/providers/app";
-import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { CATEGORIES } from "../../../shared/constants/constants";
 import DataViewOptions from "../../../shared/components/DataViewOptions";
-import { searchBy } from "../../../shared/utils/searching";
-import { groupBy, groupByChecked, groupBySuggestedPlace } from "../../../shared/utils/grouping";
-import { sortBy } from "../../../shared/utils/sorting";
 import { formatMoney } from "../../../shared/utils/formatting";
+import { useMarketListView } from "../hooks/useMarketListView";
 
-export const calculateSummaryInfo = (data) => {
-    data.completedItems = data.items.filter((item) => !!item.checked).length;
-    data.totalItems = data.items.length;
-    data.completedStatus = (data.completedItems / data.totalItems) * 100;
-    data.estimated = data.items.reduce((total, item) => total + item.value, 0);
-};
+const GROUP_OPTIONS = [
+    { key: "STATUS", label: "By status" },
+    { key: "CATEGORY", label: "By category" },
+    { key: "PLACE", label: "By suggested place" },
+];
 
 function MarketListView() {
     const { id } = useParams();
-
-    const { api } = React.useContext(AppContext);
-    const { request } = useApiRequest(api);
-
-    const [list, setList] = React.useState();
-    const [listGrouped, setListGrouped] = React.useState();
-
-    const DEFAULT_SCREEN_SETTINGS = {
-        search: "",
-        sort: "ASC",
-        group: "STATUS",
-    };
-    const GROUP_OPTIONS = [
-        { key: "STATUS", label: "By status" },
-        { key: "CATEGORY", label: "By category" },
-        { key: "PLACE", label: "By suggested place" },
-    ];
-
-    React.useEffect(() => {
-        request((client) => client.get(`/market-list/${id}`))
-            .then((response) => {
-                const data = response.data;
-                calculateSummaryInfo(data);
-                setList(data);
-            })
-            .catch(() => {});
-    }, [id]);
-
-    const handleDataViewOptionsChange = (screenSettings) => {
-        if (!list) {
-            return;
-        }
-        let dataGr = {};
-        if (screenSettings.group === "STATUS") {
-            dataGr = groupByChecked(list.items);
-        } else if (screenSettings.group === "CATEGORY") {
-            dataGr = groupBy("category", list.items);
-            setListGrouped(dataGr);
-        } else if (screenSettings.group === "PLACE") {
-            dataGr = groupBySuggestedPlace(list.items);
-            setListGrouped(dataGr);
-        }
-        for (let index in dataGr) {
-            dataGr[index] = sortBy("product_name", dataGr[index], screenSettings.sort);
-            dataGr[index] = searchBy("product_name", dataGr[index], screenSettings.search);
-        }
-        setListGrouped(dataGr);
-    };
-
-    React.useEffect(() => {
-        handleDataViewOptionsChange(DEFAULT_SCREEN_SETTINGS);
-    }, [list]);
-
-    const checkItem = (event, idItem) => {
-        const index = list.items.findIndex((item) => item.id === idItem);
-        request((client) => client.put(`/market-list/${list.id}/check/${list.items[index].id}`), {
-            errorTitle: "¡Ups! We have an error",
-            errorType: "error",
-        })
-            .then(() => {
-                const updatedList = {
-                    ...list,
-                    items: list.items.map((item, idx) => (idx === index ? { ...item, checked: true } : item)),
-                };
-                setList(updatedList);
-            })
-            .catch(() => {});
-    };
+    const { list, listGrouped, handleDataViewOptionsChange, checkItem, DEFAULT_SCREEN_SETTINGS } =
+        useMarketListView(id);
 
     if (!list) {
         return <p>Loading...</p>;
@@ -190,9 +119,7 @@ function MarketListView() {
                                                                 type="checkbox"
                                                                 disabled={item.checked}
                                                                 checked={item.checked}
-                                                                onChange={(event) =>
-                                                                    checkItem(event, item.id)
-                                                                }
+                                                                onChange={() => checkItem(item.id)}
                                                             />
                                                         </ListGroup.Item>
                                                     ))}

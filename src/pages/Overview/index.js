@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MarketListWidget } from "../MarketList/Widget";
+import { MarketListWidget } from "../../features/market-list/components/Widget";
 import { Col, Row } from "react-bootstrap";
 import { AppContext } from "../../app/providers/app";
 import { useApiRequest } from "../../shared/hooks/useApiRequest";

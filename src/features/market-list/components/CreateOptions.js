@@ -2,11 +2,10 @@ import React from "react";
 import { AppContext } from "../../../app/providers/app";
 import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import PageTitle from "../../../shared/components/PageTitle";
-import MarketListSuggested from "../suggested";
-import { Typeahead } from "react-bootstrap-typeahead";
-import DataViewOptions from "../../../shared/components/DataViewOptions";
+import MarketListSuggested from "./SuggestedList";
 import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { marketListApi } from "../api/marketListApi";
 
 function CreateOptionsMarketList(){
     const { api } = React.useContext(AppContext);
@@ -14,7 +13,7 @@ function CreateOptionsMarketList(){
     const [data, setData] = React.useState([]);
 
     React.useEffect(() => {
-        request((client) => client.get(`/market-list/suggested`))
+        request((client) => marketListApi.getSuggested(client))
             .then((response) => {
                 setData(response.data);
             })

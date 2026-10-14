@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { AppContext } from "../../../app/providers/app";
 import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Button, Card, Col, Offcanvas, Row } from "react-bootstrap";
-import { MarketListCreateSuggested } from "../CreateSuggested";
+import { MarketListCreateSuggested } from "./CreateSuggested";
 import moment from "moment";
 import { formatMoney } from "../../../shared/utils/formatting";
+import { marketListApi } from "../api/marketListApi";
 
 function MarketListWidget() {
     const [lists, setLists] = React.useState([]);
@@ -17,7 +18,7 @@ function MarketListWidget() {
     const handleShow = () => setShow(true);
 
     const loadMarketList = () => {
-        request((client) => client.get(`/market-list`))
+        request((client) => marketListApi.list(client))
             .then((response) => {
                 setLists(
                     response.data.map((list, index) => {

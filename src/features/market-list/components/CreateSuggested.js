@@ -4,6 +4,7 @@ import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Button, Form, ListGroup } from "react-bootstrap";
 import moment from "moment";
 import { NumberPicker } from "../../../shared/components/NumberPicker";
+import { marketListApi } from "../api/marketListApi";
 
 function MarketListCreateSuggested({ loadMarketList }) {
     const { api, setShow } = React.useContext(AppContext);
@@ -29,7 +30,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
     };
 
     React.useEffect(() => {
-        request((client) => client.get(`/market-list/suggested`))
+        request((client) => marketListApi.getSuggested(client))
             .then((response) => {
                 const data = response.data;
                 setDate(nextMarketDay());
@@ -69,7 +70,7 @@ function MarketListCreateSuggested({ loadMarketList }) {
             date: new Date(date + "T00:00:00").toISOString(),
             items: data.items.filter((d) => d.checked === true).map((item) => ({ ...item, checked: false })),
         };
-        request((client) => client.post(`/market-list`, list), {
+        request((client) => marketListApi.create(client, list), {
             errorTitle: "¡Ups! We have an error",
             errorType: "error",
         })

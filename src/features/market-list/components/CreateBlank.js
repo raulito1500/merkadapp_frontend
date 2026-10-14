@@ -5,7 +5,8 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import { AppContext } from "../../../app/providers/app";
 import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Card, Form, ListGroup, ListGroupItem } from "react-bootstrap";
-import MarketListDefaultItem from "../DefaultItem";
+import MarketListDefaultItem from "./DefaultItem";
+import { marketListApi } from "../api/marketListApi";
 
 function CreateBlankMarketList() {
     const { api } = React.useContext(AppContext);
@@ -56,7 +57,7 @@ function CreateBlankMarketList() {
     const [marketList, setMarketList] = useReducer(reducer, blankMarketList);
 
     React.useEffect(() => {
-        request((client) => client.get(`/products/true`))
+        request((client) => marketListApi.getProducts(client))
             .then((response) => {
                 setProducts(response.data);
             })
