@@ -4,9 +4,10 @@ A personal grocery management and expense tracking SPA. Started as a practical s
 
 **Live:** [merkadapp-638bb.web.app](https://merkadapp-638bb.web.app)
 
-Pairs with two backends:
+Part of the Merkadapp ecosystem:
 - [merkadapp API](https://github.com/raulito1500/merkadapp) — Go + MongoDB, powers bills, products and market lists
 - [merkadapp expenses API](https://github.com/raulito1500/merkadapp_expenses-api) — NestJS + MongoDB, powers shared/personal expenses and groups
+- [merkadapp AI](https://github.com/raulito1500/merkadapp_ai) — Python services (recipes, invoice agent, MCP server). Not consumed by this frontend yet; see [Roadmap](#roadmap)
 
 ## Stack
 
@@ -38,8 +39,9 @@ Firebase Auth ──▶ AuthContext ──┐
 
 - `AuthContext` owns the Firebase session (email/password + Google sign-in) and gates the router.
 - Two separate Axios clients in `src/lib/` each hold the base URL and auth headers for one backend — the merkadapp Go API (exposed to pages through `AppContext`) and the expenses API (imported directly) — so a page only uses the client for the backend it needs.
+- `useApiRequest(client)` (in `src/shared/hooks/`) wraps every backend call: it toggles the global loader, surfaces failures through the notifications queue and re-throws so the caller can still react. Pages pass it one of the two clients and a call, instead of repeating loading/error handling.
 - `HashRouter` renders every route inside `MainLayout` (navbar + auth-gated pages) or `BlankLayout` (login, full-screen views).
-- Most domains live as a `pages/<Domain>` folder (List/Create/Edit views); the market list creation flow is complex enough to live under `features/market-list` instead, grouped by behavior rather than by page.
+- Most domains live as a `pages/<Domain>` folder (List/Create/Edit views); the market list flow (create, suggested list, live view) is complex enough to live under `features/market-list` instead, grouped by behavior (`api/`, `components/`, `hooks/`) rather than by page. `pages/MarketList/` only re-exports those components for the router.
 
 ## Features
 
@@ -54,6 +56,29 @@ Firebase Auth ──▶ AuthContext ──┐
   - **Personal** — log personal expenses and move them into a group later
   - **Groups** — create and edit groups (name, category/icon, typeahead member entry), view group expenses, and see a per-member balance summary
   - move any expense between groups (or back to personal) after the fact
+
+## Roadmap
+
+The frontend is feature-complete for day-to-day use; most of the roadmap lives in the backends and in the AI layer, and will surface here once those pieces are stable.
+
+**Done**
+- Firebase Authentication across the frontend and both backends (bearer ID token on every request)
+- Expenses and groups against the NestJS API, with per-member balances and settlements
+- Source reorganized into `app / pages / features / shared / lib`, with a shared `useApiRequest` hook and a `features/market-list` slice
+
+**In progress — AI layer ([merkadapp_ai](https://github.com/raulito1500/merkadapp_ai))**
+- Recipe suggestions with a semantic cache (pgvector) — service done, no UI yet
+- Invoice agent that turns e-mailed electronic invoices into bills (Gmail + Gemini tool calling, LangGraph) — done, runs outside the app
+- MCP server exposing Merkadapp to Claude Desktop — `get_bill` working; `create_expense` and `create_market_list` next
+
+**Next**
+- Frontend entry point for recipes (suggest a recipe from the ingredients you have)
+- Households, roles and permissions (Supabase Auth + RLS) — the Go API still shows all data to any signed-in user
+- Evals and cost tracking for LLM output
+
+**Known gaps**
+- `Product/BillHistory` test fails at HEAD (component takes `product`, the test passes `productId`)
+- `package-lock.json` is out of sync with `package.json` (`npm ci` fails); `npm install` is avoided because npm 11 rewrites the whole lockfile
 
 ## Screenshots
 
@@ -74,7 +99,8 @@ Firebase Auth ──▶ AuthContext ──┐
 | Route shells (navbar vs. full-screen) | `src/app/layouts/` |
 | Navbar, login/logout, user avatar menu | `src/app/AppNavbar/` |
 | A specific domain's pages (List/Create/Edit) | `src/pages/<Domain>/` — `Bill`, `Expense`, `Group`, `Login`, `MarketList`, `Overview`, `Product` |
-| Market list creation / suggested-list flow | `src/features/market-list/` |
+| Market list flow (create, suggested list, view, widget, its API calls) | `src/features/market-list/` |
+| Shared hooks (`useApiRequest`) | `src/shared/hooks/` |
 | Shared UI components | `src/shared/components/` |
 | Category labels and other constants | `src/shared/constants/` |
 | Formatting, grouping, searching, sorting helpers | `src/shared/utils/` |

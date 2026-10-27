@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Accordion } from "react-bootstrap";
 import "@testing-library/jest-dom";
-import BillItemForm from ".";
+import BillItemForm from "./ItemForm";
 
 const buildItem = (overrides = {}) => ({
     product_id: "",

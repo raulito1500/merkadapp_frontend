@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Accordion } from "react-bootstrap";
 import "@testing-library/jest-dom";
-import { BillBag } from ".";
+import { BillBag } from "./Bag";
 
 function Parent({ initial, spy, errors = {} }) {
     const [bag, setBag] = React.useState(initial);

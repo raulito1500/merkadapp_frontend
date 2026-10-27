@@ -1,144 +1,40 @@
 import React from "react";
-import { AppContext } from "../../../app/providers/app";
-import { useApiRequest } from "../../../shared/hooks/useApiRequest";
-import { useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button, Form, Row, Card, Accordion, Container } from "react-bootstrap";
-import moment from "moment";
-import BillItemForm from "../BillItemForm";
-import { BillBag } from "../BillBag";
-import { BillTax } from "../BillTax";
+import BillItemForm from "./ItemForm";
+import { BillBag } from "./Bag";
+import { BillTax } from "./Tax";
 import { formatMoney } from "../../../shared/utils/formatting";
+import { useBillForm } from "../hooks/useBillForm";
 
-function BillCreate() {
-    const navigate = useNavigate();
-    const { api } = React.useContext(AppContext);
-    const { request } = useApiRequest(api);
+function BillForm() {
+    const { id } = useParams();
+    const {
+        data,
+        products,
+        errors,
+        handleFormChange,
+        handleChange,
+        handleBlur,
+        handleAddItem,
+        handleAddBag,
+        handleAddTax,
+        handleRemoveItem,
+        handleSubmit,
+    } = useBillForm(id);
 
-    const [data, setData] = React.useState({
-        where: "",
-        paid_by: "",
-        date: moment().format("YYYY-MM-DD"),
-        items: [],
-        taxes: [],
-        bags: [],
-        total: 0,
-    });
-    const [products, setProducts] = React.useState();
-    const [errors, setErrors] = React.useState({});
-
-    const handleFormChange = (field, value) => {
-        setData({ ...data, [field]: value });
-    };
-
-    const validate = () => {
-        const newErrors = {};
-        if (!data.where) newErrors.where = "Where is required";
-
-        data.items.forEach((item, index) => {
-            if (item.quantity <= 0) newErrors[`items[${index}].quantity`] = "Quantity must be greater than 0";
-        });
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    React.useEffect(() => {
-        request((client) => client.get(`/products/true`))
-            .then((response) => {
-                setProducts(response.data);
-            })
-            .catch(() => {});
-    }, []);
-
-    const calculateTotalAmount = (calcData) => {
-        let sum = 0;
-        sum += calcData.items.reduce((acc, item) => acc + item.total, 0);
-        sum += calcData.bags.reduce((acc, bag) => acc + bag.total, 0);
-        sum += calcData.taxes.reduce((acc, tax) => acc + tax.total, 0);
-        return sum;
-    };
-
-    const handleChange = (collection, index, item) => {
-        const updatedItems = [...data[collection]];
-        updatedItems[index] = item;
-
-        const calcData = { ...data, [collection]: updatedItems };
-        calcData.total = calculateTotalAmount(calcData);
-
-        setData(calcData);
+    if (!data) {
+        return "";
     }
-
-    const handleBlur = (collection, index, item) => {
-        const updatedItems = [...data[collection]];
-        updatedItems[index] = item;
-        setData({ ...data, [collection]: updatedItems });
-    };
-
-    const handleAddItem = () => {
-        const newItem = {
-            product_id: "",
-            quantity: 0,
-            description: "",
-            brand: "",
-            content: "",
-            unit: "",
-            is_additional: false,
-            unit_value: 0,
-            discount: 0,
-            total: 0
-        };
-
-        const updatedItems = [...data.items, newItem];
-        setData({ ...data, items: updatedItems });
-    }
-
-    const handleAddBag = () => {
-        const newBag = {
-            quantity: 0,
-            value: 0,
-            total: 0
-        };
-        const updatedBags = [...data.bags, newBag];
-        setData({ ...data, bags: updatedBags });
-    }
-
-    const handleAddTax = () => {
-        const newTax = {
-            concept: "",
-            total: 0
-        };
-        const updatedTaxes = [...data.taxes, newTax];
-        setData({ ...data, taxes: updatedTaxes });
-    }
-    const handleRemoveItem = (index) => {
-        const updatedItems = [...data.items];
-        updatedItems.splice(index, 1);
-        setData({ ...data, items: updatedItems });
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (validate()) {
-            const bill = {
-                ...data,
-                date: new Date(data.date + "T00:00:00").toISOString()
-            }
-            request((client) => client.post(`/bills/`, bill), {
-                errorTitle: "¡Ups! We have an error",
-                errorType: "error",
-            })
-                .then(() => navigate("/bills"))
-                .catch(() => {});
-        }
-    };
 
     return (
         <>
             <h1>
-                <Link
-                    to="/bills">
+                <Link to="/bills">
                     <i className="bi bi-arrow-left fs-5"></i>
-                </Link> Create bill</h1>
+                </Link>{" "}
+                {id ? "Edit bill" : "Create bill"}
+            </h1>
             <Form onSubmit={handleSubmit}>
                 <Container fluid className="fixed-bottom px-3 pt-2 pb-4 bg-white d-flex justify-content-between shadow-lg z-2">
                     <h3 className="mb-0 text-primary"><span className="d-block fw-normal fs-6 text-muted">Total </span>{formatMoney(data.total)}</h3>
@@ -146,7 +42,7 @@ function BillCreate() {
                         className="align-self-end text-light"
                         type="submit"
                     >
-                        Create bill
+                        {id ? "Update bill" : "Create bill"}
                     </Button>
                 </Container>
                 <Card>
@@ -267,4 +163,4 @@ function BillCreate() {
     );
 }
 
-export { BillCreate }
+export { BillForm };
