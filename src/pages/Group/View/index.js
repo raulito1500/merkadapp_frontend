@@ -9,7 +9,7 @@ import PageTitle from "../../../shared/components/PageTitle";
 import { formatMoney } from "../../../shared/utils/formatting";
 import { computeSettlements } from "../../../shared/utils/settlements";
 import { displayNameOf } from "../../../shared/utils/userDisplay";
-import { ExpenseList } from "../../Expense/ExpenseList";
+import { ExpenseList } from "../../../features/expense/components/ExpenseList";
 
 const BALANCE_EPSILON = 0.01;
 

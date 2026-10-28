@@ -1,54 +1,26 @@
 import React from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import moment from "moment";
-import { useAuth } from "../../../app/providers/auth";
-import { expensesApi } from "../../../lib/expensesApiClient";
-import { useApiRequest } from "../../../shared/hooks/useApiRequest";
+import { useParams } from "react-router-dom";
 import PageTitle from "../../../shared/components/PageTitle";
 import { displayNameOf } from "../../../shared/utils/userDisplay";
+import { useExpenseForm } from "../hooks/useExpenseForm";
 
 function ExpenseCreate() {
     const { groupId } = useParams();
-    const auth = useAuth();
-    const navigate = useNavigate();
-    const { request } = useApiRequest(expensesApi);
-    const [group, setGroup] = React.useState(null);
-    const [description, setDescription] = React.useState("");
-    const [amount, setAmount] = React.useState("");
-    const [currency, setCurrency] = React.useState("COP");
-    const [date, setDate] = React.useState(moment().format("YYYY-MM-DD"));
-    const [paidBy, setPaidBy] = React.useState(auth.user.uid);
-
-    React.useEffect(() => {
-        if (!groupId) return;
-        request((client) => client.get(`/groups/${groupId}`))
-            .then((response) => {
-                setGroup(response.data);
-                setPaidBy(
-                    response.data.members.some((member) => member.uid === auth.user.uid)
-                        ? auth.user.uid
-                        : response.data.members[0].uid
-                );
-            })
-            .catch(() => {});
-    }, [groupId]);
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        request((client) =>
-            client.post("/expenses", {
-                description,
-                amount: Number(amount),
-                currency,
-                date,
-                paidBy,
-                groupId: groupId ?? undefined,
-            })
-        )
-            .then(() => navigate(groupId ? `/expenses/${groupId}` : "/expenses/personal"))
-            .catch(() => {});
-    };
+    const {
+        group,
+        description,
+        setDescription,
+        amount,
+        setAmount,
+        currency,
+        setCurrency,
+        date,
+        setDate,
+        paidBy,
+        setPaidBy,
+        handleSubmit,
+    } = useExpenseForm(groupId);
 
     return (
         <>
