@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Avatar from "../../../../shared/components/Avatar";
-import { formatMoney } from "../../../../shared/utils/formatting";
-import "./index.scss";
+import Avatar from "../../../shared/components/Avatar";
+import { formatMoney } from "../../../shared/utils/formatting";
+import "./GroupCard.scss";
 
 const MAX_VISIBLE_MEMBERS = 4;
 

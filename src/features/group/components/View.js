@@ -2,58 +2,20 @@ import React from "react";
 import { Card, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/auth";
-import { expensesApi } from "../../../lib/expensesApiClient";
-import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import Avatar from "../../../shared/components/Avatar";
 import PageTitle from "../../../shared/components/PageTitle";
 import { formatMoney } from "../../../shared/utils/formatting";
 import { computeSettlements } from "../../../shared/utils/settlements";
 import { displayNameOf } from "../../../shared/utils/userDisplay";
-import { ExpenseList } from "../../../features/expense/components/ExpenseList";
+import { ExpenseList } from "../../expense/components/ExpenseList";
+import { useGroupView } from "../hooks/useGroupView";
 
 const BALANCE_EPSILON = 0.01;
 
 function GroupView() {
     const { groupId } = useParams();
-    const { request } = useApiRequest(expensesApi);
     const { user } = useAuth();
-    const [group, setGroup] = React.useState(null);
-    const [expenses, setExpenses] = React.useState([]);
-    const [summary, setSummary] = React.useState([]);
-    const [destinations, setDestinations] = React.useState([]);
-
-    const loadExpenses = () => {
-        return expensesApi.get("/expenses", { params: { groupId } }).then((response) => {
-            setExpenses(response.data);
-        });
-    };
-
-    const loadSummary = () => {
-        return expensesApi.get(`/groups/${groupId}/summary`).then((response) => {
-            setSummary(response.data);
-        });
-    };
-
-    React.useEffect(() => {
-        request(() =>
-            Promise.all([
-                expensesApi.get(`/groups/${groupId}`).then((response) => setGroup(response.data)),
-                loadExpenses(),
-                loadSummary(),
-                expensesApi
-                    .get("/groups")
-                    .then((response) => setDestinations(response.data.filter((g) => g._id !== groupId))),
-            ])
-        ).catch(() => {});
-    }, [groupId]);
-
-    const handleMove = (expense, newGroupId) => {
-        request((client) =>
-            client
-                .patch(`/expenses/${expense._id}/group`, { groupId: newGroupId })
-                .then(() => Promise.all([loadExpenses(), loadSummary()]))
-        ).catch(() => {});
-    };
+    const { group, expenses, summary, destinations, handleMove } = useGroupView(groupId);
 
     return (
         <>
