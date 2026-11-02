@@ -3,6 +3,7 @@ import { Badge, Card, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../app/providers/app";
 import { useApiRequest } from "../../../shared/hooks/useApiRequest";
+import { productApi } from "../api/productApi";
 
 function ProductRecommendations() {
     const { api } = React.useContext(AppContext);
@@ -10,7 +11,7 @@ function ProductRecommendations() {
     const [recommendations, setRecommendations] = React.useState([]);
 
     React.useEffect(() => {
-        request((client) => client.get(`/products/recommendations`))
+        request((client) => productApi.recommendations(client))
             .then((response) => {
                 setRecommendations(response.data);
             })

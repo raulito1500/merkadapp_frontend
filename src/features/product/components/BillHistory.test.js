@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { AppContext } from "../../../app/providers/app";
-import { BillHistory } from ".";
+import { BillHistory } from "./BillHistory";
 import axios from "axios";
 import "@testing-library/jest-dom";
 import moment from "moment";

@@ -6,6 +6,7 @@ import { AppContext } from "../../../app/providers/app";
 import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { formatMoney, formatRepeat, formatUnits } from "../../../shared/utils/formatting.js";
 import { CATEGORIES } from "../../../shared/constants/constants.js";
+import { productApi } from "../api/productApi";
 
 function BillHistory({ product }) {
     const { api } = React.useContext(AppContext);
@@ -14,7 +15,7 @@ function BillHistory({ product }) {
     const [data, setData] = React.useState([]);
 
     React.useEffect(() => {
-        request((client) => client.get(`/products/${product.id}/bill-items`))
+        request((client) => productApi.billHistory(client, product.id))
             .then((response) => {
                 setData(response.data);
             })

@@ -1,70 +1,18 @@
 import React from "react";
-import { AppContext } from "../../../app/providers/app";
-import { useApiRequest } from "../../../shared/hooks/useApiRequest";
 import { Badge, ButtonGroup, Col, ListGroup, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { BillHistory } from "../BillHistory";
+import { BillHistory } from "./BillHistory";
 import { CATEGORIES } from "../../../shared/constants/constants";
-import { ProductRecommendations } from "../ProductRecommendations";
+import { ProductRecommendations } from "./Recommendations";
 import DataViewOptions from "../../../shared/components/DataViewOptions";
 import moment from "moment";
 import { formatRepeat, formatMoney, formatPercent } from "../../../shared/utils/formatting";
-import { searchBy } from "../../../shared/utils/searching";
-import { sortBy } from "../../../shared/utils/sorting";
-import { groupBy } from "../../../shared/utils/grouping";
 import PageTitle from "../../../shared/components/PageTitle";
+import { useProductList } from "../hooks/useProductList";
 
 function ProductList() {
-    const { api, show, setShow } = React.useContext(AppContext);
-    const { request } = useApiRequest(api);
-
-    const [list, setList] = React.useState();
-    const [listGrouped, setListGrouped] = React.useState([]);
-
-    const [product, setProduct] = React.useState();
-
-    const DEFAULT_SCREEN_SETTINGS = {
-        search: "",
-        sort: "ASC",
-        group: "CATEGORY",
-    };
-
-    const handleClose = () => setShow(false);
-    const handleShow = (product) => {
-        setProduct(product);
-        setShow(true);
-    };
-
-    React.useEffect(() => {
-        request((client) => client.get(`/products/true`))
-            .then((response) => {
-                setList(response.data);
-            })
-            .catch(() => {});
-    }, []);
-
-    React.useEffect(() => {
-        handleDataViewOptionsChange(DEFAULT_SCREEN_SETTINGS);
-    }, [list]);
-
-    const handleDataViewOptionsChange = (screenSettings) => {
-        if (!list) {
-            return;
-        }
-        let dataGr = {};
-        if (screenSettings.group === "CATEGORY") {
-            dataGr = groupBy("category", list);
-            setListGrouped(dataGr);
-        } else if (screenSettings.group === "FREQUENCY") {
-            dataGr = groupBy("repeat", list);
-            setListGrouped(dataGr);
-        }
-        for (let index in dataGr) {
-            dataGr[index] = sortBy("name", dataGr[index], screenSettings.sort);
-            dataGr[index] = searchBy("name", dataGr[index], screenSettings.search);
-        }
-        setListGrouped(dataGr);
-    };
+    const { listGrouped, handleDataViewOptionsChange, DEFAULT_SCREEN_SETTINGS, show, product, handleClose, handleShow } =
+        useProductList();
 
     return (
         <>
