@@ -3,6 +3,9 @@ import { MarketListWidget } from "../../features/market-list/components/Widget";
 import { Col, Row } from "react-bootstrap";
 import { AppContext } from "../../app/providers/app";
 import { useApiRequest } from "../../shared/hooks/useApiRequest";
+import { expensesApi } from "../../lib/expensesApiClient";
+import { expenseApi } from "../../features/expense/api/expenseApi";
+import { MonthlySpendingWidget } from "./MonthlySpendingWidget";
 import { BillChartWidget } from "./BillChartWidget";
 import { BudgetWidget } from "./BudgetWidget";
 import { WelcomeWidget } from "./WelcomeWidget";
@@ -12,13 +15,24 @@ function Overview() {
     const { api } = React.useContext(AppContext);
     const { request } = useApiRequest(api);
 
+    const { request: requestExpenses } = useApiRequest(expensesApi);
+
     const [dataBillsByMonth, setDataBillsByMonth] = useState([]);
+    const [dataExpensesByMonth, setDataExpensesByMonth] = useState([]);
     const [lists, setLists] = useState();
 
     useEffect(() => {
         request((client) => client.get(`/bills/byMonth`))
             .then((response) => {
                 setDataBillsByMonth(response.data);
+            })
+            .catch(() => {});
+    }, []);
+
+    useEffect(() => {
+        requestExpenses((client) => expenseApi.totalByMonth(client, "COP"), { errorTitle: "Could not load expenses" })
+            .then((response) => {
+                setDataExpensesByMonth(response.data);
             })
             .catch(() => {});
     }, []);
@@ -49,6 +63,9 @@ function Overview() {
                     </Col>
                     <Col xs={6} className="mb-3">
                         <NextMarketListWidget nextMarketList={lists ? lists.at(0) : null} />
+                    </Col>
+                    <Col xs={12} className="mb-3">
+                        <MonthlySpendingWidget billsData={dataBillsByMonth} expensesData={dataExpensesByMonth} />
                     </Col>
                     <Col xs={12} className="mb-3">
                         <BillChartWidget data={dataBillsByMonth} />

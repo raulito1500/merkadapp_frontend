@@ -3,6 +3,7 @@ import { groupApi } from "../../group/api/groupApi";
 const expenseApi = {
     listPersonal: (client) => client.get("/expenses", { params: { personal: true } }),
     listByGroup: (client, groupId) => client.get("/expenses", { params: { groupId } }),
+    totalByMonth: (client, currency) => client.get("/expenses/byMonth", { params: { currency } }),
     create: (client, expense) => client.post("/expenses", expense),
     moveToGroup: (client, expenseId, groupId) => client.patch(`/expenses/${expenseId}/group`, { groupId }),
     // Personal needs the group list as move destinations, Create needs one group's members

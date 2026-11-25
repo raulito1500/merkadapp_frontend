@@ -33,3 +33,16 @@ export const groupByChecked = (items) => {
     });
     return grouped;
 };
+
+// Merges several `[{ date, total }]` monthly series into shared month buckets.
+// Each backend omits months without data, so missing months are filled with 0.
+// Returns { months: ["2026-06", ...], series: [[...], [...]] } in the input order.
+export const mergeMonthlySeries = (seriesList) => {
+    const monthKey = (date) => new Date(date).toISOString().slice(0, 7);
+    const months = Array.from(new Set(seriesList.flatMap((series) => series.map((item) => monthKey(item.date))))).sort();
+    const series = seriesList.map((items) => {
+        const totals = Object.fromEntries(items.map((item) => [monthKey(item.date), item.total]));
+        return months.map((month) => totals[month] ?? 0);
+    });
+    return { months, series };
+};
